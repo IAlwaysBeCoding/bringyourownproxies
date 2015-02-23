@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from bringyourownproxies.errors import AccountProblem,InvalidLogin
+from bringyourownproxies.errors import AccountProblem,InvalidLogin,CaptchaRequired
 from bringyourownproxies.httpclient import HttpSettings
 from bringyourownproxies.account import OnlineAccount
 
@@ -8,12 +8,13 @@ class XtubeAccount(OnlineAccount):
     
     SITE = 'Xtube'
     SITE_URL = 'www.xtube.com'
+    RECAPTCHA_KEY = '6Ld65scSAAAAAGLEbFoUl8hyXh40S4YEa6i1weN_'
     
     def __init__(self,username,password,email,**kwargs):
         self.remember_me = kwargs.pop('remember_me') if kwargs.get('remember_me',False) else False
         super(XtubeAccount,self).__init__(username=username,password=password,email=email,**kwargs)
     
-    def login(self):
+    def login(self,**kwargs):
         
         session = self.http_settings.session
         proxy = self.http_settings.proxy
@@ -50,6 +51,8 @@ class XtubeAccount(OnlineAccount):
             return True
         else:
             get_error_msg = doc.xpath('//div[@class="loginMessage color_red"]/text()')
+            if get_error_msg[0].strip() == "The reCAPTCHA wasn't entered correctly":
+                raise CaptchaRequired('reCaptcha is required to login into Xtube')
             print get_error_msg[0].strip()
             
         '''
@@ -64,7 +67,7 @@ class XtubeAccount(OnlineAccount):
         session = self.http_settings.session
         proxy = self.http_settings.proxy
         
-        go_to_Xtube = session.get('http://www.Xtube.com/',proxies=proxy)
+        go_to_Xtube = session.get('http://www.xtube.com/',proxies=proxy)
 
         doc = self.etree.fromstring(go_to_Xtube.content,self.parser)
         is_sign_out_link = doc.xpath('//a[@class="logout" and @title="Logout"]')
