@@ -6,3 +6,5 @@ def generate_timestamp():
     import time
     import random
     return int('{t}{ms}'.format(t=int(time.time()),ms=random.randrange(100,999,1)))
+    
+
