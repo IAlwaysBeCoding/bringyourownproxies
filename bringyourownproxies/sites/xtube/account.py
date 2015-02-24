@@ -80,4 +80,4 @@ class XtubeAccount(OnlineAccount):
 if __name__ == '__main__':
     account =  XtubeAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
     account.login()
-    print account.is_logined()
+    print account.is_logined() 
