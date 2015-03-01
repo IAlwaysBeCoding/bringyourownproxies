@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class DrTuberAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class DrTuberAccount(_Account):
     
     SITE = 'DrTuber'
     SITE_URL = 'www.drTuber.com'
@@ -14,22 +15,15 @@ class DrTuberAccount(OnlineAccount):
         super(DrTuberAccount,self).__init__(username=username,password=password,email=email,**kwargs)
     
     def login(self):
-        
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_drtuber = session.get('http://www.drtuber.com',proxies=proxy)
 
-        pop_up_login_form = session.get('http://www.drtuber.com/ajax/popup_forms?form=login',proxies=proxy)
+        attempt_login  = self._login(extra_post_vars={
+                                                    'submit_login':'true',
+                                                    'login_remember':'true' if self.remember_me else 'false'
+                                                    },
+                                    ajax=True,
+                                    before_post_url='http://www.drtuber.com/ajax/popup_forms?form=login',
+                                    post_url='http://www.drtuber.com/ajax/login')
         
-        post = {"username":self.username,
-                "password":self.password,
-                "submit_login":"true",
-                "login_remember":"true" if self.remember_me else "false"}
-                
-        session.headers.update({"X-Requested-With":"XMLHttpRequest"})  
-        attempt_login = session.post('http://www.drtuber.com/ajax/login',data=post,proxies=proxy)
-
         result = attempt_login.json() 
 
         if result['success']:
@@ -41,19 +35,9 @@ class DrTuberAccount(OnlineAccount):
 
         
     def is_logined(self):
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_DrTuber = session.get('http://www.DrTuber.com/',proxies=proxy)
-
-        doc = self.etree.fromstring(go_to_DrTuber.content,self.parser)
-        is_sign_out_link = doc.xpath('//a[@href="/logout.php" and @class="logout"]')
-        if is_sign_out_link:
-            return True
-        else:
-            return False
+        return self._is_logined(sign_out_xpath='//a[@href="/logout"]')
 
 if __name__ == '__main__':
-    account =  DrTuberAccount(username='tedwantsmore',password='money1003d',email='tedwantsmore@gmx.com')
+    account =  DrTuberAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
     account.login()
     print account.is_logined()

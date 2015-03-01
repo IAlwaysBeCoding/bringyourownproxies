@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class FreepornvsAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class FreepornvsAccount(_Account):
     
     SITE = 'Freepornvs'
     SITE_URL = 'www.freepornvs.com'
@@ -14,44 +15,18 @@ class FreepornvsAccount(OnlineAccount):
     
     def login(self):
         
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_freepornvs = session.get('http://www.freepornvs.com',proxies=proxy)
-        post = {"action":"login",
-                "username":self.username,
-                "pass":self.password}
-        
-        attempt_login = session.post('http://freepornvs.com/sign-in/',data=post,proxies=proxy)
+        attempt_login  = self._login(password='pass',
+                                    extra_post_vars={'action':'login'},
+                                    post_url='http://freepornvs.com/sign-in/',
+                                    before_post_url='http://freepornvs.com/sign-in/')
 
-        doc = self.etree.fromstring(attempt_login.content,self.parser)
 
-        if doc.xpath('//a[@href="/sign-out/"]'):
-            return True
-        else:
-            get_error_msg = doc.xpath('//div[@class="message_error"]')
- 
-            if get_error_msg[0].text.strip() == '! Invalid Username or Password. Username and Password are case-sensitive.':
-                raise InvalidLogin('Wrong username or password')    
-            else:
-                raise AccountProblem('Unknown problem while login into ' \
-                                'Freepornvs message:{msg}'.format(msg=get_error_msg[0].text.strip()))
+        self._find_login_errors(attempt_login)
 
-            raise AccountProblem('Unknown problem while login into Freepornvs')
-        
+            
     def is_logined(self):
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
+        return self._is_logined(sign_out_xpath='//a[@href="/sign-out/"]')
         
-        go_to_freepornvs = session.get('http://www.freepornvs.com/',proxies=proxy)
-
-        doc = self.etree.fromstring(go_to_freepornvs.content,self.parser)
-        is_sign_out_link = doc.xpath('//a[@href="/sign-out/"]')
-        if is_sign_out_link:
-            return True
-        else:
-            return False
-
 if __name__ == '__main__':
     account =  FreepornvsAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
     account.login()

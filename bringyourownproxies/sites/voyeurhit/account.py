@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class VoyeurHitAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class VoyeurHitAccount(_Account):
     
     SITE = 'VoyeurHit'
     SITE_URL = 'www.voyeurhit.com'
@@ -13,45 +14,17 @@ class VoyeurHitAccount(OnlineAccount):
         super(VoyeurHitAccount,self).__init__(username=username,password=password,email=email,**kwargs)
     
     def login(self):
-        
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_voyeurhit = session.get('http://www.voyeurhit.com',proxies=proxy)
-        post = {"action":"login",
-                "redirect_to":"http://voyeurhit.com/",
-                "username":self.username,
-                "pass":self.password}
-        
 
-        attempt_login = session.post('http://voyeurhit.com/login.php',data=post,proxies=proxy)
-        doc = self.etree.fromstring(attempt_login.content,self.parser)
+        attempt_login  = self._login(password='pass',
+                                    extra_post_vars={'action':'login','redirect_to':'http://voyeurhit.com'},
+                                    post_url='http://voyeurhit.com/login.php')
 
-        if doc.xpath('//li[@class="logout"]'):
-            return True
-        else:
-            get_error_msg = doc.xpath('//div[@class="message_error"]')
-            
-            if get_error_msg[0].text.strip() == 'Invalid Username or Password. Username and Password are case-sensitive.':
-                raise InvalidLogin('Wrong username or password')    
-            else:
-                raise AccountProblem('Unknown problem while login into' \
-                                'VoyeurHit message:{msg}'.format(msg=get_error_msg[0].text.strip()))
+        self._find_login_errors(attempt_login,
+                                error_msg_xpath='//div[@class="message_error"]/text()',
+                                wrong_pass_msg='Invalid Username or Password. Username and Password are case-sensitive.')
 
-            raise AccountProblem('Unknown problem while login into VoyeurHit')
-        
     def is_logined(self):
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_voyeurhit = session.get('http://www.voyeurhit.com/',proxies=proxy)
-
-        doc = self.etree.fromstring(go_to_voyeurhit.content,self.parser)
-        is_sign_out_link = doc.xpath('//li[@class="logout"]')
-        if is_sign_out_link:
-            return True
-        else:
-            return False
+        return self._is_logined(sign_out_xpath='//li[@class="logout"]')
 
 if __name__ == '__main__':
     account =  VoyeurHitAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')

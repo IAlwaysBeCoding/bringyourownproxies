@@ -27,6 +27,15 @@ class TubeCupAccount(OnlineAccount):
                 
         attempt_login = session.post('http://www.tubecup.com/login.php',data=post,proxies=proxy)
         
+        attempt_login  = self._login(password='pass',
+                                    extra_post_vars={'action':'login','redirect_to':'http://voyeurhit.com'},
+                                    post_url='http://www.tubecup.com/login.php')
+
+        self._find_login_errors(attempt_login,
+                                error_msg_xpath='//div[@class="message_error"]/text()',
+                                wrong_pass_msg='Invalid Username or Password. Username and Password are case-sensitive.')
+
+        
         doc = self.etree.fromstring(attempt_login.content,self.parser)
         find_error_msg = doc.xpath('//div[@class="message_error"]')
         if find_error_msg:

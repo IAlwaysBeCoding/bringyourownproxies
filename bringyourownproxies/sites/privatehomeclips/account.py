@@ -31,8 +31,11 @@ class PrivateHomeClipsAccount(OnlineAccount):
         if doc.xpath('//a[@href="/logout.php" and @class="logout"]'):
             return True
         else:
-            get_error_msg = doc.xpath('//div[@class="message_error"]')
+            get_error_msg = doc.xpath('//div[@class="message_error"][1]/text()')
             if get_error_msg:
+                print len(get_error_msg)
+                print get_error_msg[0]
+                print get_error_msg[1]
                 if get_error_msg[0].text.strip() == 'Invalid Username or Password. Username and Password are case-sensitive.':
                     raise InvalidLogin('Wrong username or password')
             

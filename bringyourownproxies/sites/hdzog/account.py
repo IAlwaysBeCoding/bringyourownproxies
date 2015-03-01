@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class HdZogAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class HdZogAccount(_Account):
     
     SITE = 'HdZog'
     SITE_URL = 'www.hdzog.com'
@@ -13,44 +14,21 @@ class HdZogAccount(OnlineAccount):
        super(HdZogAccount,self).__init__(username=username,password=password,email=email,**kwargs)
     
     def login(self):
-        
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_hdzog = session.get('http://www.hdzog.com',proxies=proxy)
 
-        post = {"action":"login",
-                "username":self.username,
-                "pass":self.password,
-                "redirect_to": "http://www.hdzog.com"}
+        attempt_login  = self._login(password='pass',
+                                    extra_post_vars={"redirect_to": "http://www.hdzog.com",
+                                                    "action":"login"},
+                                    post_url='http://www.hdzog.com/login.php')
         
+        self._find_login_errors(response=attempt_login,
+                                error_msg_xpath='//div[@class="message-block message-error"]/p',
+                                wrong_pass_msg='Invalid Username or Password. Username and Password are case-sensitive.')
 
-        attempt_login = session.post('http://www.hdzog.com/login.php',data=post,proxies=proxy)
-
-        doc = self.etree.fromstring(attempt_login.content,self.parser)
-        
-        if doc.xpath('//a[@class="logout" and @title="Logout"]'):
-            return True
-        else:
-            get_error_msg = doc.xpath('//div[@class="message-block message-error"]/p')
-            if get_error_msg:
-                if get_error_msg[0].text == 'Invalid Username or Password. Username and Password are case-sensitive.':
-                    raise InvalidLogin('Wrong username or password')
-        raise AccountProblem('Unknown problem while login into HdZog')
 
 
     def is_logined(self):
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_hdzog = session.get('http://www.hdzog.com/',proxies=proxy)
+        return self._is_logined(sign_out_xpath='//a[@class="logout" and @title="Logout"]')
 
-        doc = self.etree.fromstring(go_to_hdzog.content,self.parser)
-        is_sign_out_link = doc.xpath('//a[@class="logout" and @title="Logout"]')
-        if is_sign_out_link:
-            return True
-        else:
-            return False
 
 if __name__ == '__main__':
     account =  HdZogAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')

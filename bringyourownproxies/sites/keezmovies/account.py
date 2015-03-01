@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class KeezMoviesAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class KeezMoviesAccount(_Account):
     
     SITE = 'KeezMovies'
     SITE_URL = 'www.keezmovies.com'
@@ -14,17 +15,10 @@ class KeezMoviesAccount(OnlineAccount):
     
     def login(self):
         
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
+        attempt_login  = self._login(extra_headers={"Accept":"application/json, text/javascript, */*; q=0.01"},
+                                    ajax=True,
+                                    post_url='http://www.keezmovies.com/ajax/login')
         
-        go_to_keezmovies = session.get('http://www.keezmovies.com',proxies=proxy)
-
-        post = {"username":self.username,
-                "password":self.password}
-        
-        session.headers.update({"X-Requested-With":"XMLHttpRequest",
-                                "Accept":"application/json, text/javascript, */*; q=0.01"})
-        attempt_login = session.post('http://www.keezmovies.com/ajax/login',data=post,proxies=proxy)
         response = attempt_login.json()
 
         if response['response']['success']:

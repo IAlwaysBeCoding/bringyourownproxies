@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin,ParsingProblem
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class PornHubAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class PornHubAccount(_Account):
     
     SITE = 'PornHub'
     SITE_URL = 'www.pornhub.com'
@@ -44,6 +45,14 @@ class PornHubAccount(OnlineAccount):
                 "remember_me":"on" if self.remember_me else "off"}
         session.headers.update({"X-Requested-With":"XMLHttpRequest"})
         attempt_login = session.post('http://www.pornhub.com/front/login_json',data=post,proxies=proxy)
+        attempt_login  = self._login(extra_post_vars = {
+                                                        "login_remember": "1" if self.remember_me else "0",
+                                                        "submit_login":"true"},
+                                    ajax=True,
+                                    before_post_url='http://www.pornhub.com/login',
+                                    before_post_url_vars
+                                    post_url='http://www.nuvid.com/ajax/login')
+
         response = attempt_login.json()
 
         if int(response['success']) == 1:
