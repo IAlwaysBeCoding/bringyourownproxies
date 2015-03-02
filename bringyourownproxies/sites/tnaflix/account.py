@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class TnaflixAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class TnaflixAccount(_Account):
     
     SITE = 'Tnaflix'
     SITE_URL = 'www.tnaflix.com'
@@ -14,18 +15,10 @@ class TnaflixAccount(OnlineAccount):
         super(TnaflixAccount,self).__init__(username=username,password=password,email=email,**kwargs)
     
     def login(self):
-        
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_tnaflix = session.get('http://www.tnaflix.com',proxies=proxy)
 
-        post = {"next":"/my_profile.php",
-                "username":self.username,
-                "password":self.password,
-                "remember_me":"on" if self.remember_me else "off"}
-        
-        attempt_login = session.post('https://www.tnaflix.com/getiton.php',data=post,proxies=proxy)
+        attempt_login  = self._login(extra_post_vars={"remember_me":"on" if self.remember_me else "off",
+                                                    "next":"/my_profile.php"},
+                                    post_url='https://www.tnaflix.com/getiton.php')
 
         if attempt_login.url == 'https://www.tnaflix.com/my_profile.php':
             return True
@@ -43,19 +36,9 @@ class TnaflixAccount(OnlineAccount):
 
             
     def is_logined(self):
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_Tnaflix = session.get('http://www.Tnaflix.com/',proxies=proxy)
-
-        doc = self.etree.fromstring(go_to_Tnaflix.content,self.parser)
-        is_sign_out_link = doc.xpath('//a[@href="/logout.php" and @class="logout"]')
-        if is_sign_out_link:
-            return True
-        else:
-            return False
+        return self._is_logined(sign_out_xpath='//a[@title="Log Out"]')
 
 if __name__ == '__main__':
-    account =  TnaflixAccount(username='tedwantsmore',password='money1003d',email='tedwantsmore@gmx.com')
+    account =  TnaflixAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
     account.login()
     print account.is_logined()

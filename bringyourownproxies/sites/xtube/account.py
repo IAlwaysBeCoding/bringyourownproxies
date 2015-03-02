@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin,CaptchaRequired
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class XtubeAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class XtubeAccount(_Account):
     
     SITE = 'Xtube'
     SITE_URL = 'www.xtube.com'
@@ -16,7 +17,7 @@ class XtubeAccount(OnlineAccount):
     
     def login(self,**kwargs):
         
-        
+        '''
         session = self.http_settings.session
         proxy = self.http_settings.proxy
         
@@ -40,7 +41,18 @@ class XtubeAccount(OnlineAccount):
                 
         print post
         session.headers.update({'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.99 Safari/537.36'})
+        
         attempt_login = session.post('http://www.xtube.com/login_process.php',data=post,proxies=proxy)
+        '''
+        attempt_login  = self._login(username="user_id",
+                                    extra_post_vars={"remember_me": "1" if self.remember_me else "0"},
+                                    before_post_url_vars={"url":None,
+                                                        "time":None,
+                                                        "hash":None},
+                                    before_post_url='http://www.xtube.com/login.php',
+                                    post_url='http://www.xtube.com/login_process.php')
+
+
 
         doc = self.etree.fromstring(attempt_login.content,self.parser)
         with open('test_login.html','w+') as f:

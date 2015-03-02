@@ -4,9 +4,10 @@ import json
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class RedTubeAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class RedTubeAccount(_Account):
     
     SITE = 'RedTube'
     SITE_URL = 'www.redtube.com'
@@ -17,22 +18,18 @@ class RedTubeAccount(OnlineAccount):
         super(RedTubeAccount,self).__init__(username=username,password=password,email=email,**kwargs)
     
     def login(self):
-        
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_RedTube = session.get('http://www.redtube.com',proxies=proxy)
-        
 
-        post = {"iFriendID":0,
-                "iObjectID":0,
-                "iObjectType":0,
-                "sUsername":self.username,
-                "sPassword":self.password,
-                "bRemember":"2" if self.remember_me else "1",
-                "do":"Log in"}
-        session.headers.update({"X-Requested-With":"XMLHttpRequest"})
-        attempt_login = session.post('http://www.redtube.com/htmllogin',data=post,proxies=proxy)
+        attempt_login  = self._login(username='sUsername',
+                                    password='sPassword',
+                                    extra_post_vars={"iFriendID":0,
+                                                        "iObjectID":0,
+                                                        "iObjectType":0,
+                                                        "bRemember":"2" if self.remember_me else "1",
+                                                        "do":"Log in"},
+                                    ajax=True,
+                                    post_url='http://www.redtube.com/htmllogin')
+
+        
         is_success = re.findall(r'parent.loginSuccess\((.*?)\);',attempt_login.content,re.I|re.M)
 
         if is_success:
@@ -40,7 +37,6 @@ class RedTubeAccount(OnlineAccount):
                 response = json.loads(is_success[0])
             except:
                 raise AccountProblem('Could not read json login response')
-            print response['success']
             if response['success']:
                 return True
 

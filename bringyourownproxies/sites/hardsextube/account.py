@@ -20,7 +20,6 @@ class HardSexTubeAccount(_Account):
                                     ajax=True,
                                     post_url='http://www.hardsextube.com/login')
 
-
         result = attempt_login.json()
         
         if result['success']:

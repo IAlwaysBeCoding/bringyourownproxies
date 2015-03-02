@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class XVideosAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class XVideosAccount(_Account):
     
     SITE = 'XVideos'
     SITE_URL = 'www.xvideos.com'
@@ -16,43 +17,31 @@ class XVideosAccount(OnlineAccount):
     
     def login(self):
         
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_xvideos = session.get('http://www.xvideos.com',proxies=proxy)
-        
+        attempt_login  = self._login(use_username=False,
+                                    extra_post_vars={"referer":"http://www.xvideos.com/",
+                                                    "login":self.email,
+                                                    "rememberme":"on" if self.remember_me else "off",
+                                                    "log":"Login to your account"},
+                                    post_url='http://upload.xvideos.com/account')
 
-        post = {"referer":"http://www.xvideos.com/",
-                "login":self.email,
-                "password":self.password,
-                "rememberme":"on" if self.remember_me else "off",
-                "log":"Login to your account"}
-                
-        attempt_login = session.post('http://upload.xvideos.com/account',data=post,proxies=proxy)
-        
+        self._find_login_errors(response=attempt_login,
+                                error_msg_xpath='//p[@class="inlineError form_global_error"]/text()',
+                                wrong_pass_msg='Bad username or password.'
+                                )
 
-        doc = self.etree.fromstring(attempt_login.content,self.parser)
-
-        find_errors = doc.xpath('//p[@class="inlineError form_global_error"]/text()')
-        if find_errors:
-
-            if find_errors[0] == 'Bad username or password.':
-                raise InvalidLogin('Wrong username or password')
-            raise AccountProblem('Unknown problem occured while trying to login into xvideos.com')
-        else:
-            return True 
-            
     def is_logined(self):
         session = self.http_settings.session
         proxy = self.http_settings.proxy
         
         go_to_sex = session.get('http://upload.xvideos.com/account',proxies=proxy)
         doc = self.etree.fromstring(go_to_sex.content,self.parser)
+
         if doc.xpath('//form[@id="signinForm"]'):
             return False
         else:
             return True
 
 if __name__ == '__main__':
-    account =  XVideosAccount(username='tedwantsmore',password='money1003d',email='tedwantsmore@gmx.com')
+    account =  XVideosAccount(username='tedwantsmored',password='money1003dsdss',email='tedwantsmore@gmx.com')
     account.login()
+    print account.is_logined()

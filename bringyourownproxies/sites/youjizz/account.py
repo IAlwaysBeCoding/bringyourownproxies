@@ -3,9 +3,10 @@ import base64
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class YouJizzAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class YouJizzAccount(_Account):
     
     SITE = 'YouJizz'
     SITE_URL = 'www.youjizz.com'
@@ -16,20 +17,16 @@ class YouJizzAccount(OnlineAccount):
     
     def login(self):
         
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_youjizz = session.get('http://www.youjizz.com',proxies=proxy)
-
-        post = {"ahd_username":self.username,
-                "ahd_password":base64.b64encode(self.password),
-                "Submit":"Login",
-                "rememberme":"on" if self.remember_me else "off"}
-        
-        
-        attempt_login = session.post('http://www.youjizz.com/login_auth.php',data=post,proxies=proxy)
+        attempt_login  = self._login(username="ahd_username",
+                                    use_password=False,
+                                    extra_post_vars={"ahd_password":base64.b64encode(self.password),
+                                                    "Submit":"Login",
+                                                    "rememberme":"on" if self.remember_me else "off"},
+                                    ajax=True,
+                                    post_url='http://www.youjizz.com/login_auth.php')
 
         doc = self.etree.fromstring(attempt_login.content,self.parser)
+
         if doc.xpath('//a[@href="/logout.php"]'):
             return True
         else:
@@ -43,17 +40,7 @@ class YouJizzAccount(OnlineAccount):
 
 
     def is_logined(self):
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_youjizz = session.get('http://www.youjizz.com/',proxies=proxy)
-
-        doc = self.etree.fromstring(go_to_youjizz.content,self.parser)
-        is_sign_out_link = doc.xpath('//a[@href="/logout.php"]')
-        if is_sign_out_link:
-            return True
-        else:
-            return False
+        return self._is_logined(sign_out_xpath='//a[@href="/logout.php"]')
 
 if __name__ == '__main__':
     account =  YouJizzAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')

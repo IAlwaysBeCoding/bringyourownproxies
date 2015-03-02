@@ -7,7 +7,8 @@ from bringyourownproxies.utils import generate_timestamp
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
+
+from bringyourownproxies.sites.account import _Account 
 
 def generate_stats():
 
@@ -18,7 +19,7 @@ def generate_stats():
 	return (res1,res2)
 
 
-class XhamsterAccount(OnlineAccount):
+class XhamsterAccount(_Account):
     
     SITE = 'xHamster'
     SITE_URL = 'www.xhamster.com'

@@ -6,9 +6,10 @@ from requests.cookies import create_cookie
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin,ParsingProblem
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class SpankwireAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class SpankwireAccount(_Account):
     
     SITE = 'Spankwire'
     SITE_URL = 'www.spankwire.com'
@@ -42,6 +43,7 @@ class SpankwireAccount(OnlineAccount):
 
         post = {"Password":str(self.password),
                 "UserName":str(self.username)}
+        
         session.headers.update({"X-AjaxPro-Method":"Authenticate2",
                                 "Origin":"http://www.spankwire.com",
                                 "Referer":"http://www.spankwire.com/"}) 
@@ -55,21 +57,11 @@ class SpankwireAccount(OnlineAccount):
                 return True
             else:
                 if result['value']['Reason'] == 'Bad Username or Password':
-                    raise InvalidLogin('Wrong username or password')
+                    raise InvalidLogin('Wrong username(email) or password')
             raise AccountProblem('Unknown problem while login into Spankwire message:{e}'.format(e=result['value']['Reason']))
 
     def is_logined(self):
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_spankwire = session.get('http://www.spankwire.com/',proxies=proxy)
-        
-        doc = self.etree.fromstring(go_to_spankwire.content,self.parser)
-        is_sign_out_link = doc.xpath('//li[@id="logoutLink" and @class="display-none"]')
-        if is_sign_out_link:
-            return True
-        else:
-            return False
+        return self._is_logined(sign_out_xpath='//li[@id="logoutLink" and @class="display-none"]')
 
 if __name__ == '__main__':
     account =  SpankwireAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')

@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class PrivateHomeClipsAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class PrivateHomeClipsAccount(_Account):
     
     SITE = 'PrivateHomeClips'
     SITE_URL = 'www.PrivateHomeClips.com'
@@ -13,49 +14,22 @@ class PrivateHomeClipsAccount(OnlineAccount):
         super(PrivateHomeClipsAccount,self).__init__(username=username,password=password,email=email,**kwargs)
     
     def login(self):
-        
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_privatehomeclips = session.get('http://www.privatehomeclips.com',proxies=proxy)
 
-        post = {"action":"login",
-                "redirect_to":"http://www.privatehomeclips.com/soffer.php",
-                "username":self.username,
-                "pass":self.password}
+        attempt_login  = self._login(password='pass',
+                                    extra_post_vars={"action":"login",
+                                                    "redirect_to":"http://www.privatehomeclips.com/soffer.php",
+                                                    },
+                                    post_url='http://www.privatehomeclips.com/login.php')
+
         
-        attempt_login = session.post('http://www.privatehomeclips.com/login.php',data=post,proxies=proxy)
-        
-        doc = self.etree.fromstring(attempt_login.content,self.parser)
-
-        if doc.xpath('//a[@href="/logout.php" and @class="logout"]'):
-            return True
-        else:
-            get_error_msg = doc.xpath('//div[@class="message_error"][1]/text()')
-            if get_error_msg:
-                print len(get_error_msg)
-                print get_error_msg[0]
-                print get_error_msg[1]
-                if get_error_msg[0].text.strip() == 'Invalid Username or Password. Username and Password are case-sensitive.':
-                    raise InvalidLogin('Wrong username or password')
-            
-            raise AccountProblem('Unknown problem while login into privatehomeclips')
-
-
+        self._find_login_errors(response=attempt_login,
+                                error_msg_xpath='//div[@class="message_error"]/text()',
+                                wrong_pass_msg='Invalid Username or Password. Username and Password are case-sensitive.')
     def is_logined(self):
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_privateHomeClips = session.get('http://www.privatehomeclips.com/',proxies=proxy)
 
-        doc = self.etree.fromstring(go_to_PrivateHomeClips.content,self.parser)
-        is_sign_out_link = doc.xpath('//a[@href="/logout.php" and @class="logout"]')
-        if is_sign_out_link:
-            return True
-        else:
-            return False
+        return self._is_logined(sign_out_xpath='//a[@href="/logout.php" and @class="logout"]')
 
 if __name__ == '__main__':
-    account =  PrivateHomeClipsAccount(username='tedwantsmore',password='money1003d',email='tedwantsmore@gmx.com')
+    account =  PrivateHomeClipsAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
     account.login()
     print account.is_logined()

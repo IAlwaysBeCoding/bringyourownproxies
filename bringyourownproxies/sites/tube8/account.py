@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class Tube8Account(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class Tube8Account(_Account):
     
     SITE = 'Tube8'
     SITE_URL = 'www.tube8.com'
@@ -14,17 +15,9 @@ class Tube8Account(OnlineAccount):
         super(Tube8Account,self).__init__(username=username,password=password,email=email,**kwargs)
     
     def login(self):
-        
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_tube8 = session.get('http://www.tube8.com',proxies=proxy)
 
-        post = {"username":self.username,
-                "password":self.password}
-        
-        session.headers.update({"X-Requested-With":"XMLHttpRequest"})
-        attempt_login = session.post('http://www.tube8.com/ajax2/login/',data=post,proxies=proxy)
+        attempt_login  = self._login(ajax=True,
+                                    post_url='http://www.tube8.com/ajax2/login/')
 
         result = attempt_login.json()
         if int(result['statusCode']) == 1:
@@ -37,19 +30,9 @@ class Tube8Account(OnlineAccount):
 
 
     def is_logined(self):
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_tube8 = session.get('http://www.tube8.com/',proxies=proxy)
-
-        doc = self.etree.fromstring(go_to_tube8.content,self.parser)
-        is_sign_out_link = doc.xpath('//a[@class="logout-button"]')
-        if is_sign_out_link:
-            return True
-        else:
-            return False
+        return self._is_logined(sign_out_xpath='//a[@class="logout-button"]')
 
 if __name__ == '__main__':
-    account =  Tube8Account(username='tedwantsmore',password='money1003d',email='tedwantsmore@gmx.com')
+    account =  Tube8Account(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
     account.login()
     print account.is_logined()

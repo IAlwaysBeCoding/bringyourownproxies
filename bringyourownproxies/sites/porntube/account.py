@@ -2,9 +2,10 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
 
-class PornTubeAccount(OnlineAccount):
+from bringyourownproxies.sites.account import _Account 
+
+class PornTubeAccount(_Account):
     
     SITE = 'PornTube'
     SITE_URL = 'www.porntube.com'
@@ -13,21 +14,14 @@ class PornTubeAccount(OnlineAccount):
         super(PornTubeAccount,self).__init__(username=username,password=password,email=email,**kwargs)
     
     def login(self):
-        
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
-        
-        go_to_porntube = session.get('http://www.porntube.com',proxies=proxy)
 
-        post = {"_username":self.username,
-                "_password":self.password,
-                "_target_path": "/"}
-                
-        go_to_login = session.get('http://www.porntube.com/login',proxies=proxy)
-        session.headers.update({"X-Requested-With":"XMLHttpRequest",
-                                "Accept":"application/json, text/javascript, */*; q=0.01"})
-        attempt_login = session.post('http://www.porntube.com/login_check',data=post,proxies=proxy)
-
+        attempt_login  = self._login(username='_username',
+                                    password='_password',
+                                    extra_post_vars={"_target_path": "/"},
+                                    ajax=True,
+                                    before_post_url='http://www.porntube.com/login',
+                                    post_url='http://www.porntube.com/login_check')
+        
         check_logined = self.is_logined()
         if check_logined:
             return True

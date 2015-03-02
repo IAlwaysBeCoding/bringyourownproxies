@@ -2,11 +2,12 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin,AccountNotActivated,NotLogined
 from bringyourownproxies.httpclient import HttpSettings
-from bringyourownproxies.account import OnlineAccount
+
+from bringyourownproxies.sites.account import _Account 
 
 from profile import YouPornProfile
 
-class YouPornAccount(OnlineAccount):
+class YouPornAccount(_Account):
     
     SITE = 'YouPorn'
     SITE_URL = 'www.youporn.com'
@@ -15,20 +16,14 @@ class YouPornAccount(OnlineAccount):
         super(YouPornAccount,self).__init__(username=username,password=password,email=email,**kwargs)
 
     def login(self):
-        
-        session = self.http_settings.session
-        proxy = self.http_settings.proxy
 
-        #update headers, to make the login appear like it came from XMLHttpRequest        
-        self.http_settings.session.headers.update({"X-Requested-With":"XMLHttpRequest"})
-        go_to_site = session.get('http://www.youporn.com',proxies=proxy)
+        login  = self._login(username='login[username]',
+                                    password='login[password]',
+                                    extra_post_vars={"login[previous]":"",
+                                                    "login[local_data]":"{}"},
+                                    ajax=True,
+                                    post_url='http://www.youporn.com/login/')
 
-        post = {"login[username]":self.username,
-                "login[password]":self.password,
-                "login[previous]":"",
-                "login[local_data]":"{}"}
-        login = session.post('http://www.youporn.com/login/',data=post,proxies=proxy)
-        
         r = login.json()
         
         if not r['success'] :
@@ -58,3 +53,4 @@ class YouPornAccount(OnlineAccount):
 if __name__ == '__main__':
     acct = YouPornAccount(username='tedwantsmore',email='tedwantsmore@gmx.com',password='money1003')
     acct.login()
+    print acct.is_logined()

@@ -10,7 +10,7 @@ from bringyourownproxies.account import OnlineAccount
 from bringyourownproxies.sites.errors import CouldNotFindVar
 
 ERROR_MESSAGES_XPATH = ['//div[@class="message_error"]/text()']
-WRONG_USER_PASSWORD_MESSAGES = ['Invalid Username or Password. Username and Password are case-sensitive.',
+WRONG_PASSWORD_MESSAGES = ['Invalid Username or Password. Username and Password are case-sensitive.',
                                 '! Invalid Username or Password. Username and Password are case-sensitive.'] 
                                 
 SIGN_OUT_XPATH = ['//li[@class="logout"]','//a[@href="/sign-out/"]']
@@ -72,7 +72,6 @@ class _Account(OnlineAccount):
         for header in extra_headers:
             session.headers[header] = extra_headers[header]
         
-
         attempt_login = session.post(post_url,data=post_vars,proxies=proxy)
 
         return attempt_login
@@ -113,70 +112,62 @@ class _Account(OnlineAccount):
         return is_signed_in
     
     def _find_login_errors(self,response,**kwargs):
-        error_msg_xpath = kwargs.get('error_msg_xpath',None)
-        wrong_pass_msg = kwargs.get('wrong_pass_msg',None)
-        html = response.content
-        
-        doc = self.etree.fromstring(html,self.parser)
-        
+        error_msg_xpath = kwargs.get('error_msg_xpath',ERROR_MESSAGES_XPATH)
+        wrong_pass_msg = kwargs.get('wrong_pass_msg',WRONG_PASSWORD_MESSAGES)
+        use_username = kwargs.get('use_username',True)
+        use_password = kwargs.get('use_password',True)
 
-        if error_msg_xpath:
-            xpath_error = doc.xpath(error_msg_xpath)
+        doc = self.etree.fromstring(response.content,self.parser)
+        
+        if type(error_msg_xpath) != list and \
+            type(error_msg_xpath) != tuple:
+                error_msg_xpath = [error_msg_xpath]
+
+        if type(wrong_pass_msg) != list and \
+            type(wrong_pass_msg) != tuple:
+                wrong_pass_msg = [wrong_pass_msg]
+
+                
+        for xpath in error_msg_xpath:
+            xpath_error = doc.xpath(xpath)
+            
             if xpath_error:
                 error_msg = xpath_error[0]
-                
-                if wrong_pass_msg:
-                    self._check_for_wrong_pass(error_msgs = [wrong_pass_msg])
-                else:
-                    self._check_for_wrong_pass(error_msgs = WRONG_USER_PASSWORD_MESSAGES)
+                has_wrong_pass = self._is_wrong_password(error=error_msg,look_in_these=wrong_pass_msg)
 
-                raise AccountProblem('Something went wrong ' \
+                if has_wrong_pass:
+                    raise InvalidLogin('Wrong username(email) or password')
+                    
+                raise AccountProblem('Error:{error} ' \
                                     ' while login into {site}' \
                                     ' username:{username} ' \
                                     ' password:{password} ' \
-                                    ' email:{email}'.format(site=self.SITE,
+                                    ' email:{email}'.format(error=error_msg,
+                                                            site=self.SITE,
                                                             username=self.username,
                                                             password=self.password,
                                                             email=self.email))
-                    
+
+    def _is_wrong_password(self,error,**kwargs):
+        look_in_these = kwargs.get('look_in_these',WRONG_PASSWORD_MESSAGES)
+        if type(look_in_these) != list and \
+            type(look_in_these) != tuple:
+                
+            messages_to_match = [look_in_these]
         else:
-            
-            for xpath in ERROR_MESSAGES_XPATH:
-                current_xpath = doc.xpath(xpath)
-                if current_xpath:
-        
-                    error_msg = current_xpath[0]
+            if type(look_in_these) == list or \
+                type(look_in_these) == tuple:
                     
-                    if wrong_pass_msg:
-                        self._check_for_wrong_pass(error_msgs = [wrong_pass_msg])
-                    else:
-                        self._check_for_wrong_pass(error_msgs = WRONG_USER_PASSWORD_MESSAGES)
-
-                    raise AccountProblem('Something went wrong ' \
-                                        ' while login into {site}' \
-                                        ' username:{username} ' \
-                                        ' password:{password} ' \
-                                        ' email:{email}'.format(site=self.SITE,
-                                                                username=self.username,
-                                                                password=self.password,
-                                                                email=self.email))
-
-    def _check_for_wrong_pass(self,**kwargs):
-        error_msgs = kwargs.get('error_msgs',WRONG_USER_PASSWORD_MESSAGES)
-        
-        for error in error_msgs:
-            if error_msg.strip() == error:
-                raise InvalidLogin('Wrong username or password')
-
+                messages_to_match = look_in_these
             else:
-                raise AccountProblem('Something went wrong ' \
-                                        ' while login into msg:{msg}'\
-                                        '{site}' \
-                                        ' username:{username} ' \
-                                        ' password:{password} ' \
-                                        ' email:{email}'.format(site=self.SITE,
-                                                                msg=error_msg.strip(),
-                                                                username=self.username,
-                                                                password=self.password,
-                                                                email=self.email))
-                                                                
+                raise TypeError('look_in_these needs to be a list,tuple or a str containing the wrong msg password to look for')    
+
+        print 'type of error:{t}'.format(t=type(error))
+
+        for match in messages_to_match:
+            if match.strip() == error.strip():
+                return True
+                break
+                
+        return False
+
