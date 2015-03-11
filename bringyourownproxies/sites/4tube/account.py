@@ -43,6 +43,6 @@ class _4tubeAccount(_Account):
             else:
                 return True
 if __name__ == '__main__':
-    account =  _4tubeAccount(username='tedwantsmore',password='money1003d',email='tedwantsmore@gmx.com')
+    account =  _4tubeAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
     account.login()
     print account.is_logined()

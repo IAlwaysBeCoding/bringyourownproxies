@@ -39,12 +39,10 @@ class _Account(OnlineAccount):
         proxy = self.http_settings.proxy
         
 
-        
         if not self.SITE_URL.startswith('http://') or \
             not self.SITE_URL.startswith('https://'):
             domain_url = 'http://{url}'.format(url=self.SITE_URL)
 
-        
         go_to_site = session.get(domain_url,proxies=proxy)
         
         if before_post_url:
