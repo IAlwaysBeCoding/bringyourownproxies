@@ -215,7 +215,7 @@ class YouPornVideo(OnlineVideo):
 
     def __init__(self,url=None,title=None,category=None,**kwargs):
 
-        self.video_id = kwargs.pop('video_id') if kwargs.get('video_id',False) else self._get_video_id()
+        self.video_id = kwargs.pop('video_id') if kwargs.get('video_id',False) else YouPornVideo.get_video_id(url)
         self.video_parser = kwargs.pop('video_parser') if kwargs.get('video_parser',False) else YouPornVideoParser() 
         self.ratings = kwargs.pop('ratings') if kwargs.get('ratings',False) else None
         self.ratings_percentage = kwargs.pop('ratings_percentage') if kwargs.get('ratings_percentage',False) else None
@@ -235,9 +235,10 @@ class YouPornVideo(OnlineVideo):
                                         video_id=self.video_id,
                                         **kwargs)
     
-    def _get_video_id(self):
+    @staticmethod
+    def get_video_id(url):
 
-        find_video_id = re.match(r'(.*?)/watch/(.*?)/(.*?)',self.url,re.I|re.M)
+        find_video_id = re.match(r'(.*?)/watch/(.*?)/(.*?)',url,re.I|re.M)
         if find_video_id:
             return find_video_id.group(2)
 

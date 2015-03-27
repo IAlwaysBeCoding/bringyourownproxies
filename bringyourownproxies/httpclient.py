@@ -14,7 +14,7 @@ class HttpSettings(object):
 
         user_agent = kwargs.get('user_agent',self.DEFAULT_USER_AGENT)
         proxy = kwargs.get('proxy',None)
-        self.cookies = kwargs.get('cookies',requests.cookies.RequestsCookieJar())
+        cookies = kwargs.get('cookies',requests.cookies.RequestsCookieJar())
         self.session = kwargs.get('session',requests.Session())
         
         self.user_agent = user_agent if user_agent else self.DEFAULT_USER_AGENT
@@ -26,8 +26,8 @@ class HttpSettings(object):
         
         self.proxy = proxy
 
-        if self.cookies:
-            self.session.cookies = self.cookies
+        if cookies:
+            self.session.cookies = cookies
     
     def extract_cookies_from_domain(self,domain):
         #sets an empty cookie dictionary

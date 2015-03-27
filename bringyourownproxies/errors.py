@@ -37,6 +37,9 @@ class InvalidDescription(VideoProblem):
 class FailedUpload(VideoProblem):
     pass
 
+class InvalidUploadCallback(VideoProblem):
+    pass
+
 class FailedUpdatingVideoSettings(VideoProblem):
     pass
 
