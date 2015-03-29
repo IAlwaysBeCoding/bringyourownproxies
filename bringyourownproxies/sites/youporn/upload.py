@@ -1,6 +1,8 @@
 #!/usr/bin/python
 import os
 import json
+import sys
+import traceback
 
 import path
 
@@ -26,7 +28,8 @@ class YouPornUpload(Upload):
         bubble_up_exception = kwargs.get('bubble_up_exception',False)
         super(YouPornUpload,self).__init__(hooks=hooks,bubble_up_exception=bubble_up_exception)
     
-    def start(self):
+    def start(self,**kwargs):
+        thumbnail_id = kwargs.get('thumbnail_id',1)
 
         try:
             if type(self.video_upload_request) != YouPornVideoUploadRequest:
@@ -40,14 +43,14 @@ class YouPornUpload(Upload):
             if not self.account.is_logined():
                 raise NotLogined('YouPorn account is not logined')
                 
-                                    
             upload_requested = self._prepare_upload()
-
             self.call_hook('started',video_upload_request=self.video_upload_request,account=self.account)
-
+            
             user_uploader_id = upload_requested['user_uploader_id']
             video_id = upload_requested['video_id']
-            
+
+            callback_url = upload_requested['callback_url']
+
             session = self.account.http_settings.session
             proxy = self.account.http_settings.proxy
             session.headers.update({"X-Requested-With":"XMLHttpRequest"})
@@ -56,29 +59,32 @@ class YouPornUpload(Upload):
             
             encoder = YouPornUpload.create_multipart_encoder(fields={'userId':str(user_uploader_id),
                                                                     'videoId': str(video_id),
-                                                                    'files[]': (path.Path(video_file).name,open(video_file, 'rb'))})
+                                                                    'callbackUrl':str(callback_url),
+                                                                    'files': (path.Path(video_file).name,open(video_file, 'rb'))})
 
             self.upload_monitor = YouPornUpload.create_multipart_monitor(encoder=encoder,callback=self._hooks['uploading'])                                                
 
             self.call_hook('uploading',video_upload_request=self.video_upload_request,account=self.account)
                                     
-            attempt_upload = session.post('http://www.youporn.com/upload',
+            attempt_upload = session.post('http://www.youporn.com/videouploading',
                                         data=self.upload_monitor,
                                         proxies=proxy,
-                                        headers={'Content-Type': self.upload_monitor.content_type,
-                                                "Connection":"Keep-Alive"})
+                                        headers={'Content-Type': self.upload_monitor.content_type})
             
             del session.headers['X-Requested-With']
     
             settings = self.video_upload_request.create_video_settings()
-            
+            do_callback = session.get(callback_url,proxies=proxy)
+
             YouPornUpload.update_video_settings(settings,video_id,self.account)
-        
-        except Exception as exc:
+            YouPornUpload.pick_thumb_nail(video_id,self.account,thumbnail_id)
+            
+        except Exception:
             self.call_hook('failed',video_upload_request=self.video_upload_request,
                                     account=self.account,
-                                    exc=exc)
-            
+                                    traceback=traceback.format_exc(),
+                                    exc_info=sys.exc_info())
+
             if self.bubble_up_exception:
                 raise exc
         
@@ -99,7 +105,10 @@ class YouPornUpload(Upload):
         if not self.account.is_logined():
             raise NotLogined('YouPorn account is not logined')
         
-        session.get('http://www.youporn.com/upload',proxies=proxy)
+        upload_page = session.get('http://www.youporn.com/upload',proxies=proxy)
+        doc = etree.fromstring(upload_page.content,HTMLParser())
+        callback_url = doc.xpath('//input[@name="callbackUrl"]/@value')[0]
+        
         session.headers.update({"X-Requested-With":"XMLHttpRequest",
                                 "Content-Type":"application/x-www-form-urlencoded; charset=UTF-8"})
                                 
@@ -115,6 +124,7 @@ class YouPornUpload(Upload):
                 raise FailedUpload('Failed to upload video reason:{reason}'.format(reason=response['reason']))
         
         del session.headers['X-Requested-With']
+        response['callback_url'] = callback_url
         return response
     
     @staticmethod
@@ -204,7 +214,8 @@ class YouPornUpload(Upload):
         url = 'http://www.youporn.com/change/video-thumbnail/' \
             '{videoId}/{thumbnailId}/'.format(videoId=video_id,thumbnailId=thumbnail_id)
         
-        update_thumbnail = session.post(url,proxies=proxy)
+        post = {'video_id':video_id,'selectedThumbnail':thumbnail_id}
+        update_thumbnail = session.post(url,data=post,proxies=proxy)
         
         response = json.loads(update_thumbnail.content)
         if 'status' in response:
@@ -225,13 +236,13 @@ if __name__ == '__main__':
     from bringyourownproxies.video import Description,Title
     from video import YouPornTag,YouPornCategory
     import functools
-    
+    print 'yes'
     account = YouPornAccount(email="tedwantsmore@gmx.com",username="tedwantsmore",password="money1003")
-    video_file = '/home/ubuntu/workspace/testfiles/daughter.mp4'
-    title = Title("Slut likes it hard")
-    tags = (YouPornTag("Amateur"),YouPornTag("Ass"),YouPornTag("Anal"),YouPornTag("Daughter"))
+    video_file = '/home/testfiles/shower.mp4'
+    title = Title("Taking a shower wanna come?")
+    tags = (YouPornTag("Amateur"),YouPornTag("Shower"),YouPornTag("Teen"),YouPornTag("Daughter"))
     category = YouPornCategory('Amateur')
-    description = Description("Slut getting fucked by boyfriend really hard")
+    description = Description("Sexy girl taking a shower")
 
     video_request = YouPornVideoUploadRequest(video_file=video_file,
                                             title=title,
@@ -239,9 +250,11 @@ if __name__ == '__main__':
                                             category=category,
                                             description=description)
     account.login()
+    YouPornUpload.pick_thumb_nail(11174585,account,2)
+    sys.exit(1)
 
     start_time = None
-    bar = ProgressBar(expected_size=24579300,filled_char='*')
+    bar = ProgressBar(expected_size=30980555,filled_char='*')
     def started(**kwargs):
         video_upload_request = kwargs.get('video_upload_request')
         import time
@@ -269,7 +282,8 @@ if __name__ == '__main__':
     def finished(**kwargs):
 
         global start_time
-        print("it took %f seconds" % (time.time() - start_time))
+        import time 
+        #print("it took %f seconds" % (time.time() - start_time))
         print 'FINISHED'
         
 

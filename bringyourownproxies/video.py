@@ -87,38 +87,20 @@ class OnlineVideo(Video):
         return video.content
     
 
-    def _verify_download_dir(self,dir_to_save=None,name_to_save_as=None):
-        if dir_to_save is None:
-            saving_path = path.Path()
-            saving_path = path.Path(saving_path.getcwd())
-        else:
-            saving_path = path.Path(dir_to_save)
-        #check if saving path is an actual file
-        if saving_path.isfile():
-            #set the filename to the saving_path filename
-            filename = saving_path.name
-            #set the saving_dir as the current directory
-            saving_dir = saving_path.getcwd()
-            temp_saving_path = path.Path(saving_dir) 
-            #check that the saving path exists
-            if not temp_saving_path.exists():
-                #create saving dir if it doesn't exist
-                saving_path.mkdir_p()
-        else:
-            #if no filename was selected then save the filename with a random uuid4
-            if name_to_save_as is None:
-                filename = str(uuid.uuid4())
-            else:
-                filename = name_to_save_as
-            #check to see if folder exists
-            if not saving_path.exists():
-                #create saving dir if it doesn't exist
-                saving_path.mkdir_p()
-                
-            saving_dir = saving_path.getcwd()  
-        
-        return (saving_dir,filename) 
+    def _verify_download_dir(self,name_to_save_as=None):
+        if not name_to_save_as:
+            name_to_save_as = str(uuid.uuid4())
 
+        directory = path.Path(name_to_save_as).parent
+        path_exists = path.Path(directory).exists()
+        
+        if directory == '':
+            directory = path.Path(name_to_save_as).getcwd()
+
+        if not path_exists:
+            path.Path(directory).makedirs_p()
+
+        return (directory,name_to_save_as)            
 
 class VideoUploadRequest(object):
 

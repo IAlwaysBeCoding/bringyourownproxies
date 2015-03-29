@@ -17,6 +17,7 @@ ON_FAILED_UPLOAD = functools.partial(lambda exc,video_request,account,settings :
 
 class Upload(object):
     
+
     DEFAULT_STARTED_CALLBACK = functools.partial(lambda **kwargs: None)
     DEFAULT_UPLOADING_CALLBACK = functools.partial(lambda **kwargs : None)
     DEFAULT_FAILED_CALLBACK = functools.partial(lambda **kwargs: None)
@@ -52,6 +53,18 @@ class Upload(object):
             return MultipartEncoderMonitor(encoder,callback)
         else:
             raise InvalidUploadCallback('Callback {c} needs to be callable'.format(c=callback))
+    
+    def has_finished_successfully(self):
+        return (self._finished and not self._failed and not self._uploading) 
+    
+    def is_still_uploading(self):
+        return (self._started and self._uploading)
+    
+    def has_failed(self):
+        return (self._started and self._failed)
+    
+    def has_started(self):
+        return self._started
     
     def _validate_hooks(self,hooks):
 

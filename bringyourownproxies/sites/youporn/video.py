@@ -252,12 +252,11 @@ class YouPornVideo(OnlineVideo):
         video = session.get(self.url,proxies=proxy)
         return video.content
         
-    def download(self,**kwargs):
-        dir_to_save = kwargs.get('dir_to_save',None)
-        name_to_save_as = kwargs.get('name_to_save_as',None)
+    def download(self,name_to_save_as=None):
+
         try:
             #verify download dir and file name
-            saving_path,filename = self._verify_download_dir(dir_to_save,name_to_save_as)
+            saving_path,filename = self._verify_download_dir(name_to_save_as)
                     
             go_to_video = self.go_to_video()
             session = self.http_settings.session
@@ -372,16 +371,16 @@ class YouPornVideoUploadRequest(VideoUploadRequest):
                                                 description=self.description.name[:25])
 
     def create_video_settings(self):
-        return {"videoedit[title]":str(self.title),
-                "videoedit[description]":str(self.description),
-                "videoedit[tags]":",".join([t.name for t in self.tags]),
-                "videoedit[pornstars]":",".join([t.name for p in self.porn_stars]),
-                "videoedit[video_options_private]":"1" if self.is_private else "0",
-                "videoedit[video_options_password]":self.password,
-                "videoedit[video_options_disable_commenting]":"0" if self.allow_comments else "1",
-                "videoedit[uploader_category_id]":str(self.category.category_id),
-                "videoedit[orientation]":"straight"}
-                
+        return {"title":str(self.title),
+                "description":str(self.description),
+                "tags":",".join([t.name for t in self.tags]),
+                "porn_stars":",".join([t.name for p in self.porn_stars]),
+                "is_private":"1" if self.is_private else "0",
+                "password":self.password,
+                "allow_comments":"0" if self.allow_comments else "1",
+                "category_id":str(self.category.category_id),
+                "orientation":"straight"}
+
 class YouPornVideoUploaded(VideoUploaded):
     pass
 
@@ -391,7 +390,8 @@ if __name__ == '__main__':
     #youporn_video.get_video_info()
     #info = youporn_video.get_video_info()
     #print info
-    youporn_video.download(name_to_save_as='/home/testfil/shower.mp4')
+    #youporn_video._verify_download_dir('shower.mp4')
+    youporn_video.download(name_to_save_as='/home/testfiles/shower.mp4')
     #print youporn_video.get_comments()
     
     

@@ -21,8 +21,8 @@ class UbrUploader(object):
     
     def __init__(self,domain,**kwargs):
         
-        self.http_settings = kwargs.get('http_settings',HttpSettings())
         self.domain = domain
+        self.http_settings = kwargs.get('http_settings',HttpSettings())
         self.path_to_cgi = kwargs.get('path_to_cgi','/cgi-bin/')
         self.path_to_ubr = kwargs.get('path_to_ubr','/')
         
