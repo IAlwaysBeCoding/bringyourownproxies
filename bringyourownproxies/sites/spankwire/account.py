@@ -9,6 +9,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['SpankwireAccount']
+
 class SpankwireAccount(_Account):
     
     SITE = 'Spankwire'
@@ -63,7 +65,3 @@ class SpankwireAccount(_Account):
     def is_logined(self):
         return self._is_logined(sign_out_xpath='//li[@id="logoutLink" and @class="display-none"]')
 
-if __name__ == '__main__':
-    account =  SpankwireAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

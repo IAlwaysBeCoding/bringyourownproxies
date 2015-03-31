@@ -6,6 +6,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['YouJizzAccount']
+
 class YouJizzAccount(_Account):
     
     SITE = 'YouJizz'
@@ -42,7 +44,3 @@ class YouJizzAccount(_Account):
     def is_logined(self):
         return self._is_logined(sign_out_xpath='//a[@href="/logout.php"]')
 
-if __name__ == '__main__':
-    account =  YouJizzAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

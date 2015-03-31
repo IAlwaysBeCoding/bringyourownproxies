@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['NuvidAccount']
+
 class NuvidAccount(_Account):
     
     SITE = 'Nuvid'
@@ -40,7 +42,4 @@ class NuvidAccount(_Account):
         return self._is_logined(sign_out_xpath='//a[@class="l1" and @href="/logout"]')
 
 
-if __name__ == '__main__':
-    account =  NuvidAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()
+

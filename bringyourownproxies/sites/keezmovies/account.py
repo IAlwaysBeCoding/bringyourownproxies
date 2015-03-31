@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['KeezMoviesAccount']
+
 class KeezMoviesAccount(_Account):
     
     SITE = 'KeezMovies'
@@ -37,7 +39,3 @@ class KeezMoviesAccount(_Account):
         else:
             return True
 
-if __name__ == '__main__':
-    account =  KeezMoviesAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

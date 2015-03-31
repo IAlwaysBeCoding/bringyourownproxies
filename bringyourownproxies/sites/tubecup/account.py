@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['TubeCupAccount']
+
 class TubeCupAccount(_Account):
     
     SITE = 'TubeCup'
@@ -26,7 +28,4 @@ class TubeCupAccount(_Account):
 
     def is_logined(self):
         return self._is_logined(sign_out_xpath='//a[@class="logout"]')
-if __name__ == '__main__':
-    account =  TubeCupAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()
+

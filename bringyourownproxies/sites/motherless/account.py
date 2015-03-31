@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['MotherlessAccount']
+
 class MotherlessAccount(_Account):
     
     SITE = 'Motherless'
@@ -43,8 +45,3 @@ class MotherlessAccount(_Account):
             return True
         else:
             return False
-
-if __name__ == '__main__':
-    account =  MotherlessAccount(username='trythis1003',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

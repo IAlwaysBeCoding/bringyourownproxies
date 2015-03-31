@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import uuid
+import io
 import functools
 import datetime
 
@@ -8,7 +9,8 @@ from lxml import etree
 from lxml.etree import HTMLParser,tostring
 
 from bringyourownproxies.errors import (InvalidVideoCallable,InvalidVideoType,VideoFileDoesNotExist,
-                                        InvalidTitle,InvalidTag,InvalidCategory,InvalidDescription)
+                                        InvalidTitle,InvalidTag,InvalidCategory,InvalidDescription,
+                                        InvalidUploadCallback)
 from bringyourownproxies.httpclient import HttpSettings
 
 class VideoObject(object):
@@ -55,23 +57,101 @@ class OnlineVideo(Video):
     
     SITE = 'NOT SPECIFIED'
     SITE_URL = None
-
+    
+    DEFAULT_STARTED_CALLBACK = functools.partial(lambda **kwargs: None)
+    DEFAULT_DOWNLOADING_CALLBACK = functools.partial(lambda **kwargs : None)
+    DEFAULT_FAILED_CALLBACK = functools.partial(lambda **kwargs: None)
+    DEFAULT_FINISHED_CALLBACK = functools.partial(lambda **kwargs: None)
+    
     def __init__(self,url,title,category,**kwargs):
         
         self.url = url
+        self.iter_size = kwargs.pop('iter_size') if kwargs.get('iter_size',False) else 1024
         self.http_settings = kwargs.pop('http_settings') if kwargs.get('http_settings',False) else HttpSettings()
-
-        self.on_success_download = kwargs.pop('on_success_download') if kwargs.get('on_success_download',False) else functools.partial(lambda video_url,video_location : None) 
-        self.on_failed_download = kwargs.pop('on_failed_download') if kwargs.get('on_failed_download',False) else functools.partial(lambda exception : None) 
-
-        #setup callback functions to call whenever a successful download or failed download is done.
-        #The callbacks need to be a functools.partial object
-        if (type(self.on_success_download) != functools.partial ):
-            raise InvalidVideoCallable('on_success_download needs to be a partial object type')
-        if (type(self.on_failed_download) != functools.partial):
-            raise InvalidVideoCallable('on_failed_download needs to be a partial object type')
+        self.bubble_up_exception = kwargs.pop('bubble_up_exception') if kwargs.get('bubble_up_exception',False) else False
         
+        hooks = kwargs.pop('hooks') if kwargs.get('hooks',False) else {}
+
+        self._validate_hooks(hooks)
+        self._hooks = {'started':hooks.get('started',self.DEFAULT_STARTED_CALLBACK),
+                        'downloading':hooks.get('downloading',self.DEFAULT_DOWNLOADING_CALLBACK),
+                        'failed':hooks.get('failed',self.DEFAULT_FAILED_CALLBACK),
+                        'finished':hooks.get('finished',self.DEFAULT_FINISHED_CALLBACK)}
+        
+        
+        self._started = False
+        self._downloading = False
+        self._failed = False
+        self._finished = False
+
         super(OnlineVideo,self).__init__(title=title,category=category,**kwargs)
+    
+    def has_downloaded_successfully(self):
+        return (self._finished and not self._failed and not self._downloading) 
+    
+    def is_still_downloading(self):
+        return (self._started and self._downloading)
+    
+    def has_failed(self):
+        return (self._started and self._failed)
+    
+    def has_started(self):
+        return self._started
+        
+    def _validate_hooks(self,hooks):
+
+        if not isinstance(hooks,dict):
+            raise InvalidVideoCallable('hooks need to be a dictionary with 4 possible callbacks\n'\
+                            '\tstarted: called when the download has started\n'\
+                            '\tdownloading:called constantly during download\n'\
+                            '\tfailed:called when download fails\n'\
+                            '\tfinished:called when successfully finished downloading\n')
+        for key in hooks:
+            if not hasattr(hooks[key],'__call__'):
+                raise InvalidVideoCallable('hook:{h} is not a callable'.format(h=key))
+
+    def set_hooks(self,hooks):
+        self._validate_hooks(hooks)
+        self._hooks.update(hooks)
+    
+    def call_hook(self,hook,**kwargs):
+        event = getattr(self,"_{hook}".format(hook=hook),None)
+        
+        if event is None:
+            raise InvalidUploadCallback('Callback does not exist:{event}'.format(event=event))
+
+        event = True
+        self._hooks.get(hook)(**kwargs)
+
+    def remove_hook(self,hook):
+        event = getattr(self,"_{hook}".format(hook=hook),None)
+        
+        if event is None:
+            raise InvalidUploadCallback('Callback does not exist:{event}'.format(event=event))
+        
+        self._hooks[hook] = getattr(self,'DEFAULT_{hook}_CALLBACK'.format(hook=hook.upper()))
+    
+    def _download(self,video_url,file_location):
+
+        session = self.http_settings.session
+        proxy = self.http_settings.proxy
+        download_video = session.get(video_url,proxies=proxy,stream=True)
+        total_length = int(download_video.headers.get('content-length'))
+
+        with open(file_location,'w+') as f:
+            total_downloaded = 0
+            for part in download_video.iter_content(chunk_size=self.iter_size):
+                if part:
+                    part_video_data = io.BytesIO(part)
+                    total_downloaded += len(part_video_data.getvalue()) 
+                    self.call_hook('downloading',total_downloaded=total_downloaded,
+                                                total_size=total_length,
+                                                part=part_video_data,
+                                                video_url=self.url,
+                                                http_settings=self.http_settings,
+                                                file=file_location)
+
+                    f.write(part_video_data.getvalue())
 
     def download(self):
         raise NotImplementedError('Download method must be implemented by classes subclassing from OnlineVideo class')
@@ -86,7 +166,6 @@ class OnlineVideo(Video):
         video = session.get(self.url,proxies=proxy)
         return video.content
     
-
     def _verify_download_dir(self,name_to_save_as=None):
         if not name_to_save_as:
             name_to_save_as = str(uuid.uuid4())

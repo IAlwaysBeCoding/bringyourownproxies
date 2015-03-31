@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['PornTubeAccount']
+
 class PornTubeAccount(_Account):
     
     SITE = 'PornTube'
@@ -42,8 +44,3 @@ class PornTubeAccount(_Account):
                 return False
             else:
                 return True
-
-if __name__ == '__main__':
-    account =  PornTubeAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

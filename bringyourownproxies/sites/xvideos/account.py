@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['XVideosAccount']
+
 class XVideosAccount(_Account):
     
     SITE = 'XVideos'
@@ -41,7 +43,3 @@ class XVideosAccount(_Account):
         else:
             return True
 
-if __name__ == '__main__':
-    account =  XVideosAccount(username='tedwantsmored',password='money1003dsdss',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

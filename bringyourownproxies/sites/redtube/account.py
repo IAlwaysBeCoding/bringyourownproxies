@@ -7,6 +7,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['RedTubeAccount']
+
 class RedTubeAccount(_Account):
     
     SITE = 'RedTube'
@@ -68,7 +70,3 @@ class RedTubeAccount(_Account):
         else:
             return True
 
-if __name__ == '__main__':
-    account =  RedTubeAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

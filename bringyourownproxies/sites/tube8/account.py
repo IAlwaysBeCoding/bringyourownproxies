@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['Tube8Account']
+
 class Tube8Account(_Account):
     
     SITE = 'Tube8'
@@ -32,7 +34,3 @@ class Tube8Account(_Account):
     def is_logined(self):
         return self._is_logined(sign_out_xpath='//a[@class="logout-button"]')
 
-if __name__ == '__main__':
-    account =  Tube8Account(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

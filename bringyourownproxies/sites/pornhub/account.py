@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['PornHubAccount']
+
 class PornHubAccount(_Account):
     
     SITE = 'PornHub'
@@ -41,7 +43,3 @@ class PornHubAccount(_Account):
     def is_logined(self):
         return self._is_logined(sign_out_xpath='//li[@class="signOut"]')
 
-if __name__ == '__main__':
-    account =  PornHubAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

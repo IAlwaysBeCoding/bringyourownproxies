@@ -81,8 +81,10 @@ class ParsingProblem(Exception):
 
 class CouldNotParseVideoUrl(ParsingProblem):
     pass
+
 class CouldNotFindVar(ParsingProblem):
     pass
+
 class CaptchaProblem(Exception):
     pass
 

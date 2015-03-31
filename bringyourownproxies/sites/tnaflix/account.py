@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['TnaflixAccount']
+
 class TnaflixAccount(_Account):
     
     SITE = 'Tnaflix'
@@ -38,7 +40,3 @@ class TnaflixAccount(_Account):
     def is_logined(self):
         return self._is_logined(sign_out_xpath='//a[@title="Log Out"]')
 
-if __name__ == '__main__':
-    account =  TnaflixAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

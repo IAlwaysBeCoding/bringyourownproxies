@@ -4,6 +4,8 @@ from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
 from bringyourownproxies.account import OnlineAccount
 
+__all__ = ['VpornAccount']
+
 class VpornAccount(OnlineAccount):
     
     SITE = 'Vporn'
@@ -54,8 +56,3 @@ class VpornAccount(OnlineAccount):
             return True
         else:
             return False
-
-if __name__ == '__main__':
-    account =  VpornAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

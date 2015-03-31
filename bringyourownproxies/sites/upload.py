@@ -12,8 +12,20 @@ from lxml.etree import HTMLParser,tostring
 from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
 
 from bringyourownproxies.httpclient import HttpSettings
+from bringyourownproxies.upload import Upload
 from bringyourownproxies.sites.tnaflix.account import TnaflixAccount
 
+
+class _Upload(Upload):
+    
+    def __init__(self,account,video_upload_request,**kwargs):
+        
+        self.account = account
+        self.video_upload_request = video_upload_request
+        
+        super(_Upload,self).__init__(**kwargs)
+    
+    
 class UbrException(Exception):
     pass
 

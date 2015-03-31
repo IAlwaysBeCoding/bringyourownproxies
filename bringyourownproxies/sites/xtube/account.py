@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['XtubeAccount']
+
 class XtubeAccount(_Account):
     
     SITE = 'Xtube'
@@ -89,7 +91,3 @@ class XtubeAccount(_Account):
         else:
             return False
 
-if __name__ == '__main__':
-    account =  XtubeAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined() 

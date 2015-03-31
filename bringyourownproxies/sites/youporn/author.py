@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from bringyourownproxies.author import OnlineAuthor
+
 class YouPornAuthor(OnlineAuthor):
     SITE = 'YouPorn'
     SITE_URL = 'www.youporn.com'

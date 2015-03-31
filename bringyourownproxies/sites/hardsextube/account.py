@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['HardSexTubeAccount']
+
 class HardSexTubeAccount(_Account):
     
     SITE = 'HardSexTube'
@@ -36,7 +38,3 @@ class HardSexTubeAccount(_Account):
         
         return self._is_logined(sign_out_xpath='//i[@class="icon icon-logout"]')
 
-if __name__ == '__main__':
-    account =  HardSexTubeAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

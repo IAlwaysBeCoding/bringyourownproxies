@@ -1,20 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import uuid
+import io
 import re
+import sys
+import traceback
 
 import path
-
 
 from bringyourownproxies.video import (OnlineVideo,VideoParser,VideoUploadRequest,
                                         VideoUploaded,Tag,Category,Description,Title)
 from bringyourownproxies.errors import (InvalidVideoUrl,InvalidVideoParser,InvalidTag,InvalidCategory)
 from bringyourownproxies.utils import show_printable_chars
 
-from errors import InvalidYouPornStar
-from pornstar import YouPornStar
-from author import YouPornAuthor
-from comment import YouPornComment
+from bringyourownproxies.sites.youporn.errors import InvalidYouPornStar
+from bringyourownproxies.sites.youporn.pornstar import YouPornStar
+from bringyourownproxies.sites.youporn.author import YouPornAuthor
+from bringyourownproxies.sites.youporn.comment import YouPornComment
 
 class YouPornTag(Tag):
     SITE = 'YouPorn'
@@ -255,26 +257,33 @@ class YouPornVideo(OnlineVideo):
     def download(self,name_to_save_as=None):
 
         try:
-            #verify download dir and file name
+
             saving_path,filename = self._verify_download_dir(name_to_save_as)
-                    
+            save_at = path.Path.joinpath(saving_path,filename)      
+            
             go_to_video = self.go_to_video()
             session = self.http_settings.session
             proxy = self.http_settings.proxy
-            #grab the raw download url to the video source
             video_url = self.video_parser.get_download_url(go_to_video)
-            download_video = session.get(video_url,proxies=proxy)
-            #create a new file path to where we will save the downloaded movie
-            save_at = path.Path.joinpath(saving_path,filename)
-            
-            with open(save_at.abspath(),'w+') as f:
-                f.write(download_video.content)
+            self._download('http://download.thinkbroadband.com/100MB.zip',name_to_save_as)
+                
         except Exception as exc:
-            self.on_failed_download(exception=exc)
-            raise exc
+            
+            self.call_hook('failed',video_url=self.url,
+                                    http_settings=self.http_settings,
+                                    name_to_save_as=name_to_save_as,
+                                    traceback=traceback.format_exc(),
+                                    exc_info=sys.exc_info())
+            print traceback.format_exc()
+            if self.bubble_up_exception:
+                raise exc
         else:
-            self.on_success_download(video_url=video_url,video_location=save_at.abspath())
-
+            self.call_hook('finished',video_url=self.url,
+                                    video_location=save_at.abspath(),
+                                    http_settings=self.http_settings,
+                                    name_to_save_as=name_to_save_as)
+            
+            return True
 
     def get_video_info(self):
         
@@ -386,12 +395,19 @@ class YouPornVideoUploaded(VideoUploaded):
 
 if __name__ == '__main__':
 
-    youporn_video = YouPornVideo(url='http://www.youporn.com/watch/253391/come-take-a-shower-with-me')
+    def downloading(**kwargs):
+        print kwargs
+        
+    youporn_video = YouPornVideo(url='http://www.youporn.com/watch/253391/come-take-a-shower-with-me',
+                                iter_size=1048576,
+                                hooks={'downloading':downloading})
     #youporn_video.get_video_info()
     #info = youporn_video.get_video_info()
     #print info
     #youporn_video._verify_download_dir('shower.mp4')
-    youporn_video.download(name_to_save_as='/home/testfiles/shower.mp4')
+    print youporn_video._hooks
+    youporn_video.download(name_to_save_as='/home/testfiles/nakedgirl_test.png')
+
     #print youporn_video.get_comments()
     
     

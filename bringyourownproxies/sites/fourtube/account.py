@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['_4tubeAccount']
+
 class _4tubeAccount(_Account):
     
     SITE = '_4tube'
@@ -42,7 +44,4 @@ class _4tubeAccount(_Account):
                 return False
             else:
                 return True
-if __name__ == '__main__':
-    account =  _4tubeAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()
+

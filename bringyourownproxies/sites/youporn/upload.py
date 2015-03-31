@@ -11,23 +11,15 @@ from lxml import etree
 from lxml.etree import HTMLParser,tostring
 from bringyourownproxies.errors import (InvalidVideoUploadRequest,InvalidAccount,
                                         NotLogined,FailedUpload,FailedUpdatingVideoSettings)
-from bringyourownproxies.upload import ON_SUCCESS_UPLOAD,ON_FAILED_UPLOAD,Upload
+from bringyourownproxies.upload import Upload
 
-from errors import VideoNotReadyForThumbnail,FailedChangingThumbnailId
-from account import YouPornAccount
-from video import YouPornVideoUploadRequest
+from bringyourownproxies.sites.youporn.errors import VideoNotReadyForThumbnail,FailedChangingThumbnailId
+from bringyourownproxies.sites.youporn.account import YouPornAccount
+from bringyourownproxies.sites.youporn.video import YouPornVideoUploadRequest
+from bringyourownproxies.sites.upload import _Upload
 
-class YouPornUpload(Upload):
+class YouPornUpload(_Upload):
 
-    def __init__(self,account,video_upload_request,**kwargs):
-        
-        self.account = account
-        self.video_upload_request = video_upload_request
-        
-        hooks = kwargs.get('hooks',{})
-        bubble_up_exception = kwargs.get('bubble_up_exception',False)
-        super(YouPornUpload,self).__init__(hooks=hooks,bubble_up_exception=bubble_up_exception)
-    
     def start(self,**kwargs):
         thumbnail_id = kwargs.get('thumbnail_id',1)
 
@@ -79,7 +71,7 @@ class YouPornUpload(Upload):
             YouPornUpload.update_video_settings(settings,video_id,self.account)
             YouPornUpload.pick_thumb_nail(video_id,self.account,thumbnail_id)
             
-        except Exception:
+        except Exception as exc:
             self.call_hook('failed',video_upload_request=self.video_upload_request,
                                     account=self.account,
                                     traceback=traceback.format_exc(),
@@ -96,7 +88,6 @@ class YouPornUpload(Upload):
             
             return {'video_id':upload_requested['video_id']}
 
-    
     def _prepare_upload(self):
         
         session = self.account.http_settings.session
@@ -234,16 +225,15 @@ if __name__ == '__main__':
     
     from clint.textui.progress import Bar as ProgressBar
     from bringyourownproxies.video import Description,Title
-    from video import YouPornTag,YouPornCategory
+    from bringyourownproxies.sites.youporn.video import YouPornTag,YouPornCategory
     import functools
-    print 'yes'
     account = YouPornAccount(email="tedwantsmore@gmx.com",username="tedwantsmore",password="money1003")
     video_file = '/home/testfiles/shower.mp4'
     title = Title("Taking a shower wanna come?")
     tags = (YouPornTag("Amateur"),YouPornTag("Shower"),YouPornTag("Teen"),YouPornTag("Daughter"))
     category = YouPornCategory('Amateur')
     description = Description("Sexy girl taking a shower")
-
+    print type(category)
     video_request = YouPornVideoUploadRequest(video_file=video_file,
                                             title=title,
                                             tags=tags,
@@ -251,7 +241,6 @@ if __name__ == '__main__':
                                             description=description)
     account.login()
     YouPornUpload.pick_thumb_nail(11174585,account,2)
-    sys.exit(1)
 
     start_time = None
     bar = ProgressBar(expected_size=30980555,filled_char='*')

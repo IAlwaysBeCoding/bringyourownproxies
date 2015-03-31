@@ -5,6 +5,8 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
+__all__ = ['VoyeurHitAccount']
+
 class VoyeurHitAccount(_Account):
     
     SITE = 'VoyeurHit'
@@ -25,8 +27,3 @@ class VoyeurHitAccount(_Account):
 
     def is_logined(self):
         return self._is_logined(sign_out_xpath='//li[@class="logout"]')
-
-if __name__ == '__main__':
-    account =  VoyeurHitAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    print account.is_logined()

@@ -11,10 +11,6 @@ from lxml.etree import HTMLParser,tostring
 
 from bringyourownproxies.errors import InvalidUploadCallback
 
-ON_SUCCESS_UPLOAD = functools.partial(lambda video_request,account : None) 
-ON_FAILED_UPLOAD = functools.partial(lambda exc,video_request,account,settings : None)
-
-
 class Upload(object):
     
 
@@ -41,7 +37,6 @@ class Upload(object):
         
         self.upload_monitor = None
         
-
     @staticmethod
     def create_multipart_encoder(fields):
         return MultipartEncoder(fields=fields)
@@ -54,7 +49,7 @@ class Upload(object):
         else:
             raise InvalidUploadCallback('Callback {c} needs to be callable'.format(c=callback))
     
-    def has_finished_successfully(self):
+    def has_uploaded_successfully(self):
         return (self._finished and not self._failed and not self._uploading) 
     
     def is_still_uploading(self):

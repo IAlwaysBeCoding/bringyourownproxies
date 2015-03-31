@@ -5,7 +5,9 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
-from profile import YouPornProfile
+from bringyourownproxies.sites.youporn.profile import YouPornProfile
+
+__all__ = ['YouPornAccount']
 
 class YouPornAccount(_Account):
     
