@@ -49,12 +49,12 @@ class YouPornUpload(_Upload):
             
             video_file = self.video_upload_request.video_file
             
-            encoder = YouPornUpload.create_multipart_encoder(fields={'userId':str(user_uploader_id),
+            encoder = type(self).create_multipart_encoder(fields={'userId':str(user_uploader_id),
                                                                     'videoId': str(video_id),
                                                                     'callbackUrl':str(callback_url),
                                                                     'files': (path.Path(video_file).name,open(video_file, 'rb'))})
 
-            self.upload_monitor = YouPornUpload.create_multipart_monitor(encoder=encoder,callback=self._hooks['uploading'])                                                
+            self.upload_monitor = type(self).create_multipart_monitor(encoder=encoder,callback=self._hooks['uploading'])                                                
 
             self.call_hook('uploading',video_upload_request=self.video_upload_request,account=self.account)
                                     
@@ -68,7 +68,7 @@ class YouPornUpload(_Upload):
             settings = self.video_upload_request.create_video_settings()
             do_callback = session.get(callback_url,proxies=proxy)
 
-            YouPornUpload.update_video_settings(settings,video_id,self.account)
+            type(self).update_video_settings(settings,video_id,self.account)
             #YouPornUpload.pick_thumb_nail(video_id,self.account,thumbnail_id)
             
         except Exception as exc:

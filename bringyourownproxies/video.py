@@ -10,7 +10,7 @@ from lxml.etree import HTMLParser,tostring
 
 from bringyourownproxies.errors import (InvalidVideoCallable,InvalidVideoType,VideoFileDoesNotExist,
                                         InvalidTitle,InvalidTag,InvalidCategory,InvalidDescription,
-                                        InvalidUploadCallback)
+                                        InvalidRequirements,InvalidUploadCallback)
 from bringyourownproxies.httpclient import HttpSettings
 
 class VideoObject(object):
@@ -231,6 +231,36 @@ class VideoUploadRequest(object):
             raise InvalidVideoType('video_file is not a valid path to a video file')
         if not video_path.exists():
             raise VideoFileDoesNotExist('video_file does not point to a valid file')
+    
+    def _verify_upload_requirements(self,requirements):
+        
+        if not isinstance(requirements,(list,tuple)):
+            raise InvalidRequirements('requirements needs to be a tuple/list containing the' \
+                                    '  video upload requirements.Each video requirement ' \
+                                    ' needs to have a 4 item tuple.\n' \
+                                    ' 1.variable to verify its type\n' \
+                                    ' 2.the instance type that the first item needs to be\n' \
+                                    ' 3.exception class to raise if variable does not match' \
+                                    ' its intended type.')
+        for key in requirements:
+
+            if type(requirements[key]) != tuple:
+                raise InvalidRequirements('Invalid 3 item tuple, missing a valid requirement tuple.'\
+                                            'missing var,instance_type,exception_class')
+
+            var,instance_type,exception_class = requirements[key]
+            
+            if isinstance(var,(list,tuple)):
+                for item in var:
+                    if type(item) != instance_type:
+                        raise exception_class("Invalid {var} type, it contains an " \
+                                                "item inside its list/tuple that is not a valid " \
+                                                " type:{instance_type}".format(var=var,instance_type=instance_type))
+            else:
+                if type(var) != instance_type:
+                    raise exception_class("Invalid {var} type, is not a valid " \
+                                            " type:{instance_type}".format(var=var,instance_type=instance_type))
+
     
     def succeeded(self):
         self._success = True

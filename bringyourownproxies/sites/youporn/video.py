@@ -8,15 +8,31 @@ import traceback
 
 import path
 
+from lxml import etree
+from lxml.etree import HTMLParser,tostring
+
 from bringyourownproxies.video import (OnlineVideo,VideoParser,VideoUploadRequest,
                                         VideoUploaded,Tag,Category,Description,Title)
-from bringyourownproxies.errors import (InvalidVideoUrl,InvalidVideoParser,InvalidTag,InvalidCategory)
+from bringyourownproxies.errors import (InvalidVideoUrl,InvalidVideoParser,InvalidTag,
+                                        InvalidCategory,InvalidTitle,InvalidDescription)
 from bringyourownproxies.utils import show_printable_chars
 
 from bringyourownproxies.sites.youporn.errors import InvalidYouPornStar
 from bringyourownproxies.sites.youporn.pornstar import YouPornStar
 from bringyourownproxies.sites.youporn.author import YouPornAuthor
 from bringyourownproxies.sites.youporn.comment import YouPornComment
+
+__all__ = ['YouPornTag','YouPornTitle','YouPornDescription',
+        'YouPornTag','YouPornCategory','YouPornVideoParser',
+        'YouPornVideo','YouPornVideoUploadRequest','YouPornVideoUploaded']
+        
+class YouPornTitle(Title):
+    SITE = 'YouPorn'
+    SITE_URL = 'www.youporn.com'
+    
+class YouPornDescription(Description):
+    SITE = 'YouPorn'
+    SITE_URL = 'www.youporn.com'
 
 class YouPornTag(Tag):
     SITE = 'YouPorn'
@@ -339,30 +355,16 @@ class YouPornVideoUploadRequest(VideoUploadRequest):
             
         self.allow_comments = kwargs.get('allow_comments',True)
         self.porn_stars = kwargs.get('porn_stars',[])
-        
-        if type(self.porn_stars) == list or type(self.porn_stars) == tuple:
-            for p in self.porn_stars:
-                if type(p) != YouPornStar:
-                    raise InvalidYouPornStar('Invalid YouPornStar, it needs to be a YouPornStar')
-        else:
-            if type(self.porn_stars) != YouPornStar:
-                raise InvalidYouPornStar('Invalid YouPornStar, it needs to be a YouPornStar')
-        
-        if type(category) != YouPornCategory:
-            raise InvalidCategory('Invalid category, it needs to be a YouPornCategory')
 
+        requirements = [(category,YouPornCategory,InvalidCategory),
+                        (tags,YouPornTag,InvalidTag),
+                        (title,YouPornTitle,InvalidTitle),
+                        (description,YouPornDescription,InvalidDescription)]
         
-        if type(tags) == list or type(tags) == tuple:
-            for t in tags:
-                if type(t) != YouPornTag:
-                    raise InvalidTag('Invalid tag, it needs to be a YouPornTag')
-        else:
-            if type(tags) != YouPornTag:
-                raise InvalidTag('Invalid tag, it needs to be a YouPornTag')
+        if len(self.porn_stars) != 0:
+            requirements.append((self.porn_stars,YouPornStars,InvalidPornStar))
         
-        if type(category) != YouPornCategory:
-            raise InvalidCategory('Invalid category, it needs to be a YouPornCategory')
-
+        self._verify_upload_requirements(requirements)
 
         super(YouPornVideoUploadRequest,self).__init__(video_file=video_file,
                                                         title=title,

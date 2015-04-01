@@ -7,3 +7,9 @@ class CouldNotParseFramePinUlr(ParsingProblem):
 
 class MaxLimitVideoUpload(VideoProblem):
     pass
+
+class BoardProblem(Exception):
+    pass
+
+class BoardAlreadyTaken(BoardProblem):
+    pass

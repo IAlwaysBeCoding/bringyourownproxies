@@ -22,6 +22,9 @@ class VideoFileDoesNotExist(VideoProblem):
 class InvalidVideoUploadRequest(VideoProblem):
     pass
 
+class InvalidRequirements(VideoProblem):
+    pass
+
 class InvalidTitle(VideoProblem):
     pass
 
