@@ -11,17 +11,18 @@ from lxml.etree import HTMLParser,tostring
 
 from bringyourownproxies.errors import InvalidUploadCallback
 
+
 class Upload(object):
     
-
     DEFAULT_STARTED_CALLBACK = functools.partial(lambda **kwargs: None)
-    DEFAULT_UPLOADING_CALLBACK = functools.partial(lambda **kwargs : None)
+    DEFAULT_UPLOADING_CALLBACK = functools.partial(lambda monitor: None)
     DEFAULT_FAILED_CALLBACK = functools.partial(lambda **kwargs: None)
     DEFAULT_FINISHED_CALLBACK = functools.partial(lambda **kwargs: None)
     
     def __init__(self,hooks={},bubble_up_exception=False):
         
         self._validate_hooks(hooks)
+
         self._hooks = {'started':hooks.get('started',self.DEFAULT_STARTED_CALLBACK),
                         'uploading':hooks.get('uploading',self.DEFAULT_UPLOADING_CALLBACK),
                         'failed':hooks.get('failed',self.DEFAULT_FAILED_CALLBACK),
@@ -108,10 +109,3 @@ class Upload(object):
                                    
 
 
-if __name__ == '__main__':
-    u = Upload()
-    u.set_hooks({'uploading':lambda **h :'llol'})
-    u.call_hook('uploading')
-    print u._hooks
-    u.remove_hook('uploading')
-    print u._hooks    

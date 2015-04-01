@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+__all__ = ['SexBoard']
+
 class SexBoard(object):
     
     def __init__(self,name,board_id,**kwargs):

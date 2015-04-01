@@ -12,6 +12,7 @@ from errors import CouldNotParseFramePinUlr
 from comment import SexComment
 from board import SexBoard
 
+__all__ = ['SexTag','SexParser','SexVideoPinRequest','SexVideoPin']
 
 class SexTag(Tag):
     SITE = 'Sex'

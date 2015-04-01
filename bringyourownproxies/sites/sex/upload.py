@@ -2,7 +2,9 @@
 
 import os
 import json
-import re 
+import re
+import sys
+import traceback
 
 import path
 from requests_toolbelt import MultipartEncoder
@@ -12,7 +14,7 @@ from lxml.etree import HTMLParser,tostring
 from bringyourownproxies.errors import (InvalidVideoUploadRequest,InvalidVideoUrl,InvalidAccount,
                                         NotLogined,FailedUpload,FailedUpdatingVideoSettings)
 
-from bringyourownproxies.upload import Upload
+from bringyourownproxies.sites.upload import _Upload
 
 from bringyourownproxies.sites.sex.account import SexAccount
 from bringyourownproxies.sites.sex.video import SexVideoPinRequest
@@ -123,70 +125,76 @@ def update_video_settings(video_id,settings,account):
 
     return True
 
-class SexPinVideo(Upload):
+class SexUploadVideo(_Upload):
     
-    def __init__(self,account,video_upload_request,**kwargs):
-        
-        self.account = account
-        self.video_upload_request = video_upload_request
-        
-        hooks = kwargs.get('hooks',{})
-        bubble_up_exception = kwargs.get('bubble_up_exception',False)
-        super(YouPornUpload,self).__init__(hooks=hooks,bubble_up_exception=bubble_up_exception)
-
     def start(self,**kwargs):
-        on_success_upload = kwargs.get('on_success_upload',ON_SUCCESS_UPLOAD)
-        on_failed_upload = kwargs.get('on_failed_upload',ON_FAILED_UPLOAD)
-    
+
         try:
-            if type(pin_video_request) != SexVideoPinRequest:
+            if type(self.video_upload_request) != SexVideoPinRequest:
                 raise InvalidVideoUploadRequest('Invalid pin_video_request, '\
                                                 'it needs to be a SexVideoPinRequest instance')
                                                 
-            if type(account) != SexAccount:
+            if type(self.account) != SexAccount:
                 raise InvalidVideoUploadRequest('Invalid pin_video_request, '\
                                                 'it needs to be a SexVideoPinRequest instance')
-            if not account.is_logined():
+            if not self.account.is_logined():
                 raise NotLogined('Sex account is not logined')
     
-    
-            session = account.http_settings.session
-            proxy = account.http_settings.proxy
+            session = self.account.http_settings.session
+            proxy = self.account.http_settings.proxy
             
+            self.call_hook('started',video_upload_request=self.video_upload_request,account=self.account)
             video_upload = session.get('http://upload.sex.com/video/add',proxies=proxy)
+            
             find_sess_sex = re.findall(r"{'sess_sex' : '(.*?)'",video_upload.content,re.I|re.M)
             if not find_sess_sex:
                 raise FailedUpload('Could not find sess_sex, its needed to upload')
+            
             sess_sex = find_sess_sex[0]
+            video_file = self.video_upload_request.video_file
             
+            video_data = SexUploadVideo.create_multipart_encoder(fields={'Filename':path.Path(video_file).name,
+                                                                    'sess_sex': sess_sex,
+                                                                    'Upload':'Submit Query',
+                                                                    'Filedata': (path.Path(video_file).name,open(video_file, 'rb'))})
             
-            video_data = MultipartEncoder(fields={'Filename':path.Path(video_file).name,
-                                                'sess_sex': sess_sex,
-                                                'Upload':'Submit Query',
-                                                'Filedata': (path.Path(video_file).name,open(video_file, 'rb'))})
-            
-            attempt_upload = session.post('http://upload.sex.com/video/upload', data=video_data,
-            proxies=proxy,headers={'Content-Type': video_data.content_type,"Connection":"Keep-Alive"})
+            self.upload_monitor = SexUploadVideo.create_multipart_monitor(encoder=video_data,callback=self._hooks['uploading'])
+
+            attempt_upload=session.post('http://upload.sex.com/video/upload',
+                                        data=self.upload_monitor,
+                                        proxies=proxy,
+                                        headers={'Content-Type': self.upload_monitor.content_type,"Connection":"Keep-Alive"})
             
     
             if attempt_upload.content == 'Error: You cannot upload more than 5 videos per hour':
                 raise FailedUpload('Reach uploading limit')
             
     
-            is_uploaded = update_temporary_video_settings(tmp_video=attempt_upload.content,
-                                                                video_request=video_request,
-                                                                account=account)
+            is_uploaded = self._update_temporary_video_pin(tmp_video=attempt_upload.content)
+            
+        except Exception as exc:
+
+            self.call_hook('failed',video_upload_request=self.video_upload_request,
+                                    account=self.account,
+                                    traceback=traceback.format_exc(),
+                                    exc_info=sys.exc_info())
+                                    
+            if self.bubble_up_exception:
+                raise exc
+        
+        else:
+
+            self.call_hook('finished',
+                            video_request=self.video_upload_request,
+                            account=self.account,
+                            settings={'video_id':upload_requested['video_id']})
             
             if is_uploaded:
-                return is_uploaded
+                return {'video_id':is_uploaded}
             else:
                 return False
 
-        except InvalidAccount as exc:
-            on_failed_upload(exc=exc,video_request=pin_video_request,account=account)
-            raise exc
-        else:
-            on_success_upload(video_request=pin_video_request,account=account)
+
     def _update_temporary_video_pin(self,tmp_video):
         if not self.account.is_logined():
             raise NotLogined('Sex account is not logined')
@@ -199,10 +207,10 @@ class SexPinVideo(Upload):
         url = 'http://www.sex.com/pin/create?video=1&tmpFile={tmp}&from=upload'.format(tmp=tmp_video)
         
     
-        post = {"custom_tags":",".join([t.name.lower() for t in self.video_request.sex_tags]),
-                "board":self.video_request.board.board_id,
-                "board_name":self.video_request.board.name,
-                "title":str(self.video_request.title),
+        post = {"custom_tags":",".join([t.name.lower() for t in self.video_upload_request.sex_tags]),
+                "board":self.video_upload_request.board.board_id,
+                "board_name":self.video_upload_request.board.name,
+                "title":str(self.video_upload_request.title),
                 "submit":"Pin It"}
              
     
@@ -239,42 +247,3 @@ class SexPinVideo(Upload):
     
         return True
 
-if __name__ == '__main__':
-    
-    from bringyourownproxies.video import Description,Title
-    from video import SexTag
-    from board import SexBoard
-    import functools
-    
-    account = SexAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    video_file = '/home/ubuntu/workspace/bringyourownproxies/testfiles/test_video.mp4'
-    title = Title("Sobe with lukas and Ken with jr on the bottom")
-    board = SexBoard('girls',696286)
-    tags = (SexTag("Amateur"),SexTag("Ass"),)
-    sex_tags = (SexTag('Teen'),)
-    video_request = SexVideoPinRequest(video_file=video_file,
-                                        title=title,
-                                        tags=tags,
-                                        board=board,
-                                        sex_tags=sex_tags)
-    print video_request
-    #print video_request.create_video_settings()
-    account.login()
-    def success(video_request,account):
-        print 'success'
-        print video_request
-        print account
-    def failed(exc,video_request,account):
-        print 'failed'
-        print exc
-        print video_request
-        print account    
-    success_callback = functools.partial(success)
-    failed_callback = functools.partial(failed)
-    uploader = pin_video(on_success_upload=success_callback,on_failed_upload=failed_callback)
-    #print uploader.pin_video(pin_video_request=video_request,account=account)
-
-    settings = {'board_id':696286,
-                'tags':['daddy','girls','white','squirt','anal'],
-                'title':'sex isnt that good'}
-    update_video_settings(27234868,settings,account)

@@ -2,6 +2,8 @@
 from bringyourownproxies.utils import show_printable_chars
 from bringyourownproxies.comment import OnlineComment
 
+__all__ = ['SexComment']
+
 class SexComment(OnlineComment):
     SITE = 'Sex'
     SITE_URL = 'www.sex.com'

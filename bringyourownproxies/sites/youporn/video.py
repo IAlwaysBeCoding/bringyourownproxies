@@ -265,7 +265,7 @@ class YouPornVideo(OnlineVideo):
             session = self.http_settings.session
             proxy = self.http_settings.proxy
             video_url = self.video_parser.get_download_url(go_to_video)
-            self._download('http://download.thinkbroadband.com/100MB.zip',name_to_save_as)
+            self._download(video_url,name_to_save_as)
                 
         except Exception as exc:
             
@@ -398,7 +398,7 @@ if __name__ == '__main__':
     def downloading(**kwargs):
         print kwargs
         
-    youporn_video = YouPornVideo(url='http://www.youporn.com/watch/253391/come-take-a-shower-with-me',
+    youporn_video = YouPornVideo(url='http://www.youporn.com/watch/10979257/exxxtrasmall-tiny-teen-sydney-cole-gets-drilled-by-a-huge-cock',
                                 iter_size=1048576,
                                 hooks={'downloading':downloading})
     #youporn_video.get_video_info()
@@ -406,7 +406,7 @@ if __name__ == '__main__':
     #print info
     #youporn_video._verify_download_dir('shower.mp4')
     print youporn_video._hooks
-    youporn_video.download(name_to_save_as='/home/testfiles/nakedgirl_test.png')
+    youporn_video.download(name_to_save_as='/home/testfiles/petite_drilled.mp4')
 
     #print youporn_video.get_comments()
     

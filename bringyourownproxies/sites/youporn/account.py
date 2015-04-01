@@ -47,7 +47,7 @@ class YouPornAccount(_Account):
         else:
             return True
     def __repr__(self):
-        return "<YouPorn's Account(User:{user},Password:{password},Email:{email}>".format(user=self.user,
+        return "<YouPorn's Account(User:{user},Password:{password},Email:{email}>".format(user=self.username,
                                                                                         password=self.password,
                                                                                         email=self.email)
 

@@ -21,7 +21,7 @@ from bringyourownproxies.sites.upload import _Upload
 class YouPornUpload(_Upload):
 
     def start(self,**kwargs):
-        thumbnail_id = kwargs.get('thumbnail_id',1)
+        thumbnail_id = kwargs.get('thumbnail_id',0)
 
         try:
             if type(self.video_upload_request) != YouPornVideoUploadRequest:
@@ -69,7 +69,7 @@ class YouPornUpload(_Upload):
             do_callback = session.get(callback_url,proxies=proxy)
 
             YouPornUpload.update_video_settings(settings,video_id,self.account)
-            YouPornUpload.pick_thumb_nail(video_id,self.account,thumbnail_id)
+            #YouPornUpload.pick_thumb_nail(video_id,self.account,thumbnail_id)
             
         except Exception as exc:
             self.call_hook('failed',video_upload_request=self.video_upload_request,
@@ -102,11 +102,12 @@ class YouPornUpload(_Upload):
         
         session.headers.update({"X-Requested-With":"XMLHttpRequest",
                                 "Content-Type":"application/x-www-form-urlencoded; charset=UTF-8"})
-                                
+        
+
         video_size = os.path.getsize(self.video_upload_request.video_file)
         video = path.Path(self.video_upload_request.video_file)
         post = {'file':video.name,'size':video_size}
-        
+
         create_upload_request = session.post('http://www.youporn.com/upload/create-videos/',data=post,proxies=proxy)
         
         response = json.loads(create_upload_request.content)
@@ -221,70 +222,6 @@ class YouPornUpload(_Upload):
         return True
     
 
-if __name__ == '__main__':
-    
-    from clint.textui.progress import Bar as ProgressBar
-    from bringyourownproxies.video import Description,Title
-    from bringyourownproxies.sites.youporn.video import YouPornTag,YouPornCategory
-    import functools
-    account = YouPornAccount(email="tedwantsmore@gmx.com",username="tedwantsmore",password="money1003")
-    video_file = '/home/testfiles/shower.mp4'
-    title = Title("Taking a shower wanna come?")
-    tags = (YouPornTag("Amateur"),YouPornTag("Shower"),YouPornTag("Teen"),YouPornTag("Daughter"))
-    category = YouPornCategory('Amateur')
-    description = Description("Sexy girl taking a shower")
-    print type(category)
-    video_request = YouPornVideoUploadRequest(video_file=video_file,
-                                            title=title,
-                                            tags=tags,
-                                            category=category,
-                                            description=description)
-    account.login()
-    YouPornUpload.pick_thumb_nail(11174585,account,2)
-
-    start_time = None
-    bar = ProgressBar(expected_size=30980555,filled_char='*')
-    def started(**kwargs):
-        video_upload_request = kwargs.get('video_upload_request')
-        import time
-        # at the beginning:
-        start_time = time.time()
-
-
-        print 'STARTED uploading video:{title}\n' \
-                'tags:{tags}\n' \
-                'category:{category}\n' \
-                'description:{description}\n' \
-                .format(title=video_upload_request.title,
-                        tags=video_upload_request.tags,
-                        category=video_upload_request.category,
-                        description=video_upload_request.description)
-
-
-
-    def uploading(monitor):
-        bar.show(monitor.bytes_read)
-
-    def failed(**kwargs):
-        print 'FAILED'
-    
-    def finished(**kwargs):
-
-        global start_time
-        import time 
-        #print("it took %f seconds" % (time.time() - start_time))
-        print 'FINISHED'
-        
-
-
-    hooks = {'started':started,
-            'uploading':uploading,
-            'failed':failed,
-            'finished':finished,}
-    
-    upload = YouPornUpload(account=account,video_upload_request=video_request,hooks=hooks,bubble_up_exception=True)
-    upload.start()
-    
     
 
     
