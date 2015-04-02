@@ -51,8 +51,3 @@ class YouPornAccount(_Account):
                                                                                         password=self.password,
                                                                                         email=self.email)
 
-
-if __name__ == '__main__':
-    acct = YouPornAccount(username='tedwantsmore',email='tedwantsmore@gmx.com',password='money1003')
-    acct.login()
-    print acct.is_logined()

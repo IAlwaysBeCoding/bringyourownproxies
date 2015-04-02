@@ -246,7 +246,7 @@ class YouPornVideo(OnlineVideo):
         self.porn_stars = kwargs.pop('porn_stars') if kwargs.get('porn_stars',False) else None
         self.total_comments = kwargs.pop('total_comments') if kwargs.get('total_comments',False) else None
 
-        if type(self.video_parser) != YouPornVideoParser:
+        if not isinstance(self.video_parser,YouPornVideoParser):
             raise InvalidVideoParser('parser is not a valid YouPornVideoParser')
         super(YouPornVideo,self).__init__(title=title,
                                         category=category,
@@ -400,7 +400,7 @@ if __name__ == '__main__':
     def downloading(**kwargs):
         print kwargs
         
-    youporn_video = YouPornVideo(url='http://www.youporn.com/watch/10979257/exxxtrasmall-tiny-teen-sydney-cole-gets-drilled-by-a-huge-cock',
+    youporn_video = YouPornVideo(url='http://www.youporn.com/watch/10072333/slutty-neighbors-wife-playing-with-anal-toy-then-showering-before-husband-comes-home',
                                 iter_size=1048576,
                                 hooks={'downloading':downloading})
     #youporn_video.get_video_info()
@@ -408,7 +408,7 @@ if __name__ == '__main__':
     #print info
     #youporn_video._verify_download_dir('shower.mp4')
     print youporn_video._hooks
-    youporn_video.download(name_to_save_as='/home/testfiles/petite_drilled.mp4')
+    youporn_video.download(name_to_save_as='/home/testfiles/slutty_neighbor.mp4')
 
     #print youporn_video.get_comments()
     

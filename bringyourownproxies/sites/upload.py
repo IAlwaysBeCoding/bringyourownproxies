@@ -88,7 +88,7 @@ class UbrUploader(object):
         set_progress_page = session.get(url,proxies=proxy)
         
     def upload(self,video_file,title,tags,description,
-                    tag_ids,upload_id=None,upload_monitor=None,
+                    tag_ids,upload_id=None,callback=None,
                     session=None,proxy=None):
         
         if isinstance(tag_ids,(list,tuple)):
@@ -107,79 +107,24 @@ class UbrUploader(object):
         url = "{main_url}ubr_upload.pl?{q}".format(main_url=main_url,q=q)
 
         fields = []
-        if not upload_monitor:
-            fields.append(('MAX_FILE_SIZE', str(os.path.getsize(video_file))))
-            fields.append(('upload_range', str(1)))
-            fields.append(('adult', ''))
-            fields.append(('field_myvideo_keywords', " ".join([t for t in tags])))
-            fields.append(('field_myvideo_title', title))
-            fields.append(('field_myvideo_descr', description))
-            fields.append(('upfile_0',(path.Path(video_file).name,open(video_file, 'rb'))))
-            fields.extend(tag_ids)
-            
-            multipart_encoder = MultipartEncoder(fields)
-            monitor = MultipartEncoderMonitor(multipart_encoder)
+        fields.append(('MAX_FILE_SIZE', str(os.path.getsize(video_file))))
+        fields.append(('upload_range', str(1)))
+        fields.append(('adult', ''))
+        fields.append(('field_myvideo_keywords', " ".join([t for t in tags])))
+        fields.append(('field_myvideo_title', title))
+        fields.append(('field_myvideo_descr', description))
+        fields.append(('upfile_0',(path.Path(video_file).name,open(video_file, 'rb'))))
+        fields.extend(tag_ids)
+        
+        multipart_encoder = MultipartEncoder(fields)
 
+        if callback:
+            monitor = MultipartEncoderMonitor(multipart_encoder,callback)
+        else:
+            monitor = MultipartEncoderMonitor(multipart_encoder)
+            
         upload = session.post(url,data=monitor,headers={'Content-Type':monitor.content_type},proxies=proxy)
         self._start_progress_tracker(upload_id=upload_id)
 
         return upload_id    
 
-if __name__ == '__main__':
-    
-    account =  TnaflixAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    http_settings = account.http_settings
-    session = http_settings.session 
-    proxy = http_settings.proxy
-    
-    go_to_upload = session.get('https://www.tnaflix.com/upload.php',proxies=proxy)
-
-    fields = []
-    
-    tags =("sexy","teen","ass","anal","amateur")
-    description = "Sexy Girl getting fucked"
-    title = "Sexy Girl"
-    tag_ids = [6,4]
-    video_file = '/home/ubuntu/workspace/testfiles/test_video.mp4'
-    
-    ready_tag_ids = [('chlist[]',str(t)) for t in tag_ids]
-    fields.append(('field_myvideo_title',title))
-    fields.append(('field_myvideo_descr',description))
-    fields.append(('field_myvideo_keywords'," ".join([t for t in tags])))
-    fields.append(('declared','on'))
-    fields.append(('action_upload',str(1)))
-    fields.append(('code',''))
-    fields.append(('uuid',''))
-    fields.extend(ready_tag_ids)
-    print fields
-    e = MultipartEncoder(fields)
-    m = MultipartEncoderMonitor(e)
-    
-    initiate = session.post('http://tna.flixupload.com/uploads.php',
-                            data=m,
-                            headers={'Content-Type':'multipart/form-data',
-                                    'Origin':'http://tna.flixupload.com',
-                                    'Referer':'http://tna.flixupload.com/uploads.php?PHPSESSID=3d45g76lr18vg1pjvd0rqlps55'},
-                            proxies=proxy)
-
-    with open('initiate.html','w+') as f:
-        f.write(initiate.content)
-
-
-    uploader = UbrUploader(domain='tna.flixupload.com',
-                            path_to_ubr='/',
-                            http_settings=http_settings)
-    
-
-    
-    upload_id = uploader.upload(video_file,title,tags,description,tag_ids)
-    
-    session = account.http_settings.session
-    proxy = account.http_settings.proxy
-    url = 'http://tna.flixupload.com/uploads.php?upload_id={id}'.format(id=upload_id)
-    finish = session.get(url,proxies=proxy)
-    print finish.url
-    with open('save.html','w+') as f:
-        f.write(finish.content)
-    print finish.content 

@@ -44,12 +44,13 @@ class Upload(object):
     
     @staticmethod
     def create_multipart_monitor(encoder,callback=None):
-        callback = callback or Upload.DEFAULT_UPLOADING_CALLBACK
-        if hasattr(callback,'__call__'):
+        if callback:
+            if not hasattr(callback,'__call__'):
+                raise InvalidUploadCallback('Callback {c} needs to be callable'.format(c=callback))
             return MultipartEncoderMonitor(encoder,callback)
         else:
-            raise InvalidUploadCallback('Callback {c} needs to be callable'.format(c=callback))
-    
+            return MultipartEncoderMonitor(encoder)
+
     def has_uploaded_successfully(self):
         return (self._finished and not self._failed and not self._uploading) 
     

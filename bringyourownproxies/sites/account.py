@@ -117,12 +117,10 @@ class _Account(OnlineAccount):
 
         doc = self.etree.fromstring(response.content,self.parser)
         
-        if type(error_msg_xpath) != list and \
-            type(error_msg_xpath) != tuple:
+        if not isinstance(error_msg_xpath,(list,tuple)):
                 error_msg_xpath = [error_msg_xpath]
 
-        if type(wrong_pass_msg) != list and \
-            type(wrong_pass_msg) != tuple:
+        if not isinstance(wrong_pass_msg,(list,tuple)):
                 wrong_pass_msg = [wrong_pass_msg]
 
                 
@@ -148,19 +146,15 @@ class _Account(OnlineAccount):
 
     def _is_wrong_password(self,error,**kwargs):
         look_in_these = kwargs.get('look_in_these',WRONG_PASSWORD_MESSAGES)
-        if type(look_in_these) != list and \
-            type(look_in_these) != tuple:
-                
+        if not isinstance(look_in_these,(list,tuple)):
             messages_to_match = [look_in_these]
+            
         else:
-            if type(look_in_these) == list or \
-                type(look_in_these) == tuple:
-                    
+            if isinstance(look_in_these,(list,tuple)):
                 messages_to_match = look_in_these
             else:
                 raise TypeError('look_in_these needs to be a list,tuple or a str containing the wrong msg password to look for')    
 
-        print 'type of error:{t}'.format(t=type(error))
 
         for match in messages_to_match:
             if match.strip() == error.strip():

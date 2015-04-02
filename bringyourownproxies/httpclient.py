@@ -1,6 +1,9 @@
 #!/usr/bin/python
 import random
 import requests
+from requests.packages import urllib3
+urllib3.disable_warnings()
+
 import ua_parser.user_agent_parser as ua_parser
 
 from bringyourownproxies.errors import (MissingValidProxySettings,InvalidProxyList,
@@ -81,7 +84,7 @@ class HttpSettings(object):
     
     def _validate_proxy(self,proxy):
         if proxy is not None:
-            if type(proxy) != dict:
+            if not isinstance(proxy,dict) :
                 raise MissingValidProxySettings('proxy is not a dictionary, it needs to contain ip and port keys or None')
             
             if ('ip' not in proxy) or ('port' not in proxy):
@@ -112,7 +115,7 @@ class DynamicProxySwitcher(HttpSettings):
         if proxies is None:
             raise MissingValidProxySettings('proxies is set to None,proxies need to be a valid list containing dictionaries of proxies configuration')
         
-        if type(proxies) != list:
+        if not isinstance(proxies,list) :
             raise InvalidProxyList('proxies is not a list.It needs to have 1 or more Proxies')
         else:
             if len(proxies):
@@ -194,7 +197,7 @@ class DynamicUserAgentSwitcher(HttpSettings):
         if user_agents is None:
             raise MissingValidUserAgentSettings('user_agents is set to None.It needs to be a list and have 1 or more User-Agents ')
         
-        if type(user_agents) != list:
+        if not isinstance(user_agents,list):
             raise InvalidUserAgentList('user_agents is not a list containing User-Agents.It needs to have 1 or more User-Agents')
         else:
             if not len(user_agents):

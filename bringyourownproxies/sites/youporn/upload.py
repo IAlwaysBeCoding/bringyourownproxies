@@ -11,7 +11,6 @@ from lxml import etree
 from lxml.etree import HTMLParser,tostring
 from bringyourownproxies.errors import (InvalidVideoUploadRequest,InvalidAccount,
                                         NotLogined,FailedUpload,FailedUpdatingVideoSettings)
-from bringyourownproxies.upload import Upload
 
 from bringyourownproxies.sites.youporn.errors import VideoNotReadyForThumbnail,FailedChangingThumbnailId
 from bringyourownproxies.sites.youporn.account import YouPornAccount
@@ -24,11 +23,11 @@ class YouPornUpload(_Upload):
         thumbnail_id = kwargs.get('thumbnail_id',0)
 
         try:
-            if type(self.video_upload_request) != YouPornVideoUploadRequest:
+            if not isinstance(self.video_upload_request,YouPornVideoUploadRequest):
                 raise InvalidVideoUploadRequest('Invalid video_upload_request, ' \
                                         'it needs to be a YouPornVideoUploadRequest instance')
                                         
-            if type(self.account) != YouPornAccount:
+            if not isinstance(self.account,YouPornAccount):
                 raise InvalidAccount('Invalid account, it needs to be a YouPornAccount instance')
             
             
@@ -69,7 +68,7 @@ class YouPornUpload(_Upload):
             do_callback = session.get(callback_url,proxies=proxy)
 
             type(self).update_video_settings(settings,video_id,self.account)
-            #YouPornUpload.pick_thumb_nail(video_id,self.account,thumbnail_id)
+
             
         except Exception as exc:
             self.call_hook('failed',video_upload_request=self.video_upload_request,

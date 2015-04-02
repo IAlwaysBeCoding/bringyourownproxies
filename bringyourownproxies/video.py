@@ -201,7 +201,7 @@ class VideoUploadRequest(object):
         if not isinstance(description, Description):
             raise InvalidDescription('description is not a valid Description instance')
         
-        if type(tags) == list or type(tags) == tuple:
+        if isinstance(tags,(list,tuple)):
             for t in tags:
                 if not isinstance(t, Tag):
                     raise InvalidTag('t is not a valid Tag instance')
@@ -242,22 +242,22 @@ class VideoUploadRequest(object):
                                     ' 2.the instance type that the first item needs to be\n' \
                                     ' 3.exception class to raise if variable does not match' \
                                     ' its intended type.')
-        for key in requirements:
+        for requirement in requirements:
 
-            if type(requirements[key]) != tuple:
+            if not isinstance(requirement,tuple):
                 raise InvalidRequirements('Invalid 3 item tuple, missing a valid requirement tuple.'\
                                             'missing var,instance_type,exception_class')
 
-            var,instance_type,exception_class = requirements[key]
+            var,instance_type,exception_class = requirement
             
             if isinstance(var,(list,tuple)):
                 for item in var:
-                    if type(item) != instance_type:
+                    if not isinstance(item,instance_type):
                         raise exception_class("Invalid {var} type, it contains an " \
                                                 "item inside its list/tuple that is not a valid " \
                                                 " type:{instance_type}".format(var=var,instance_type=instance_type))
             else:
-                if type(var) != instance_type:
+                if not isinstance(var,instance_type):
                     raise exception_class("Invalid {var} type, is not a valid " \
                                             " type:{instance_type}".format(var=var,instance_type=instance_type))
 
@@ -294,7 +294,7 @@ class VideoUploaded(object):
         if not isinstance(description, Description):
             raise InvalidDescription('description is not a valid Description instance')
         
-        if type(tags) == list or type(tags) == tuple:
+        if isinstance(tags,(list,tuple)):
             for t in tags:
                 if not isinstance(t, Tag):
                     raise InvalidTag('t is not a valid Tag instance')
