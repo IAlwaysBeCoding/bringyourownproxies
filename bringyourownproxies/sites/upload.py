@@ -6,6 +6,8 @@ import requests
 import arrow
 import path
 
+
+from urlobject import URLObject
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
 
@@ -23,26 +25,12 @@ class _Upload(Upload):
         
         self.account = account
         self.video_upload_request = video_upload_request
-        
         super(_Upload,self).__init__(**kwargs)
-    
 
-class MultipleDomainUploader(object):
-    
-    def __init__(self,domain):
-        self.domain = domain 
-    
-    def _join_part_to_domain(self,part):
-        if self.domain.startswith('http://') or self.domain.startswith('https://'):
-            return '{domain}{part}'.format(domain=self.domain,path=part)
-        else:
-            return 'http://{domain}{path}'.format(domain=self.domain,path=part)
-
-    
 class UbrException(Exception):
     pass
 
-class UbrUploader(MultipleDomainUploader):
+class UbrUploader(object):
     
     def __init__(self,domain,**kwargs):
         
@@ -53,10 +41,12 @@ class UbrUploader(MultipleDomainUploader):
         
     
     def _get_path_to_ubr(self):
-        return self._join_part_to_domain(part=self.path_to_ubr)
+        domain = URLObject(self.domain)
+        return domain.with_path(self.path_to_ubr)
 
     def _get_path_to_cgi(self):
-        return self._join_part_to_domain(part=self.path_to_cgi)
+        domain = URLObject(self.domain)
+        return domain.with_path(self.path_to_cgi)
 
     def _initiate_new_upload(self,session=None,proxy=None):
         """returns a new upload id request that is assigned to a video request
@@ -131,39 +121,80 @@ class UbrUploader(MultipleDomainUploader):
 
         return upload_id    
 
-
-class KummUploader(MultipleDomainUploader):
+class KummUploader(object):
     
     def __init__(self,domain,website,username,**kwargs):
         
         self.domain = domain
         self.website = website
         self.username = username
+        
+        self.autocorrect_tags = kwargs.get('autocorrect_tags',False)
+        self.add_all_autocorrect_tags = kwargs.get('add_all_autocorrect_tags',False)
+        self.drop_incorrect_tags = kwargs.get('drop_incorrect_tags',False)
+        
         self.http_settings = kwargs.get('http_settings',HttpSettings())
         self.path_to_api = kwargs.get('path_to_api','/api/')
-        
-    def _get_path_to_upload(self):
-        
-        path = '/users/{user}/videos'.format(user=self.username)
-        return self._join_part_to_domain(part=path)
     
-    def upload(self,video_file,title,pornstars,tags,orientation,callback=None,session=None,proxy=None):
+    def _add_www(self,url):
+        domain = URLObject(url)
+        original_scheme = domain.scheme
+        if not domain.hostname.startswith('www'):
+            hostname = domain.hostname
+            domain_with_www = hostname.replace(domain.hostname,'www.{domain}'.format(domain=domain.hostname))
+            domain = URLObject("{scheme}://{domain}".format(scheme=original_scheme,domain=domain_with_www))
+        return domain
+
+    def _get_path_to_upload(self,add_www=True):
+        if add_www:
+            domain = self._add_www(self.domain)
         
-        session = session or self.http_settings.session
-        proxy = proxy or self.http_settings.proxy
+        return domain.with_path('/users/{user}/videos'.format(user=self.username))
+
+    def _get_path_to_users_upload(self,add_www=True):
+        if add_www:
+            domain = self._add_www(self.domain) 
+
+        return domain.with_path('/users/video/upload')
+    
+    def _get_sexuality_id(self,orientation):
+        
+        if orientation.lower() == 'straight':
+            sexuality = 1
+        elif orientation.lower() == 'gay':
+            sexuality = 2
+        elif orientation.lower() == 'transsexual':
+            sexuality = 3
+        else:
+            raise KummProblem('Invalid orientation. Orientation can only be straight,gay or transsexual')
+        
+        return sexuality
+        
+    def _get_correct_tag_url(self,sexuality,tag,add_www=True):
+        
+        if add_www:
+            domain = self._add_www(self.domain)
+        
+        return domain.\
+                    add_path('/autocomplete/tag').\
+                    set_query_params([('sexuality',sexuality),('term',tag.lower())])
+
+         
+    def _upload_video(self,video_file,callback,session,proxy):
         
         upload_path = self._get_path_to_upload()
         go_to_upload = session.get(upload_path,proxies=proxy)
         
-        upload_form_url = self._join_part_to_domain(part='/users/video/upload')
+        upload_form_url = self._get_path_to_users_upload()
+
         session.headers.update({'X-Requested-With':'XMLHttpRequest'})
         get_upload_form = session.get(upload_form_url,proxies=proxy)
         
-        regex_api_key = r'var kumm_api_key                    = "(.*?)"'
-        regex_user_id = r'var user_id                    = "(.*?)"'
-        regex_callback_url = r'var callback_url                    = "(.*?)"'
+        regex_api_key = r'var\s+kumm_api_key\s+=\s+"(.*?)"'
+        regex_user_id = r'var\s+user_id\s+=\s+"(.*?)"'
+        regex_callback_url = r'var\s+callback_url\s+=\s+"(.*?)"'
         
-        found_api_key = re.search(regex_api,get_upload_form.content)
+        found_api_key = re.search(regex_api_key,get_upload_form.content)
         found_user_id = re.search(regex_user_id,get_upload_form.content)
         found_callback_url = re.search(regex_callback_url,get_upload_form.content)
         
@@ -179,8 +210,8 @@ class KummUploader(MultipleDomainUploader):
         callback_url = found_callback_url.group(1)
 
         doc = etree.fromstring(get_upload_form.content,HTMLParser())
-        get_upload_url = doc.xpath('//input[@id="fileupload"]/@dataurl')            
-        
+        get_upload_url = doc.xpath('//input[@id="fileupload"]/@data-url')            
+                
         if len(get_upload_url) == 0:
             raise KummProblem('Could not find kumm posting url for the video upload')
         
@@ -191,7 +222,7 @@ class KummUploader(MultipleDomainUploader):
         fields.append(('token',api_key))
         fields.append(('callBackUrl',callback_url))
         fields.append(('website',self.website))
-        fields.append(('user_id',user_id))
+        fields.append(('userId',user_id))
         fields.append(('files[]',(path.Path(video_file).name,open(video_file, 'rb'))))
 
         encoder = MultipartEncoder(fields)
@@ -204,19 +235,89 @@ class KummUploader(MultipleDomainUploader):
                                     data=monitor,
                                     headers={'Content-Type':monitor.content_type},                                    
                                     proxies=proxy)
+        try:
+            response = submit_upload.json()
+        except:
+            raise KummProblem('Expecting json, did not receive json after video uploading')
+        else:
+            if 'err' in response:
+                raise KummProblem('Kumm uploader experienced an error after uploading:{err}'.format(err=response['err']))
+            elif 'uuid' in response:
+                return response['uuid']
 
-        with open('submit_upload.html','w+') as f:
-            f.write(submit_upload.content)
+    def upload(self,video_file,title,pornstars,tags,orientation,callback=None,session=None,proxy=None):
+        
+        session = session or self.http_settings.session
+        proxy = proxy or self.http_settings.proxy
+
+        uuid = self._upload_video(video_file=video_file,callback=callback,session=session,proxy=proxy)
+        if not isinstance(tags,(list,tuple)):
+            tags = [tags]
+        elif isinstance(tags,tuple):
+            tags = list(tags)
+        
+        sexuality = self._get_sexuality_id(orientation)
+        corrected_tags = [( tag,
+                            session.get(self._get_correct_tag_url(sexuality,tag),proxies=proxy).json()) 
+                            for tag in tags]
+        
+        for corrected_tag in corrected_tags:
+            tag,tags_options = corrected_tag
+            if len(tags_options) == 0:
+                if not self.autocorrect_tags:
+                    raise KummProblem('Tag:{t} is not a valid tag, autocorrect is set to False'.format(t=tag))
+                else:
+                    if self.drop_incorrect_tags:
+                        del tags[tags.index(tag)]
+                    
+                    if self.add_all_autocorrect_tags:
+                        tags.extend([t['label'] for t in tags_options])
+            else:
+                if self.add_all_autocorrect_tags:
+                    tags.extend([t['label'] for t in tags_options])
         
 
+        post = {'sexuality':str(sexuality),
+                'title':title,
+                'pornstars':pornstars if pornstars else "",
+                'tags':",".join([tag.lower() for tag in tags]),
+                'terms':'on',
+                'fileName':'',
+                'mimeType':'',
+                'size':'',
+                'uuid':uuid}
+        
+        submit_url = self._get_path_to_users_upload()
+        submit_video = session.post(submit_url,data=post,proxies=proxy)
+        try:
+            response = submit_video.json()
+        except:
+            raise KummProblem('Expecting json, did not receive json after submited video')
+        else:
+            if 'status' in response:
+                if response['status'] == 'ok':
+                    return True
+                else:
+                    raise KummProblem('Unknown status:{status}'.format(status=response['status']))
+
 if __name__ == '__main__':
+    from bringyourownproxies.sites import _4tubeAccount
+    account = _4tubeAccount(username="tedwantsmore",password="money1003",email="tedwantsmore@gmx.com")
+    account.login()
+    
     video_file = '/root/Dropbox/shower.mp4'
     title = 'Hot girl taking a shower'
-    pornstars = ''
-    tags = ('girl','shower','amateur')
+    pornstars = None
+    tags = ('teen','black','amateur')
     orientation = 'Straight'
     
-    uploader = KummUploader(domain="http://4tube.com",website="4tube",username="tedwantsmore")
+    uploader = KummUploader(domain="http://4tube.com",
+                            website="4tube",
+                            username="tedwantsmore",
+                            http_settings=account.http_settings,
+                            drop_incorrect_tags=False,
+                            add_all_autocorrect_tags=False,
+                            autocorrect_tags=False)
     uploader.upload(video_file,title,pornstars,tags,orientation)
     
 

@@ -21,7 +21,7 @@ from bringyourownproxies.utils import show_printable_chars
 __all__ = ['DrTuberTitle','DrTuberDescription','DrTuberTag',
             'DrTuberCategory','DrTuberCategoryStraight','DrTuberCategoryGay',
             'DrTuberCategoryTranssexual','DrTuberVideoUploadRequest','DrTuberVideoUploaded']
-            
+	            
 class DrTuberTitle(Title):
     SITE = 'DrTuber'
     SITE_URL = 'www.tnaflix.com'

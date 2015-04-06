@@ -17,7 +17,7 @@ from bringyourownproxies.errors import (InvalidVideoUploadRequest,InvalidAccount
                                         InvalidTitle,InvalidThumbnailId,FailedUpload)
 from bringyourownproxies.sites.upload import _Upload
 from bringyourownproxies.sites.drtuber.errors import CannotFindSid
-from bringyourownproxies.sites.fourtube.account import DrTuberAccount
+from bringyourownproxies.sites.drtuber.account import DrTuberAccount
 from bringyourownproxies.sites.drtuber.video import DrTuberVideoUploadRequest
 
 __all__ = ['DrTuberUpload']
