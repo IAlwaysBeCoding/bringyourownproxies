@@ -47,6 +47,69 @@ class YouPornCategory(Category):
     SITE = 'YouPorn'
     SITE_URL = 'www.youporn.com'
 
+    CATEGORIES = {'amateur':'1',
+                'hairy': '46',
+                'brunette': '52',
+                'squirting': '39',
+                'german': '58',
+                'bisexual': '5',
+                'handjob': '22',
+                'milf': '29',
+                'fantasy': '42',
+                'pantyhose': '57',
+                'fingering': '62',
+                'asian': '3',
+                'latina': '49',
+                'blonde': '51',
+                'hentai': '23',
+                'rimming': '43',
+                'ebony': '8',
+                'solo male': '60',
+                'interview': '41',
+                'gonzo': '50',
+                'vintage': '33',
+                'threesome': '38',
+                'shaved': '54',
+                'lesbian': '26',
+                'pov': '36',
+                'big butt': '6',
+                'voyeur': '34',
+                'bbw': '4',
+                'fetish': '18',
+                'shemale': '31',
+                'panties': '56',
+                'compilation': '11',
+                'european': '48',
+                'solo girl': '27',
+                'cunnilingus': '15',
+                'gay': '20',
+                'funny': '19',
+                'female friendly': '67',
+                'big tits': '7',
+                'redhead': '53',
+                'blowjob': '9',
+                'creampie': '13',
+                'facial': '17',
+                'kissing': '40',
+                'webcam': '35',
+                'anal': '2',
+                'dp': '16',
+                'couples': '12',
+                'instructional': '24',
+                'romantic': '61',
+                'straight sex': '47',
+                'dildos/toys': '44',
+                'teen': '32',
+                'public': '30',
+                'cumshots': '37',
+                'interracial': '25',
+                'orgy': '21',
+                'mature': '28',
+                'college': '10',
+                'swallow': '59',
+                'massage': '64',
+                'masturbation': '55'}
+                
     def __init__(self,name,**kwargs):
 
         self.href = kwargs.pop('href') if kwargs.get('href',False) else None
@@ -72,71 +135,8 @@ class YouPornCategory(Category):
     
     def _find_category_id(self,category):
 
-        categories= {'amateur':'1',
-                    'hairy': '46',
-                     'brunette': '52',
-                     'squirting': '39',
-                     'german': '58',
-                     'bisexual': '5',
-                     'handjob': '22',
-                     'milf': '29',
-                     'fantasy': '42',
-                     'pantyhose': '57',
-                     'fingering': '62',
-                     'asian': '3',
-                     'latina': '49',
-                     'blonde': '51',
-                     'hentai': '23',
-                     'rimming': '43',
-                     'ebony': '8',
-                     'solo male': '60',
-                     'interview': '41',
-                     'gonzo': '50',
-                     'vintage': '33',
-                     'threesome': '38',
-                     'shaved': '54',
-                     'lesbian': '26',
-                     'pov': '36',
-                     'big butt': '6',
-                     'voyeur': '34',
-                     'bbw': '4',
-                     'fetish': '18',
-                     'shemale': '31',
-                     'panties': '56',
-                     'compilation': '11',
-                     'european': '48',
-                     'solo girl': '27',
-                     'cunnilingus': '15',
-                     'gay': '20',
-                     'funny': '19',
-                     'female friendly': '67',
-                     'big tits': '7',
-                     'redhead': '53',
-                     'blowjob': '9',
-                     'creampie': '13',
-                     'facial': '17',
-                     'kissing': '40',
-                     'webcam': '35',
-                     'anal': '2',
-                     'dp': '16',
-                     'couples': '12',
-                     'instructional': '24',
-                     'romantic': '61',
-                     'straight sex': '47',
-                     'dildos/toys': '44',
-                     'teen': '32',
-                     'public': '30',
-                     'cumshots': '37',
-                     'interracial': '25',
-                     'orgy': '21',
-                     'mature': '28',
-                     'college': '10',
-                     'swallow': '59',
-                     'massage': '64',
-                     'masturbation': '55'}
-        
-        if category.lower() in categories:
-            return categories[category.lower()]
+        if category.lower() in self.CATEGORIES:
+            return self.CATEGORIES[category.lower()]
 
 class YouPornVideoParser(VideoParser):
     
@@ -248,6 +248,7 @@ class YouPornVideo(OnlineVideo):
 
         if not isinstance(self.video_parser,YouPornVideoParser):
             raise InvalidVideoParser('parser is not a valid YouPornVideoParser')
+            
         super(YouPornVideo,self).__init__(title=title,
                                         category=category,
                                         url=self.url,
@@ -352,7 +353,9 @@ class YouPornVideoUploadRequest(VideoUploadRequest):
             self.password = kwargs.get('password',self.DEFAULT_PASSWORD)
         else:
             self.password = ""
-            
+        
+        self.thumbnail_id = kwargs.get('thumbnail_id',1)
+        
         self.allow_comments = kwargs.get('allow_comments',True)
         self.porn_stars = kwargs.get('porn_stars',[])
 
@@ -400,7 +403,7 @@ if __name__ == '__main__':
     def downloading(**kwargs):
         print kwargs
         
-    youporn_video = YouPornVideo(url='http://www.youporn.com/watch/10072333/slutty-neighbors-wife-playing-with-anal-toy-then-showering-before-husband-comes-home',
+    youporn_video = YouPornVideo(url='http://www.youporn.com/watch/9216617/screaming-during-her-first-anal-experience',
                                 iter_size=1048576,
                                 hooks={'downloading':downloading})
     #youporn_video.get_video_info()
@@ -408,7 +411,7 @@ if __name__ == '__main__':
     #print info
     #youporn_video._verify_download_dir('shower.mp4')
     print youporn_video._hooks
-    youporn_video.download(name_to_save_as='/home/testfiles/slutty_neighbor.mp4')
+    youporn_video.download(name_to_save_as='/root/Dropbox/anal_experience.mp4')
 
     #print youporn_video.get_comments()
     

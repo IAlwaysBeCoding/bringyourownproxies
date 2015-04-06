@@ -37,13 +37,19 @@ class InvalidCategory(VideoProblem):
 class InvalidDescription(VideoProblem):
     pass
 
-class FailedUpload(VideoProblem):
-    pass
-
 class InvalidUploadCallback(VideoProblem):
     pass
 
 class FailedUpdatingVideoSettings(VideoProblem):
+    pass
+
+class UploadProblem(Exception):
+    pass
+
+class FailedUpload(UploadProblem):
+    pass
+
+class InvalidThumbnailId(UploadProblem):
     pass
 
 class HttpSettingsProblem(Exception):
@@ -77,6 +83,9 @@ class NotLogined(AccountProblem):
     pass
 
 class InvalidAccount(AccountProblem):
+    pass
+
+class CookiesFileDoesNotExist(AccountProblem):
     pass
 
 class ParsingProblem(Exception):

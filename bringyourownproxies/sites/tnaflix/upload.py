@@ -10,10 +10,9 @@ from requests_toolbelt import MultipartEncoder
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
 from bringyourownproxies.errors import InvalidVideoUploadRequest,InvalidAccount,NotLogined
-
+from bringyourownproxies.sites.upload import _Upload,UbrUploader
 from bringyourownproxies.sites.tnaflix.account import TnaflixAccount
 from bringyourownproxies.sites.tnaflix.video import TnaflixVideoUploadRequest
-from bringyourownproxies.sites.upload import _Upload,UbrUploader
 
 __all__ = ['TnaflixUpload']
 

@@ -11,16 +11,16 @@ from lxml import etree
 from lxml.etree import HTMLParser,tostring
 from bringyourownproxies.errors import (InvalidVideoUploadRequest,InvalidAccount,
                                         NotLogined,FailedUpload,FailedUpdatingVideoSettings)
-
+from bringyourownproxies.sites.upload import _Upload
 from bringyourownproxies.sites.youporn.errors import VideoNotReadyForThumbnail,FailedChangingThumbnailId
 from bringyourownproxies.sites.youporn.account import YouPornAccount
 from bringyourownproxies.sites.youporn.video import YouPornVideoUploadRequest
-from bringyourownproxies.sites.upload import _Upload
+
+__all__ = ['YouPornUpload']
 
 class YouPornUpload(_Upload):
 
-    def start(self,**kwargs):
-        thumbnail_id = kwargs.get('thumbnail_id',0)
+    def start(self):
 
         try:
             if not isinstance(self.video_upload_request,YouPornVideoUploadRequest):
@@ -219,8 +219,4 @@ class YouPornUpload(_Upload):
                                             'id:{t} on video_id:{v}'.format(t=thumbnail_id,v=video_id))
         
         return True
-    
-
-    
-
     

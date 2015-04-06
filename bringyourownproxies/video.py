@@ -252,14 +252,36 @@ class VideoUploadRequest(object):
             
             if isinstance(var,(list,tuple)):
                 for item in var:
-                    if not isinstance(item,instance_type):
-                        raise exception_class("Invalid {var} type, it contains an " \
-                                                "item inside its list/tuple that is not a valid " \
-                                                " type:{instance_type}".format(var=var,instance_type=instance_type))
+                    if isinstance(instance_type,(list,tuple)):
+                        for ins_type in instance_type:
+                            if isinstance(item,ins_type):
+                                break
+                        else:
+                            raise exception_class("Invalid {var} type, it contains an " \
+                                                    "item inside its list/tuple that is not a valid " \
+                                                    " type of either " \
+                                                    " {all_types} ".format(var=var,
+                                                                            all_types=[tipe for tipe in instance_type])) 
+
+                    else:
+                        if not isinstance(item,instance_type):
+                            raise exception_class("Invalid {var} type, it contains an " \
+                                                    "item inside its list/tuple that is not a valid " \
+                                                    " type of either:{instance_type}".format(var=var,
+                                                                                    instance_type=instance_type))
             else:
-                if not isinstance(var,instance_type):
-                    raise exception_class("Invalid {var} type, is not a valid " \
-                                            " type:{instance_type}".format(var=var,instance_type=instance_type))
+                if isinstance(instance_type,(list,tuple)):
+                    for ins_type in instance_type:
+                        if isinstance(var,ins_type):
+                            break
+                    else:
+                        raise exception_class("Invalid {var} type, is not a valid " \
+                                            " type of either:{instance_type}".format(var=var,instance_type=instance_type))
+
+                else:
+                    if not isinstance(var,instance_type):
+                        raise exception_class("Invalid {var} type, is not a valid " \
+                                                " type:{instance_type}".format(var=var,instance_type=instance_type))
 
     
     def succeeded(self):
