@@ -46,6 +46,9 @@ class FailedUpdatingVideoSettings(VideoProblem):
 class UploadProblem(Exception):
     pass
 
+class CannotFindVar(UploadProblem):
+    pass
+
 class FailedUpload(UploadProblem):
     pass
 

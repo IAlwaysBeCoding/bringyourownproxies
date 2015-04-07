@@ -196,10 +196,19 @@ class VideoUploadRequest(object):
         
         if not isinstance(title, Title):
             raise InvalidTitle('title is not a valid Title instance')
-        if not isinstance(category, Category):
-            raise InvalidCategory('category is not a valid Category instance')
+
         if not isinstance(description, Description):
             raise InvalidDescription('description is not a valid Description instance')
+        
+
+        if isinstance(category,(list,tuple)):
+            for c in category:
+                if not isinstance(c, Category):
+                    raise InvalidCategory('c is not a valid Category instance')
+        else:
+            if not isinstance(category, Category):
+                raise InvalidCategory('category is not a valid Category instance')
+
         
         if isinstance(tags,(list,tuple)):
             for t in tags:
@@ -214,7 +223,7 @@ class VideoUploadRequest(object):
         self.category = category
         self.description = description
         self._success = None
-        super(VideoUploadRequest,self).__init__(**kwargs)        
+       
 
     def __repr__(self):
 

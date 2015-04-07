@@ -152,11 +152,10 @@ class PornhubVideoUploadRequest(VideoUploadRequest):
         
         self.porn_stars = kwargs.get('porn_stars',None)
         self.is_private = kwargs.get('is_private',False)
-        self.orientation = kwargs.get('orientation','straight')
-        self.production = kwargs.get('production','homemade')
+        self.is_straight = kwargs.get('is_straight',True)
+        self.is_homemade = kwargs.get('is_homemade',True)
         
-
-        requirements = [(category,(PornhubCategory),InvalidCategory),
+        requirements = [(category,PornhubCategory,InvalidCategory),
                         (tags,PornhubTag,InvalidTag),
                         (title,PornhubTitle,InvalidTitle)]
         
@@ -170,10 +169,9 @@ class PornhubVideoUploadRequest(VideoUploadRequest):
         
     def __repr__(self):
 
-        return "<Pornhub UploadRequest title:{title} tags:{tags} category:{category}" \
+        return "<Pornhub UploadRequest title:{title} tags:{tags} " \
             " description:{description}>".format(title=self.title.name,
                                                 tags=",".join([t.name for t in self.tags]),
-                                                category=self.category.name,
                                                 description=self.description.name[:25])
 
 

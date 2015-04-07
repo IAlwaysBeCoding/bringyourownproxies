@@ -64,7 +64,6 @@ class FuxUpload(_Upload):
                                     traceback=traceback.format_exc(),
                                     exc_info=sys.exc_info())
 
-            print traceback.format_exc()    
             if self.bubble_up_exception:
                 raise exc
         

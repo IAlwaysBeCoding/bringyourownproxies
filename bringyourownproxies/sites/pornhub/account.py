@@ -15,7 +15,7 @@ class PornhubAccount(_Account):
     def __init__(self,username,password,email,**kwargs):
         self.remember_me = kwargs.pop('remember_me') if kwargs.get('remember_me',False) else False
         
-        super(PornHubAccount,self).__init__(username=username,password=password,email=email,**kwargs)
+        super(PornhubAccount,self).__init__(username=username,password=password,email=email,**kwargs)
     
     def login(self):
 
