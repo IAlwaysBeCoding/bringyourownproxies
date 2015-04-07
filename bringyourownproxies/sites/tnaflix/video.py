@@ -1,8 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import uuid
-import io
-import re
 import sys
 import traceback
 
@@ -11,10 +8,10 @@ import path
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
 
-from bringyourownproxies.video import (OnlineVideo,VideoParser,VideoUploadRequest,
+from bringyourownproxies.video import (VideoUploadRequest,
                                         VideoUploaded,Tag,Category,Description,Title)
-from bringyourownproxies.errors import (InvalidVideoUrl,InvalidVideoParser,InvalidTag,
-                                        InvalidCategory,InvalidDescription,InvalidTitle)
+from bringyourownproxies.errors import (InvalidTag,InvalidCategory,InvalidDescription,InvalidTitle)
+
 from bringyourownproxies.utils import show_printable_chars
 
 

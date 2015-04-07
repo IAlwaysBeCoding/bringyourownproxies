@@ -85,7 +85,7 @@ class YouPornUpload(_Upload):
                             account=self.account,
                             settings={'video_id':upload_requested['video_id']})
             
-            return {'video_id':upload_requested['video_id']}
+            return {'status':True,'video_id':upload_requested['video_id']}
 
     def _prepare_upload(self):
         

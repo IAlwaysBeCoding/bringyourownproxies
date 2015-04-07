@@ -156,20 +156,7 @@ class KummUploader(object):
             domain = self._add_www(self.domain) 
 
         return domain.with_path('/users/video/upload')
-    
-    def _get_sexuality_id(self,orientation):
-        
-        if orientation.lower() == 'straight':
-            sexuality = 1
-        elif orientation.lower() == 'gay':
-            sexuality = 2
-        elif orientation.lower() == 'transsexual':
-            sexuality = 3
-        else:
-            raise KummProblem('Invalid orientation. Orientation can only be straight,gay or transsexual')
-        
-        return sexuality
-        
+ 
     def _get_correct_tag_url(self,sexuality,tag,add_www=True):
         
         if add_www:
@@ -188,8 +175,8 @@ class KummUploader(object):
         upload_form_url = self._get_path_to_users_upload()
 
         session.headers.update({'X-Requested-With':'XMLHttpRequest'})
-        get_upload_form = session.get(upload_form_url,proxies=proxy)
-        
+        get_upload_form = session.get(upload_form_url,proxies=proxy,verify=False)
+
         regex_api_key = r'var\s+kumm_api_key\s+=\s+"(.*?)"'
         regex_user_id = r'var\s+user_id\s+=\s+"(.*?)"'
         regex_callback_url = r'var\s+callback_url\s+=\s+"(.*?)"'
@@ -216,7 +203,7 @@ class KummUploader(object):
             raise KummProblem('Could not find kumm posting url for the video upload')
         
         posting_url = get_upload_url[0]    
-        session.options(posting_url,proxies=proxy)
+        session.options(posting_url,proxies=proxy,verify=False)
         
         fields = []
         fields.append(('token',api_key))
@@ -234,7 +221,8 @@ class KummUploader(object):
         submit_upload = session.post(posting_url,
                                     data=monitor,
                                     headers={'Content-Type':monitor.content_type},                                    
-                                    proxies=proxy)
+                                    proxies=proxy,
+                                    verify=False)
         try:
             response = submit_upload.json()
         except:
@@ -245,7 +233,7 @@ class KummUploader(object):
             elif 'uuid' in response:
                 return response['uuid']
 
-    def upload(self,video_file,title,pornstars,tags,orientation,callback=None,session=None,proxy=None):
+    def upload(self,video_file,title,porn_stars,tags,orientation,callback=None,session=None,proxy=None):
         
         session = session or self.http_settings.session
         proxy = proxy or self.http_settings.proxy
@@ -256,9 +244,8 @@ class KummUploader(object):
         elif isinstance(tags,tuple):
             tags = list(tags)
         
-        sexuality = self._get_sexuality_id(orientation)
         corrected_tags = [( tag,
-                            session.get(self._get_correct_tag_url(sexuality,tag),proxies=proxy).json()) 
+                            session.get(self._get_correct_tag_url(orientation,tag),proxies=proxy).json()) 
                             for tag in tags]
         
         for corrected_tag in corrected_tags:
@@ -277,9 +264,9 @@ class KummUploader(object):
                     tags.extend([t['label'] for t in tags_options])
         
 
-        post = {'sexuality':str(sexuality),
+        post = {'sexuality':str(orientation),
                 'title':title,
-                'pornstars':pornstars if pornstars else "",
+                'porn_stars':porn_stars if porn_stars else "",
                 'tags':",".join([tag.lower() for tag in tags]),
                 'terms':'on',
                 'fileName':'',
@@ -307,9 +294,10 @@ if __name__ == '__main__':
     
     video_file = '/root/Dropbox/shower.mp4'
     title = 'Hot girl taking a shower'
-    pornstars = None
+    porn_stars = None
     tags = ('teen','black','amateur')
-    orientation = 'Straight'
+    #staright = 1,gay =2,shemale=3
+    orientation = 1
     
     uploader = KummUploader(domain="http://4tube.com",
                             website="4tube",
@@ -318,7 +306,7 @@ if __name__ == '__main__':
                             drop_incorrect_tags=False,
                             add_all_autocorrect_tags=False,
                             autocorrect_tags=False)
-    uploader.upload(video_file,title,pornstars,tags,orientation)
+    uploader.upload(video_file,title,porn_stars,tags,orientation)
     
 
 

@@ -1,7 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import uuid
-import io
 import re
 import sys
 import traceback
@@ -15,7 +13,6 @@ from bringyourownproxies.video import (OnlineVideo,VideoParser,VideoUploadReques
                                         VideoUploaded,Tag,Category,Description,Title)
 from bringyourownproxies.errors import (InvalidVideoUrl,InvalidVideoParser,InvalidTag,
                                         InvalidCategory,InvalidTitle,InvalidDescription)
-from bringyourownproxies.utils import show_printable_chars
 
 from bringyourownproxies.sites.youporn.errors import InvalidYouPornStar
 from bringyourownproxies.sites.youporn.pornstar import YouPornStar

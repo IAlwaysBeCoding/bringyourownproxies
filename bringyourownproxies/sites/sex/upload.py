@@ -1,14 +1,9 @@
 #!/usr/bin/python
-
-import os
-import json
 import re
 import sys
 import traceback
 
 import path
-from requests_toolbelt import MultipartEncoder
-from werkzeug.datastructures import MultiDict
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
 from bringyourownproxies.errors import (InvalidVideoUploadRequest,InvalidVideoUrl,InvalidAccount,
@@ -85,9 +80,8 @@ class SexUploadVideo(_Upload):
                             settings={'video_id':upload_requested['video_id']})
             
             if is_uploaded:
-                return {'video_id':is_uploaded}
-            else:
-                return False
+                return {'status':True, 'video_id':is_uploaded}
+
 
 
     def _update_temporary_video_pin(self,tmp_video):

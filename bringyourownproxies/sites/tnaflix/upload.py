@@ -1,14 +1,12 @@
 #!/usr/bin/python
-import os
-import json
 import sys
 import traceback
 
 import path
 
-from requests_toolbelt import MultipartEncoder
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
+
 from bringyourownproxies.errors import InvalidVideoUploadRequest,InvalidAccount,NotLogined
 from bringyourownproxies.sites.upload import _Upload,UbrUploader
 from bringyourownproxies.sites.tnaflix.account import TnaflixAccount
@@ -93,7 +91,6 @@ class TnaflixUpload(_Upload):
                                     traceback=traceback.format_exc(),
                                     exc_info=sys.exc_info())
 
-            print traceback.format_exc()
             if self.bubble_up_exception:
                 raise exc
         
@@ -103,7 +100,7 @@ class TnaflixUpload(_Upload):
                             account=self.account,
                             settings={'video_id':upload_id})
             
-            return {'video_id':upload_id}
+            return {'status':True, 'video_id':upload_id}
 
  
 

@@ -1,15 +1,11 @@
 #!/usr/bin/python
-import os
 import re
-import json
 import sys
 import traceback
 import time 
 
 import path
 
-from requests.cookies import create_cookie
-from requests_toolbelt import MultipartEncoder
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
 
@@ -115,10 +111,9 @@ class DrTuberUpload(_Upload):
             self.call_hook('finished',
                             video_request=self.video_upload_request,
                             account=self.account,
-                            settings={'tmp_filename':tmp_filename,
-                                        'video_id':None})
+                            settings={'tmp_filename':tmp_filename})
             
-            return {'video_id':None,'tmp_filename':tmp_filename}
+            return {'status':True,'tmp_filename':tmp_filename}
 
     def _get_avs_value(self,html):
         find_sid = re.search('sid: "(.*?)",',html)

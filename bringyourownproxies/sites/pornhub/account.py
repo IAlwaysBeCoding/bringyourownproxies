@@ -5,11 +5,11 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
-__all__ = ['PornHubAccount']
+__all__ = ['PornhubAccount']
 
-class PornHubAccount(_Account):
+class PornhubAccount(_Account):
     
-    SITE = 'PornHub'
+    SITE = 'Pornhub'
     SITE_URL = 'www.pornhub.com'
     
     def __init__(self,username,password,email,**kwargs):

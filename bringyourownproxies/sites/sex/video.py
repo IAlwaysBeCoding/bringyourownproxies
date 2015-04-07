@@ -6,11 +6,10 @@ import path
 from bringyourownproxies.video import (OnlineVideo,VideoParser,VideoUploadRequest,
                                         VideoUploaded,Tag,Title)
 from bringyourownproxies.errors import (InvalidVideoUrl,InvalidVideoParser)
-from bringyourownproxies.utils import show_printable_chars
 
-from errors import CouldNotParseFramePinUlr
-from comment import SexComment
-from board import SexBoard
+from bringyourownproxies.sites.sex.errors import CouldNotParseFramePinUlr
+from bringyourownproxies.sites.sex.comment import SexComment
+from bringyourownproxies.sites.sex.board import SexBoard
 
 __all__ = ['SexTag','SexParser','SexVideoPinRequest','SexVideoPin']
 

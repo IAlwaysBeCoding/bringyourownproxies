@@ -1,8 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import uuid
-import io
-import re
 import sys
 import traceback
 
@@ -11,11 +8,10 @@ import path
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
 
-from bringyourownproxies.video import (OnlineVideo,VideoParser,VideoUploadRequest,
-                                        VideoUploaded,Tag,Category,Description,Title)
-from bringyourownproxies.errors import (InvalidVideoUrl,InvalidVideoParser,InvalidTag,
+from bringyourownproxies.video import (VideoUploadRequest,VideoUploaded,Tag,Category,Description,Title)
+from bringyourownproxies.errors import (InvalidVideoParser,InvalidTag,
                                         InvalidCategory,InvalidDescription,InvalidTitle)
-from bringyourownproxies.utils import show_printable_chars
+
 
 
 __all__ = ['DrTuberTitle','DrTuberDescription','DrTuberTag',
@@ -24,20 +20,20 @@ __all__ = ['DrTuberTitle','DrTuberDescription','DrTuberTag',
 	            
 class DrTuberTitle(Title):
     SITE = 'DrTuber'
-    SITE_URL = 'www.tnaflix.com'
+    SITE_URL = 'www.drtuber.com'
 
 class DrTuberDescription(Description):
     SITE = 'DrTuber'
-    SITE_URL = 'www.tnaflix.com'
+    SITE_URL = 'www.drtuber.com'
 
 class DrTuberTag(Tag):
     SITE = 'DrTuber'
-    SITE_URL = 'www.tnaflix.com'
+    SITE_URL = 'www.drtuber.com'
 
 
 class DrTuberCategory(Category):
     SITE = 'DrTuber'
-    SITE_URL = 'www.tnaflix.com'
+    SITE_URL = 'www.drtuber.com'
 
     def __init__(self,name,**kwargs):
 

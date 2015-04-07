@@ -8,33 +8,33 @@ from lxml import etree
 from lxml.etree import HTMLParser,tostring
 
 from bringyourownproxies.errors import (InvalidVideoUploadRequest,InvalidAccount,NotLogined)
-from bringyourownproxies.sites.upload import _Upload
-from bringyourownproxies.sites.porntube.account import PornTubeAccount
-from bringyourownproxies.sites.porntube.video import PornTubeVideoUploadRequest
+from bringyourownproxies.sites.upload import _Upload,KummUploader
+from bringyourownproxies.sites.fux.account import FuxAccount
+from bringyourownproxies.sites.fux.video import FuxVideoUploadRequest
 
-__all__ = ['PornTubeUpload']
+__all__ = ['FuxUpload']
 
-class PornTubeUpload(_Upload):
+class FuxUpload(_Upload):
 
     def start(self):
 
         try:
-            if not isinstance(self.video_upload_request,PornTubeVideoUploadRequest):
+            if not isinstance(self.video_upload_request,FuxVideoUploadRequest):
                 raise InvalidVideoUploadRequest('Invalid video_upload_request, ' \
-                                        'it needs to be a PornTubeVideoUploadRequest instance')
+                                        'it needs to be a FuxVideoUploadRequest instance')
                                         
-            if not isinstance(self.account,PornTubeAccount):
-                raise InvalidAccount('Invalid account, it needs to be a PornTubeAccount instance')
+            if not isinstance(self.account,FuxAccount):
+                raise InvalidAccount('Invalid account, it needs to be a FuxAccount instance')
             
             
             if not self.account.is_logined():
-                raise NotLogined('PornTube account is not logined')
+                raise NotLogined('Fux account is not logined')
             
             self.call_hook('started',video_upload_request=self.video_upload_request,account=self.account)
 
                 
-            domain="http://porntube.com"
-            website="porntube"
+            domain="http://fux.com"
+            website="fux"
             username = self.account.username
             http_settings=self.account.http_settings
             drop_incorrect_tags = self.video_upload_request.drop_incorrect_tags
