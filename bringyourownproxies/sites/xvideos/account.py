@@ -5,17 +5,17 @@ from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account 
 
-__all__ = ['XVideosAccount']
+__all__ = ['XvideosAccount']
 
-class XVideosAccount(_Account):
+class XvideosAccount(_Account):
     
-    SITE = 'XVideos'
+    SITE = 'Xvideos'
     SITE_URL = 'www.xvideos.com'
     
     def __init__(self,username,password,email,**kwargs):
         self.remember_me = kwargs.pop('remember_me') if kwargs.get('remember_me',False) else False
         
-        super(XVideosAccount,self).__init__(username=username,password=password,email=email,**kwargs)
+        super(XvideosAccount,self).__init__(username=username,password=password,email=email,**kwargs)
     
     def login(self):
         

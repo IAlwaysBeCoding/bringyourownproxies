@@ -2,9 +2,7 @@
 
 from bringyourownproxies.errors import VideoProblem
 
-class InvalidYouPornStar(VideoProblem):
-    pass
-                    
+
 class VideoNotReadyForThumbnail(VideoProblem):
     pass
 

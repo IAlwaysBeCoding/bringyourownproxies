@@ -8,15 +8,13 @@ import path
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
 
-from bringyourownproxies.video import (VideoUploadRequest,
-                                        VideoUploaded,Tag,Category,Description,Title)
+from bringyourownproxies.video import VideoUploadRequest,VideoUploaded,Tag,Category,Description,Title
 from bringyourownproxies.errors import (InvalidTag,InvalidCategory,InvalidDescription,InvalidTitle)
-
-from bringyourownproxies.utils import show_printable_chars
 
 
 __all__ = ['TnaflixTitle','TnaflixDescription','TnaflixTag',
             'TnaflixCategory','TnaflixVideoUploadRequest','TnaflixVideoUploaded']
+
 class TnaflixTitle(Title):
     SITE = 'Tnaflix'
     SITE_URL = 'www.tnaflix.com'
@@ -151,7 +149,6 @@ class TnaflixVideoUploadRequest(VideoUploadRequest):
                                                 tags=",".join([t.name for t in self.tags]),
                                                 category=self.category.name,
                                                 description=self.description.name[:25])
-
 
 class TnaflixVideoUploaded(VideoUploaded):
     pass

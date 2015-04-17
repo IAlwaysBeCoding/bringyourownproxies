@@ -26,13 +26,11 @@ class FuxUpload(_Upload):
             if not isinstance(self.account,FuxAccount):
                 raise InvalidAccount('Invalid account, it needs to be a FuxAccount instance')
             
-            
             if not self.account.is_logined():
                 raise NotLogined('Fux account is not logined')
             
             self.call_hook('started',video_upload_request=self.video_upload_request,account=self.account)
 
-                
             domain="http://fux.com"
             website="fux"
             username = self.account.username

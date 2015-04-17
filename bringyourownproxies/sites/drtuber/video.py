@@ -8,7 +8,8 @@ import path
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
 
-from bringyourownproxies.video import (VideoUploadRequest,VideoUploaded,Tag,Category,Description,Title)
+from bringyourownproxies.video import (VideoUploadRequest,VideoUploaded,Tag,
+										Category,Description,Title)
 from bringyourownproxies.errors import (InvalidVideoParser,InvalidTag,
                                         InvalidCategory,InvalidDescription,InvalidTitle)
 
@@ -17,7 +18,8 @@ from bringyourownproxies.errors import (InvalidVideoParser,InvalidTag,
 __all__ = ['DrTuberTitle','DrTuberDescription','DrTuberTag',
             'DrTuberCategory','DrTuberCategoryStraight','DrTuberCategoryGay',
             'DrTuberCategoryTranssexual','DrTuberVideoUploadRequest','DrTuberVideoUploaded']
-	            
+
+
 class DrTuberTitle(Title):
     SITE = 'DrTuber'
     SITE_URL = 'www.drtuber.com'
@@ -306,14 +308,6 @@ class DrTuberVideoUploadRequest(VideoUploadRequest):
                                                         category=category,
                                                         description=description,
                                                         **kwargs)
-        
-    def __repr__(self):
-
-        return "<DrTuber UploadRequest title:{title} tags:{tags} category:{category}" \
-            " description:{description}>".format(title=self.title.name,
-                                                tags=",".join([t.name for t in self.tags]),
-                                                category=self.category.name,
-                                                description=self.description.name[:25])
 
 
 class DrTuberVideoUploaded(VideoUploaded):

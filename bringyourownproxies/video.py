@@ -33,6 +33,9 @@ class Description(VideoObject):
 class Title(VideoObject):
     pass
 
+class PornStar(VideoObject):
+    pass
+
 class VideoParser(object):
     parser = HTMLParser()
     etree = etree
@@ -225,14 +228,6 @@ class VideoUploadRequest(object):
         self._success = None
        
 
-    def __repr__(self):
-
-        return "<VideoUploadRequest title:{title} tags:{tags} category:{category}" \
-                " description:{description}>".format(title=self.title,
-                                                    tags=",".join(self.tags),
-                                                    category=self.category,
-                                                    description=self.description[:25])
-
     def _verify_video_file(self):
         video_path = path.Path(self.video_file)
 
@@ -345,13 +340,5 @@ class VideoUploaded(object):
         
         super(VideoUploaded,self).__init__(**kwargs)
     
-    def __repr__(self):
-        return "<{sites}'s VideoUploaded Title:{title} Tags:{tags}" \
-                " Category:{category} Uploaded Date:{date_uploaded}".format(sites=self.SITE,
-                                                                    title=self.title,
-                                                                    tags=",".join(self.tags),
-                                                                    category=self.category,
-                                                                    date_uploaded=self.date_uploaded)
-        
-        
+
     

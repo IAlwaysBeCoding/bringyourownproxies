@@ -140,7 +140,7 @@ class YouPornUpload(_Upload):
         url = 'http://www.youporn.com/change/video/{videoId}/'.format(videoId=video_id)
         update_settings = session.post(url,data=post,proxies=proxy)
         response = json.loads(update_settings.content)
-        
+        del session.headers['X-Requested-With']
         if 'success' in response:
             if not response['success']:
                 errors = []

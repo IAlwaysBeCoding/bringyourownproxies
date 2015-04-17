@@ -1,8 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import uuid
-import io
-import re
 import sys
 import traceback
 
@@ -11,16 +8,14 @@ import path
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
 
-from bringyourownproxies.video import (OnlineVideo,VideoUploadRequest,
-                                        VideoUploaded,Tag,Category,Description,Title)
-from bringyourownproxies.errors import (InvalidVideoUrl,InvalidVideoParser,InvalidTag,
-                                        InvalidCategory,InvalidDescription,InvalidTitle)
-from bringyourownproxies.utils import show_printable_chars
+from bringyourownproxies.video import VideoUploadRequest,VideoUploaded,Tag,Category,Title
+from bringyourownproxies.errors import InvalidTag,InvalidCategory,InvalidTitle
+
 
 
 __all__ = ['PornhubTitle','PornhubTag','PornhubCategory',
             'PornhubVideoUploadRequest','PornhubVideoUploaded']
-                
+
 class PornhubTitle(Title):
     SITE = 'Pornhub'
     SITE_URL = 'www.pornhub.com'
@@ -123,7 +118,7 @@ class PornhubCategory(Category):
 		"pornstar": "60",
 		"straight guys": "82",
 		"twink": "49"}
-    
+
     def __init__(self,name,**kwargs):
 
         self.category_id = kwargs.get('category_id',None)
@@ -134,12 +129,12 @@ class PornhubCategory(Category):
                 raise InvalidCategory('Invalid Category Name:{name}, it does not match a category id'.format(name=name))
 
             self.category_id = get_category_id
-            
+
         super(PornhubCategory,self).__init__(name=name,**kwargs)
-    
+
 
     def _find_category_id(self,category):
-        
+
         if not category.lower() in self.CATEGORIES:
             raise InvalidCategory('Invalid category. Orientation can only be straight,gay or transsexual')
         else:
@@ -147,37 +142,28 @@ class PornhubCategory(Category):
 
 class PornhubVideoUploadRequest(VideoUploadRequest):
 
-    
+
     def __init__(self,video_file,title,tags,category,**kwargs):
-        
+
         self.porn_stars = kwargs.get('porn_stars',None)
         self.is_private = kwargs.get('is_private',False)
         self.is_straight = kwargs.get('is_straight',True)
         self.is_homemade = kwargs.get('is_homemade',True)
-        
+
         requirements = [(category,PornhubCategory,InvalidCategory),
                         (tags,PornhubTag,InvalidTag),
                         (title,PornhubTitle,InvalidTitle)]
-        
+
         self._verify_upload_requirements(requirements)
-        
+
         super(PornhubVideoUploadRequest,self).__init__(video_file=video_file,
                                                         title=title,
                                                         tags=tags,
                                                         category=category,
                                                         **kwargs)
-        
-    def __repr__(self):
 
-        return "<Pornhub UploadRequest title:{title} tags:{tags} " \
-            " description:{description}>".format(title=self.title.name,
-                                                tags=",".join([t.name for t in self.tags]),
-                                                description=self.description.name[:25])
 
 
 class PornhubVideoUploaded(VideoUploaded):
     pass
 
-'''
-a:3:{s:8:"platform";s:2:"pc";s:7:"gateway";s:8:"58771093";s:20:"gateway_security_key";s:32:"ab2a2cdc5138a70e47eb6fe8d5909144";}
-'''
