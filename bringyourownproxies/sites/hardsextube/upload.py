@@ -1,9 +1,10 @@
 #!/usr/bin/python
 import sys
 import traceback
-
+import random
 import path
 
+from ua_parser import user_agent_parser
 from lxml import etree
 from lxml.etree import HTMLParser, tostring
 
@@ -77,8 +78,11 @@ class HardSexTubeUpload(_Upload):
             upload_id = found_upload_id[0]
 
             thumbnail_ids = self._upload(video_file,upload_id)
-            if thumbnail_id > len(thumbnail_ids):
+            if int(thumbnail_id) > len(thumbnail_ids):
                 raise InvalidThumbnailId('Invalid thumbnail_id:{i} for HardSexTube video'.format(i=thumbnail_id))
+
+            self._log_start(upload_id)
+            self._log_client(upload_id)
 
             self._submit_upload('form_validation',
                                 upload_id,
@@ -100,7 +104,7 @@ class HardSexTubeUpload(_Upload):
                                 thumbnail_id)
 
         except Exception as exc:
-            del session.headers["X-Requested-With"]
+
             self.call_hook(
                 'failed',
                 video_upload_request=self.video_upload_request,
@@ -113,7 +117,7 @@ class HardSexTubeUpload(_Upload):
                 raise exc
 
         else:
-            del session.headers["X-Requested-With"]
+
             self.call_hook('finished',
                            video_request=self.video_upload_request,
                            account=self.account,
@@ -205,20 +209,51 @@ class HardSexTubeUpload(_Upload):
             h = {'Content-Type':self.upload_monitor.content_type}
         else:
             raise FailedUpload('Invalid upload_type, it can either be form_validation or sort')
-        print 'type:{t}:{p}'.format(t=upload_type,p=post)
-        print 'fields:{f}'.format(f=fields)
+
+        session.headers.update({'Origin':'http://uploadcenter.hardsextube.com',
+                                'Referer':'http://uploadcenter.hardsextube.com/',
+                                })
         form_validate = session.post(url,
                                      data=post,
                                      proxies=proxy,
                                      headers=h if h else None)
-        with open('{t}.html'.format(t=upload_type),'w+') as f:
-            f.write(form_validate.content)
 
-    def _store(self):
-        pass
+    def _log_start(self,upload_id):
 
-    def _get_thumbnail_options(self):
-        pass
-    def _set_video_thumbnail(self):
-        pass
+        session = self.account.http_settings.session
+        proxy = self.account.http_settings.proxy
+
+        url = 'http://uploadcenter.hardsextube.com/upload/log-start'
+        post = {'uploadId':upload_id}
+
+        start_log = session.post(url,data=post,proxies=proxy)
+        response = start_log.json()
+        if not response['success']:
+            raise FailedUpload('HardSexTube log start failed')
+
+    def _log_client(self,upload_id):
+
+        session = self.account.http_settings.session
+        proxy = self.account.http_settings.proxy
+
+        ua_info = user_agent_parser.Parser(self.account.http_settings.user_agent)
+        family = ua_info['os']['family']
+        browser = ua_info['user_agent']['family']
+        url = 'http://uploadcenter.hardsextube.com/upload/log-client-info'
+        post = {'uploadId':str(upload_id),
+                'clientInfo[browser]':browser,
+                'clientInfo[fullversion]':'/41.0.2272.118 Safari/537.36',
+                'clientInfo[navigator]':'Netscape',
+                'clientInfo[navigatorUser]':str(self.account.http_settings.user_agent),
+                'clientInfo[OSName]':'UNIX' if 'linux' in family else 'WIN',
+                'clientInfo[screenW]':random.choice([1440,1920,1366,1280,1024]),
+                'clientInfo[screenH]':random.choice([876,1080,768,800,600]),
+                'clientInfo[winW]':random.choice([1360,1312,984,780]),
+                'clientInfo[winH]':random.choice([478,506,578,6340])}
+        client_log = session.post(url,data=post,proxies=proxy)
+        response = client_log.json()
+        if not response['success']:
+            raise FailedUpload('HardSexTube log start failed')
+
+
 

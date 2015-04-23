@@ -396,7 +396,7 @@ if __name__ == '__main__':
     def downloading(**kwargs):
         print kwargs
 
-    youporn_video = YouPornVideo(url='http://www.youporn.com/watch/11063001/interracial-pov-fucking/',
+    youporn_video = YouPornVideo(url='http://www.youporn.com/watch/4543/sexy-black-slut-squirting/?from=search_full&pos=11',
                                 iter_size=1048576,
                                 hooks={'downloading':downloading})
     #youporn_video.get_video_info()

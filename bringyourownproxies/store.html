@@ -1,39 +1,1486 @@
-<style type="text/css">
-	body {
-		background-color: #130619;
-		font-family: 'Open Sans', sans-serif;
-		color: white;
-		text-align: center;
-		padding-top: 60px;
-	}
-	h1 {
-		font-size: 40px;
-		font-weight: 700;
-		text-align: center;
-		color: white;
-		line-height: 1;
-	}
-	p {
-		font-size: 20px;
-		font-weight: 400;
-		font-weight: normal;
-		font-style: normal;
-		line-height: 1.71428571;
-		color: #b1a2b8;
-	}
-	.hst-logo {
-		background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iMTc2cHgiIGhlaWdodD0iNDBweCIgdmlld0JveD0iMCAwIDE3NiA0MCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTc2IDQwIiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxnPg0KCTxwYXRoIGZpbGw9IiNGRkZGRkYiIGQ9Ik03NC45MjYsMC41MTJjMC43NDksMC4zMiwxLjM5OSwwLjc1MywxLjk1NCwxLjI5NmMwLjU1NCwwLjU0NSwwLjk5MywxLjE4NSwxLjMxOSwxLjkyMg0KCQljMC4zMjUsMC43MzYsMC40ODgsMS41MjEsMC40ODgsMi4zNTN2My41NzJjMCwwLjQ0OS0wLjIxMiwwLjczNy0wLjYzNSwwLjg2NGwtNC40NDYsMS4xNTNjLTAuNDIzLDAuMTI5LTAuNjM1LTAuMDMyLTAuNjM1LTAuNDgNCgkJVjYuMzI0YzAtMC4zMi0wLjExNS0wLjU5Mi0wLjM0Mi0wLjgxNmMtMC4yMjgtMC4yMjQtMC41MDUtMC4zMzYtMC44MzEtMC4zMzZoLTAuMzljLTAuMzI3LDAtMC42MDQsMC4xMTMtMC44MzEsMC4zMzYNCgkJYy0wLjIyOSwwLjIyNS0wLjM0MiwwLjQ5Ni0wLjM0MiwwLjgxNnY2LjExNmMwLjAzMiwwLjM1NCwwLjA5OCwxLjA5NCwwLjE5NiwxLjM1YzAuMDk3LDAuMjU2LDAuMjc1LDAuNTEyLDAuNTM3LDAuNzY5bDYuNCw2LjAxNg0KCQljMC41MjEsMC40NDksMC44NTUsMC45MDQsMS4wMDEsMS4zNjhjMC4xNDYsMC40NjUsMC4yNTEsMC45ODUsMC4zMTcsMS41NjJ2MTAuNDQ0YzAsMC44MzItMC4xNjQsMS42MTYtMC40ODgsMi4zNTINCgkJYy0wLjMyNiwwLjczNy0wLjc2NiwxLjM3OC0xLjMxOSwxLjkyMmMtMC41NTQsMC41NDUtMS4yMDUsMC45NzctMS45NTQsMS4yOTZjLTAuNzUsMC4zMTktMS41NDgsMC40OC0yLjM5NCwwLjQ4aC0xLjg1Ng0KCQljLTAuODQ3LDAtMS42NDUtMC4xNjEtMi4zOTQtMC40OGMtMC43NS0wLjMxOS0xLjQwMS0wLjc1MS0xLjk1NC0xLjI5NmMtMC41NTQtMC41NDQtMC45OTQtMS4xODUtMS4zMTktMS45MjINCgkJYy0wLjMyNi0wLjczNi0wLjQ4OS0xLjUyMS0wLjQ4OS0yLjM1MnYtNi4zNThjMC0wLjQ0OCwwLjIxMS0wLjczNywwLjYzNS0wLjg2NWw0LjQ0NC0xLjE1MmMwLjQyNC0wLjEyNywwLjYzNiwwLjAzMywwLjYzNiwwLjQ4DQoJCXY3LjY1NGMwLDAuMzIsMC4xMTMsMC41OTMsMC4zNDIsMC44MTZjMC4yMjgsMC4yMjUsMC41MDQsMC4zMzYsMC44MzEsMC4zMzZoMC4zOWMwLjMyNSwwLDAuNjAzLTAuMTExLDAuODMxLTAuMzM2DQoJCWMwLjIyNy0wLjIyNCwwLjM0Mi0wLjQ5NiwwLjM0Mi0wLjgxNnYtNi4zMzljLTAuMDMzLTAuNDE2LTAuMDk4LTIuOTY3LTAuMTk1LTMuMjg4Yy0wLjA5OC0wLjMyMS0wLjI5My0wLjYwOC0wLjU4Ni0wLjg2NQ0KCQlsLTYuMzAyLTYuMDY1Yy0wLjQ4OS0wLjQ0OC0wLjgzOS0wLjg5Ni0xLjA1LTEuMzQ0Yy0wLjIxMi0wLjQ0OC0wLjMxNy0xLjQ3Ny0wLjMxNy0yLjIxNHYtNy41MWMwLTAuODMyLDAuMTYzLTEuNjE2LDAuNDg5LTIuMzUzDQoJCWMwLjMyNS0wLjczNywwLjc2NS0xLjM3NywxLjMxOS0xLjkyMmMwLjU1My0wLjU0MywxLjIwNC0wLjk3NywxLjk1NC0xLjI5NmMwLjc0OS0wLjMyLDEuNTQ2LTAuNDgsMi4zOTQtMC40OGgxLjg1Ng0KCQlDNzMuMzc4LDAuMDMyLDc0LjE3NywwLjE5Miw3NC45MjYsMC41MTJ6Ii8+DQoJPHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTkzLjc2NCwzNC45Njl2NC4zNDdjMCwwLjQ1Ny0wLjIyOSwwLjY4NS0wLjY4NCwwLjY4NUg4MS41OTJjLTAuNDU3LDAtMC42ODQtMC4yMjgtMC42ODQtMC42ODV2LTM4LjYNCgkJYzAtMC40NTYsMC4yMjgtMC42ODQsMC42ODQtMC42ODRIOTMuMDhjMC40NTYsMCwwLjY4NCwwLjIyOCwwLjY4NCwwLjY4NHY0LjM0OGMwLDAuNDU2LTAuMjI5LDAuNjg0LTAuNjg0LDAuNjg0aC02LjQ1NnY5LjY5OQ0KCQloNS43MjNjMC40NTYsMCwwLjY4NCwwLjIyOSwwLjY4NCwwLjY4NHY0LjM0OGMwLDAuNDU3LTAuMjI5LDAuNjg0LTAuNjg0LDAuNjg0aC01LjcyM3YxMy4xMjNoNi40NTYNCgkJQzkzLjUzNiwzNC4yODUsOTMuNzY0LDM0LjUxMiw5My43NjQsMzQuOTY5eiIvPg0KCTxwYXRoIGZpbGw9IiNGRkZGRkYiIGQ9Ik0xMTAuOTIsNDBoLTQuNTQyYy0wLjQ1OCwwLTAuNzE3LTAuMjI4LTAuNzgzLTAuNjg1bC0xLjg1Ni05LjY3MWwtMS44NTYsOS42NzENCgkJYy0wLjA2NiwwLjQ1Ny0wLjMyNiwwLjY4NS0wLjc4MiwwLjY4NWgtNC41NDJjLTAuMTk1LDAtMC4zNTItMC4wNjUtMC40NjUtMC4xOTZjLTAuMTE0LTAuMTI5LTAuMTM5LTAuMjkzLTAuMDcyLTAuNDg5bDQuNDQ5LTE5LjU3DQoJCUw5Ni4wMjIsMC43MTZjLTAuMDY3LTAuMTYzLTAuMDQyLTAuMzE4LDAuMDcyLTAuNDY1YzAuMTEzLTAuMTQ2LDAuMjctMC4yMTksMC40NjUtMC4yMTloNC41NDJjMC40NTYsMCwwLjcxNiwwLjIyOCwwLjc4MiwwLjY4NA0KCQlsMS44NTYsOS42NzFsMS44NTYtOS42NzFjMC4wNjUtMC40NTYsMC4zMjQtMC42ODQsMC43ODMtMC42ODRoNC41NDJjMC4xOTUsMCwwLjM0OSwwLjA3MywwLjQ2NCwwLjIxOQ0KCQljMC4xMTMsMC4xNDcsMC4xMzksMC4zMDIsMC4wNzMsMC40NjVsLTQuNDUsMTkuMDI5bDQuNDUsMTkuNTdDMTExLjU1NSwzOS43NzIsMTExLjM3Niw0MCwxMTAuOTIsNDB6Ii8+DQoJPGc+DQoJCTxsaW5lYXJHcmFkaWVudCBpZD0iU1ZHSURfMV8iIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iNy4wMDczIiB5MT0iMzEuMDg2OSIgeDI9IjcuMDA3MyIgeTI9IjAiPg0KCQkJPHN0b3AgIG9mZnNldD0iMCIgc3R5bGU9InN0b3AtY29sb3I6IzkwMTRDRSIvPg0KCQkJPHN0b3AgIG9mZnNldD0iMSIgc3R5bGU9InN0b3AtY29sb3I6I0IzMUVFNSIvPg0KCQk8L2xpbmVhckdyYWRpZW50Pg0KCQk8cGF0aCBmaWxsPSJ1cmwoI1NWR0lEXzFfKSIgZD0iTTEzLjY2OSwwLjYyMnYyOS44NDNjMCwwLjQxNS0wLjIwOCwwLjYyMi0wLjYyMiwwLjYyMkg5LjA5NWMtMC40MTYsMC0wLjYyMi0wLjIwNy0wLjYyMi0wLjYyMg0KCQkJVjE3Ljc2NEg1LjU0MnYxMi43MDJjMCwwLjQxNS0wLjIwOCwwLjYyMi0wLjYyMiwwLjYyMkgwLjk2OGMtMC40MTUsMC0wLjYyMi0wLjIwNy0wLjYyMi0wLjYyMlYwLjYyMkMwLjM0NiwwLjIwOCwwLjU1MywwLDAuOTY4LDANCgkJCUg0LjkyYzAuNDE1LDAsMC42MjIsMC4yMDgsMC42MjIsMC42MjJ2MTEuOTQ2aDIuOTMxVjAuNjIyQzguNDc0LDAuMjA4LDguNjc5LDAsOS4wOTUsMGgzLjk1MkMxMy40NjEsMCwxMy42NjksMC4yMDgsMTMuNjY5LDAuNjIyDQoJCQl6Ii8+DQoJCTxsaW5lYXJHcmFkaWVudCBpZD0iU1ZHSURfMl8iIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMjIuNDI4NyIgeTE9IjMxLjA4NjkiIHgyPSIyMi40Mjg3IiB5Mj0iMCI+DQoJCQk8c3RvcCAgb2Zmc2V0PSIwIiBzdHlsZT0ic3RvcC1jb2xvcjojOTAxNENFIi8+DQoJCQk8c3RvcCAgb2Zmc2V0PSIxIiBzdHlsZT0ic3RvcC1jb2xvcjojQjMxRUU1Ii8+DQoJCTwvbGluZWFyR3JhZGllbnQ+DQoJCTxwYXRoIGZpbGw9InVybCgjU1ZHSURfMl8pIiBkPSJNMjkuNDAxLDMwLjQ2NWMwLjA1OSwwLjQxNS0wLjExOSwwLjYyMi0wLjUzMywwLjYyMmgtNC4wNDFjLTAuMzg1LDAtMC42MDctMC4yMDctMC42NjctMC42MjINCgkJCWwtMC4zNTUtNC43OTdoLTIuNzUzbC0wLjM1NSw0Ljc5N2MtMC4wNiwwLjQxNS0wLjI4MiwwLjYyMi0wLjY2NiwwLjYyMmgtNC4wNDJjLTAuNDE1LDAtMC41OTItMC4yMDctMC41MzMtMC42MjJsMy4zMzEtMjkuODQzDQoJCQlDMTguODQ2LDAuMjA4LDE5LjA4MywwLDE5LjQ5OCwwaDUuODYyYzAuNDE0LDAsMC42NSwwLjIwOCwwLjcxLDAuNjIyTDI5LjQwMSwzMC40NjV6IE0yMy40NSwyMC42OTVMMjIuNjA2LDguNjZoLTAuMzU1DQoJCQlsLTAuODQ0LDEyLjAzNUgyMy40NXoiLz4NCgkJPGxpbmVhckdyYWRpZW50IGlkPSJTVkdJRF8zXyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIzOC4wODQ1IiB5MT0iMzEuMDg2OSIgeDI9IjM4LjA4NDUiIHkyPSIwIj4NCgkJCTxzdG9wICBvZmZzZXQ9IjAiIHN0eWxlPSJzdG9wLWNvbG9yOiM5MDE0Q0UiLz4NCgkJCTxzdG9wICBvZmZzZXQ9IjEiIHN0eWxlPSJzdG9wLWNvbG9yOiNCMzFFRTUiLz4NCgkJPC9saW5lYXJHcmFkaWVudD4NCgkJPHBhdGggZmlsbD0idXJsKCNTVkdJRF8zXykiIGQ9Ik00NC45NTYsMzAuNDY1YzAuMDg4LDAuNDE1LTAuMDYsMC42MjItMC40NDUsMC42MjJINDAuNDdjLTAuMTc3LDAtMC4zNDktMC4wNi0wLjUxMS0wLjE3Nw0KCQkJYy0wLjE2My0wLjExOS0wLjI3My0wLjI2OC0wLjMzMy0wLjQ0NGwtMy4yNDItMTAuODgxdjExLjA1OGMtMC4wODgsMC4yOTctMC4yOTcsMC40NDUtMC42MjIsMC40NDVoLTMuOTUyDQoJCQljLTAuNDE1LDAtMC42MjItMC4yMDctMC42MjItMC42MjJWMC42MjJDMzEuMTg4LDAuMjA4LDMxLjM5NiwwLDMxLjgxMSwwaDYuNjYxYzAuNzcsMCwxLjQ5NSwwLjE0OSwyLjE3NywwLjQ0NA0KCQkJYzAuNjgxLDAuMjk2LDEuMjcyLDAuNjk2LDEuNzc2LDEuMTk5YzAuNTAzLDAuNTA0LDAuOTAzLDEuMDk1LDEuMTk5LDEuNzc3YzAuMjk2LDAuNjgxLDAuNDQ0LDEuNDA3LDAuNDQ0LDIuMTc2djcuMjM5DQoJCQljMCwxLjA5Ni0wLjI4MiwyLjA4MS0wLjg0NCwyLjk1M2MtMC41NjIsMC44NzMtMS4zMDMsMS41NDctMi4yMiwyLjAyMUw0NC45NTYsMzAuNDY1eiBNMzYuMzg0LDEzLjY3OGgxLjQyDQoJCQljMC4yOTYsMCwwLjU0OC0wLjEwMywwLjc1Ni0wLjMxMWMwLjIwNi0wLjIwNywwLjMxMS0wLjQ1OCwwLjMxMS0wLjc1NVY1LjgxOGMwLTAuMjk2LTAuMTA1LTAuNTQ3LTAuMzExLTAuNzU1DQoJCQljLTAuMjA4LTAuMjA3LTAuNDYtMC4zMTItMC43NTYtMC4zMTJoLTEuNDJWMTMuNjc4eiIvPg0KCQk8bGluZWFyR3JhZGllbnQgaWQ9IlNWR0lEXzRfIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjUzLjE5NjgiIHkxPSIzMS4wODY5IiB4Mj0iNTMuMTk2OCIgeTI9IjAiPg0KCQkJPHN0b3AgIG9mZnNldD0iMCIgc3R5bGU9InN0b3AtY29sb3I6IzkwMTRDRSIvPg0KCQkJPHN0b3AgIG9mZnNldD0iMSIgc3R5bGU9InN0b3AtY29sb3I6I0IzMUVFNSIvPg0KCQk8L2xpbmVhckdyYWRpZW50Pg0KCQk8cGF0aCBmaWxsPSJ1cmwoI1NWR0lEXzRfKSIgZD0iTTU0LjA0MSwwYzAuNzY5LDAsMS40OTQsMC4xNDksMi4xNzUsMC40NDRjMC42ODEsMC4yOTYsMS4yNzMsMC42OTYsMS43NzYsMS4xOTkNCgkJCWMwLjUwMywwLjUwNCwwLjkwMywxLjA5NSwxLjE5OSwxLjc3N2MwLjI5NSwwLjY4MSwwLjQ0NSwxLjQwNywwLjQ0NSwyLjE3NnYxOS44OTVjMCwwLjc3MS0wLjE0OSwxLjQ5Ni0wLjQ0NSwyLjE3Nw0KCQkJYy0wLjI5NiwwLjY4MS0wLjY5NiwxLjI3My0xLjE5OSwxLjc3NmMtMC41MDMsMC41MDQtMS4wOTUsMC45MDMtMS43NzYsMS4xOTljLTAuNjgxLDAuMjk3LTEuNDA2LDAuNDQ1LTIuMTc1LDAuNDQ1aC02LjY2Mg0KCQkJYy0wLjQxNiwwLTAuNjIyLTAuMjA3LTAuNjIyLTAuNjIyVjAuNjIyQzQ2Ljc1NywwLjIwOCw0Ni45NjMsMCw0Ny4zNzksMEg1NC4wNDF6IE01NC40MzksNS44MThjMC0wLjI5Ni0wLjEwNC0wLjU0Ny0wLjMxMS0wLjc1NQ0KCQkJYy0wLjIwNy0wLjIwNy0wLjQ1OS0wLjMxMi0wLjc1NC0wLjMxMmgtMS40MjJ2MjEuNTgzaDEuNDIyYzAuMjk1LDAsMC41NDctMC4xMDMsMC43NTQtMC4zMTFjMC4yMDYtMC4yMDgsMC4zMTEtMC40NTgsMC4zMTEtMC43NTUNCgkJCVY1LjgxOHoiLz4NCgk8L2c+DQoJPGc+DQoJCTxsaW5lYXJHcmFkaWVudCBpZD0iU1ZHSURfNV8iIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTIzLjQ2MzQiIHkxPSIzMS4xMDY5IiB4Mj0iMTIzLjQ2MzQiIHkyPSIwLjAyMDUiPg0KCQkJPHN0b3AgIG9mZnNldD0iMCIgc3R5bGU9InN0b3AtY29sb3I6IzkwMTRDRSIvPg0KCQkJPHN0b3AgIG9mZnNldD0iMSIgc3R5bGU9InN0b3AtY29sb3I6I0IzMUVFNSIvPg0KCQk8L2xpbmVhckdyYWRpZW50Pg0KCQk8cGF0aCBmaWxsPSJ1cmwoI1NWR0lEXzVfKSIgZD0iTTEzMC42MzksMC42NDJ2My45NTJjMCwwLjQxNi0wLjIwNiwwLjYyMy0wLjYxNiwwLjYyM2gtNC4wMXYyNS4yNjkNCgkJCWMwLDAuNDE1LTAuMjA1LDAuNjIyLTAuNjE0LDAuNjIyaC0zLjkxNGMtMC4xNDcsMC0wLjI4Ni0wLjA1OC0wLjQxOC0wLjE3OGMtMC4xMzEtMC4xMTctMC4xOTgtMC4yNjYtMC4xOTgtMC40NDRWNS4yMTZoLTMuOTY2DQoJCQljLTAuNDExLDAtMC42MTYtMC4yMDctMC42MTYtMC42MjNWMC42NDJjMC0wLjQxNCwwLjIwNS0wLjYyMiwwLjYxNi0wLjYyMmgxMy4xMTlDMTMwLjQzMywwLjAyMSwxMzAuNjM5LDAuMjI4LDEzMC42MzksMC42NDJ6Ii8+DQoJCTxsaW5lYXJHcmFkaWVudCBpZD0iU1ZHSURfNl8iIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTM5LjM4NjIiIHkxPSIzMS40MTgiIHgyPSIxMzkuMzg2MiIgeTI9IjAuMDIwNSI+DQoJCQk8c3RvcCAgb2Zmc2V0PSIwIiBzdHlsZT0ic3RvcC1jb2xvcjojOTAxNENFIi8+DQoJCQk8c3RvcCAgb2Zmc2V0PSIxIiBzdHlsZT0ic3RvcC1jb2xvcjojQjMxRUU1Ii8+DQoJCTwvbGluZWFyR3JhZGllbnQ+DQoJCTxwYXRoIGZpbGw9InVybCgjU1ZHSURfNl8pIiBkPSJNMTQ2LjQyNywwLjY0MnYyNS4xOGMwLDAuNzcxLTAuMTQ2LDEuNDk2LTAuNDM5LDIuMTc3Yy0wLjI5MywwLjY4LTAuNjg5LDEuMjczLTEuMTg4LDEuNzc1DQoJCQljLTAuNDk4LDAuNTA0LTEuMDg0LDAuOTAzLTEuNzU5LDEuMTk5cy0xLjM5MiwwLjQ0NC0yLjE1NCwwLjQ0NGgtMy4wMDJjLTAuNzYyLDAtMS40OC0wLjE0OC0yLjE1NC0wLjQ0NA0KCQkJYy0wLjY3NS0wLjI5Ni0xLjI2LTAuNjk1LTEuNzYtMS4xOTljLTAuNDk4LTAuNTAyLTAuODk0LTEuMDk1LTEuMTg2LTEuNzc1Yy0wLjI5NC0wLjY4MS0wLjQ0LTEuNDA2LTAuNDQtMi4xNzdWMC42NDINCgkJCWMwLTAuNDE0LDAuMjA1LTAuNjIyLDAuNjE2LTAuNjIyaDMuOTEzYzAuNDEsMCwwLjYxNSwwLjIwOCwwLjYxNSwwLjYyMnYyNC45NThjMCwwLjI5NiwwLjEwMiwwLjU0NywwLjMwNywwLjc1NA0KCQkJYzAuMjA3LDAuMjA4LDAuNDU2LDAuMzEyLDAuNzQ5LDAuMzEyaDEuNjg0YzAuMjkzLDAsMC41NDItMC4xMDQsMC43NDgtMC4zMTJjMC4yMDUtMC4yMDcsMC4zMDktMC40NTgsMC4zMDktMC43NTRWMC42NDINCgkJCWMwLTAuNDE0LDAuMjA1LTAuNjIyLDAuNjE0LTAuNjIyaDMuOTE0QzE0Ni4yMjMsMC4wMjEsMTQ2LjQyNywwLjIyOCwxNDYuNDI3LDAuNjQyeiIvPg0KCQk8bGluZWFyR3JhZGllbnQgaWQ9IlNWR0lEXzdfIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjE1NS4wMjI5IiB5MT0iMzEuMTA2OSIgeDI9IjE1NS4wMjI5IiB5Mj0iMC4wMjA1Ij4NCgkJCTxzdG9wICBvZmZzZXQ9IjAiIHN0eWxlPSJzdG9wLWNvbG9yOiM5MDE0Q0UiLz4NCgkJCTxzdG9wICBvZmZzZXQ9IjEiIHN0eWxlPSJzdG9wLWNvbG9yOiNCMzFFRTUiLz4NCgkJPC9saW5lYXJHcmFkaWVudD4NCgkJPHBhdGggZmlsbD0idXJsKCNTVkdJRF83XykiIGQ9Ik0xNjAuMTY3LDE1LjYwOGMwLjQxMSwwLjQxNCwwLjcxOCwwLjkwMiwwLjkyMywxLjQ2NWMwLjIwNSwwLjU2MiwwLjMwNywxLjE4NCwwLjMwNywxLjg2NXY2LjU3Mw0KCQkJYzAsMC43NzEtMC4xNDYsMS40OTUtMC40MzgsMi4xNzZjLTAuMjk0LDAuNjgyLTAuNjksMS4yNzMtMS4xODgsMS43NzdjLTAuNDk5LDAuNTAzLTEuMDg1LDAuOTAzLTEuNzU5LDEuMg0KCQkJYy0wLjY3NCwwLjI5Ni0xLjM5MSwwLjQ0My0yLjE1MywwLjQ0M2gtNi41OTRjLTAuNDEyLDAtMC42MTYtMC4yMDctMC42MTYtMC42MjJWMC42NDJjMC0wLjQxNCwwLjIwNC0wLjYyMiwwLjYxNi0wLjYyMmg2LjU5NA0KCQkJYzAuNzYyLDAsMS40NzksMC4xNDgsMi4xNTMsMC40NDRjMC42NzQsMC4yOTYsMS4yNjEsMC42OTUsMS43NTksMS4xOTljMC40OTgsMC41MDQsMC44OTQsMS4wOTUsMS4xODgsMS43NzYNCgkJCWMwLjI5MiwwLjY4MiwwLjQzOCwxLjQwOCwwLjQzOCwyLjE3N3Y0LjQ0YzAsMS4zNjItMC40MSwyLjUwMi0xLjIzLDMuNDE5Yy0wLjQzOSwwLjQ3NS0wLjk2NywwLjg1OS0xLjU4MywxLjE1NQ0KCQkJQzE1OS4yMjksMTQuODY5LDE1OS43NTYsMTUuMTk0LDE2MC4xNjcsMTUuNjA4eiBNMTU2LjI1NCw1LjgzOGMwLTAuMjk1LTAuMTA0LTAuNTQ3LTAuMzA4LTAuNzU1DQoJCQljLTAuMjA2LTAuMjA3LTAuNDU1LTAuMzExLTAuNzQ3LTAuMzExaC0xLjQwNnY3LjU0OWgxLjQwNmMwLjI5MiwwLDAuNTQxLTAuMTAzLDAuNzQ3LTAuMzExYzAuMjA0LTAuMjA4LDAuMzA4LTAuNDU4LDAuMzA4LTAuNzU1DQoJCQlWNS44Mzh6IE0xNTYuMjU0LDE4LjIyOWMwLTAuMjk1LTAuMTA0LTAuNTQ4LTAuMzA4LTAuNzU2Yy0wLjIwNi0wLjIwNi0wLjQ1NS0wLjMxLTAuNzQ3LTAuMzFoLTEuNDA2djkuMTkyaDEuNDA2DQoJCQljMC4yOTIsMCwwLjU0MS0wLjEwNCwwLjc0Ny0wLjMxYzAuMjA0LTAuMjA4LDAuMzA4LTAuNDYsMC4zMDgtMC43NTZWMTguMjI5eiIvPg0KCQk8bGluZWFyR3JhZGllbnQgaWQ9IlNWR0lEXzhfIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjE2OS42MDExIiB5MT0iMzEuMDk2NyIgeDI9IjE2OS42MDExIiB5Mj0iMC4wMDk4Ij4NCgkJCTxzdG9wICBvZmZzZXQ9IjAiIHN0eWxlPSJzdG9wLWNvbG9yOiM5MDE0Q0UiLz4NCgkJCTxzdG9wICBvZmZzZXQ9IjEiIHN0eWxlPSJzdG9wLWNvbG9yOiNCMzFFRTUiLz4NCgkJPC9saW5lYXJHcmFkaWVudD4NCgkJPHBhdGggZmlsbD0idXJsKCNTVkdJRF84XykiIGQ9Ik0xNzUuNjU0LDI2LjUyMnYzLjk1M2MwLDAuNDE0LTAuMjA2LDAuNjIyLTAuNjE2LDAuNjIyaC0xMC44NzNjLTAuNDExLDAtMC42MTYtMC4yMDgtMC42MTYtMC42MjINCgkJCVYwLjYzMWMwLTAuNDE0LDAuMjA1LTAuNjIxLDAuNjE2LTAuNjIxaDEwLjg3M2MwLjQxLDAsMC42MTYsMC4yMDcsMC42MTYsMC42MjF2My45NTJjMCwwLjQxNi0wLjIwNiwwLjYyMi0wLjYxNiwwLjYyMmgtNi4zNDQNCgkJCVYxMS42aDUuMjQxYzAuNDA5LDAsMC42MTQsMC4yMDcsMC42MTQsMC42MjJ2My45NTJjMCwwLjQxNS0wLjIwNSwwLjYyMS0wLjYxNCwwLjYyMWgtNS4yNDFWMjUuOWg2LjM0NA0KCQkJQzE3NS40NDgsMjUuOSwxNzUuNjU0LDI2LjEwNywxNzUuNjU0LDI2LjUyMnoiLz4NCgk8L2c+DQo8L2c+DQo8L3N2Zz4NCg==);
-		background-repeat: no-repeat;
-		background-size: 100%;
-		background-position: 0 0;
-		display: block;
-		margin: 0 auto;
-		width: 400px;
-		height: 100px;
-		margin-bottom: 60px;
-		text-indent: -9999px;
-	}
-</style>
-<a href="{{ URL::to('/') }}" class="hst-logo">HardSexTube</a>
-<h1>Scheduled maintenance.</h1>
-<p>We'll be back shortly - thank you for your patience.</p>
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <title>HST upload center</title>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <link rel="shortcut icon" href="http://uploadcenter.hardsextube.com/favicon.ico">
+
+        <!-- THIRD PARTY CSS -->
+        <link href="http://cdn3b.static.hardsextube.com/uploadcenter/css/bootstrap_0f7384da6fec5841ef3e7c9a22788293.css" rel="stylesheet">
+        <link href="http://cdn4b.static.hardsextube.com/uploadcenter/css/font-awesome.min_7e69e72efc14ccee14610ca8d6a6eaa1.css" rel="stylesheet">
+
+        <!-- GULP:CSS -->
+        <!-- OWN CSS -->
+                <link href="http://cdn1b.static.hardsextube.com/uploadcenter/css/style_b4fc3312f77e13fc9d0be56bfbec7897.css" rel="stylesheet" type="text/css">
+                <!-- /GULP:CSS -->
+
+        <!--[if IE 9]>
+            <link href="http://cdn2b.static.hardsextube.com/uploadcenter/css/ie9_597078f90e226d11a7403390128a6292.css" rel="stylesheet" type="text/css">
+        <![endif]-->
+
+        <!--[if IE 8]>
+            <link href="http://cdn3b.static.hardsextube.com/uploadcenter/css/ie8_95ea5544b62887216842bf435f45a23d.css" rel="stylesheet" type="text/css">
+        <![endif]-->
+
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+            <script src="http://cdn4b.static.hardsextube.com/uploadcenter/js/es5-shim.min_cb4fb6dd786b8e5dee5679a2583b26ea.js"></script>
+        <![endif]-->
+
+        <script>
+            var STATIC_SUBDOMAIN = 'http://cdn%db.static.hardsextube.com';
+        </script>
+
+    </head>
+
+    <body>
+                    <header> <div class="container"> <div class="col-md-12"> <h1 class="brand">hard<span>sex</span>tube<span class="badge">Beta</span></h1> <nav class="clearfix"> <a href="http://hardsextube.com" class="pull-left">Back to the site</a> <div class="dropdown-group pull-right"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">tedwantsmore<span class="caret"></span></a> <ul class="dropdown-menu primary-dropdown"> <li><a href="http://hardsextube.com/my/dashboard" target="_blank">My profile</a></li>  <li><a href="http://hardsextube.com/my/uploads" target="_blank">My videos</a></li>    <li><a href="http://hardsextube.com/my/dashboard" target="_blank">Edit my profile</a></li> <li class="divider"></li> <li><a href="http://uploadcenter.hardsextube.com/logout">Logout</a></li> </ul> </div> </nav> </div> </div> </header>            <div class="container">
+                <div class="col-md-12 fixed-header" id="main">
+                    	<div class="row">
+		<div class="col-md-12">
+			<h2 class="big" id="upload-headline">Upload Video</h2>
+
+
+
+			                <section class="text-center mb30">
+                    <h3 class="text-primary" id="upload-headline-welcome">Welcome to new HardSexTube Upload Center!</h3>
+                    <p>Please see our upload rules found below: all content not abiding by these will be rejected.</p>
+                    <p>If you encounter any problems please <a href="#" data-toggle="modal" data-target="#contactModal">
+                    contact us.</a></p>
+                </section>
+			            
+                            <div id="mainResponse" class="alert alert-dismissable alert-success">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <h4>Upload successful!</h4>
+                    <p>
+                        
+                    </p>
+                </div>
+            		</div>
+
+		<form id="uploadForm" width="100%" enctype="multipart/form-data" method="post" action="">
+
+            <input name="upload_id" type="hidden" value="d766ba4d283169a771d7fdaed45a5708">
+
+			<div class="col-md-12">
+
+				<ul id="chooseUploadType" class="nav info-boxes-justified info-boxes action-boxes">
+					<li data-upload-type="file">
+						<div class="info-box info-box-bordered">
+							<i class="fa fa-cloud-upload"></i>
+							<h3 class="mb30">Upload from Computer / Device</h3>
+							<div class="input-group file-input-group">
+								<div class="input-group-btn">
+	                                <label for="image_file" class="hide">Please select file</label>
+									<span class="btn btn-default btn-file">
+                                        <i class="fa fa-upload"></i>
+                                        <input type="file" name="video" id="image_file" onchange="fileSelected();">
+                                    </span>
+								</div>
+								<input type="text" class="form-control file-read-input" readonly="" placeholder="Browse file to upload">
+							</div>
+							<div id="wrongFileType" class="alert alert-danger">
+								<strong>Video format is not accepted. Please choose a different file.</strong>
+							</div>
+							<div class="form-group no-m">
+	                            <button id="uploadFileBtn" disabled="true" type="button" class="btn disabled">Upload</button>
+	                        </div>
+						</div>
+					</li>
+					<li data-upload-type="url">
+						<div class="info-box info-box-bordered">
+							<i class="fa fa-external-link"></i>
+							<h3 class="mb30">Upload from URL</h3>
+							<div class="form-group">
+								<label for="videoUrl" class="required hide">Url</label>
+								<input type="url" name="upload_url" class="form-control" id="videoUrl" placeholder="Enter url">
+							</div>
+                            <div id="wrongUrlType" hidden class="alert alert-danger">
+                                <strong></strong>
+                            </div>
+							<div class="form-group no-m">
+	                            <input id="start-url-upload-btn" type="button" class="btn disabled" disabled="" value="Upload" />
+	                        </div>
+						</div>
+					</li>
+					                    <div class="col-md-12 text-center">
+                        <div class="checkbox">
+                            <label>
+                                                                    <input type="checkbox" checked>
+                                                                <p><span></span><strong>Subscription to upload status emails</strong></p>
+                            </label>
+                        </div>
+                    </div>
+                    				</ul>
+
+			</div><!-- col-md-12 -->
+
+		</form>
+
+<!--        <iframe src="about:blank" id="file-upload-iframe" name="file-upload-iframe" onload="onIframeLoad()"></iframe>-->
+
+		<form id="videoInfoForm" enctype="multipart/form-data" method="post" action="http://uploadcenter.hardsextube.com/upload/store">
+
+            <div class="row" id="video-info-form-feedback"></div>
+
+            <input name="upload_id" id="upload-id" type="hidden" value="d766ba4d283169a771d7fdaed45a5708">
+
+			<div class="col-md-9">
+
+				<div id="uploadVideo" data-status="">
+
+                    <div id="progress_info" class="preload-box">
+                        <div class="preload-wrap">
+                            <div class="preload-icon-wrap">
+								<i class="fa fa-cloud-upload"></i>
+							</div>
+
+	                        <div class="preload-progress-wrap" id="progress-bar-wrap">
+		                        <div class="progress progress-striped active">
+		                            <div id="progress" class="progress-bar"><span id="progress_percent" class="progress-percent"></span></div>
+		                        </div>
+		                        <p class="progress-info">
+                                    <span id="speed">&nbsp;</span>
+                                    <span id="remaining">&nbsp;</span>
+                                    <span id="b_transfered">&nbsp;</span>
+                                    <a href="#" id="abortUpload" class="pull-right text-danger">Cancel</a>
+                                </p>
+			                    <div id="error2">An error occurred while uploading the file</div>
+			                    <div id="abort">The upload has been canceled by the user or the browser dropped the connection</div>
+			                    <div id="warnsize">Your file is very big. We can't accept it. Please select more small file</div>
+		                    </div>
+
+		                    <div class="preload-progress-wrap fallback hide" id="progress-loader-wrap">
+		                    	<div class="progress fallback active">
+									<span class="progress-percent">Uploading ...</span>
+									<img src="http://cdn2b.static.hardsextube.com/uploadcenter/img/upload-loader.gif"/>
+		                    	</div>
+		                    </div>
+
+		                </div>
+	                    <div class="video-wrap hide">
+							<div class="thumb">
+
+							</div>
+							<div class="video-info">
+								<h4 id="videoTitle">Enter a video title</h4>
+								<p class="text-muted" id="upload_response"></p>
+							</div>
+							<div class="video-wrap-footer clearfix">
+								<!--<p class="text-muted pull-left">Duration: 13:31</p>-->
+								<p class=""><a href="#thumbnailList" class="text-success">Ready for thumbnail choice</a></p>
+							</div>
+						</div>
+
+                    </div><!-- Progress info -->
+
+                </div><!-- uploadVideo -->
+
+                <div id="editVideoInfo" class="hide">
+
+	                <fieldset>
+						<legend>Video info</legend>
+						<div class="form-group">
+							<label for="videoTitleInput" class="required">Title</label>
+							<span href="#" class="link text-danger pull-right" data-toggle="modal" data-target="#rulesTitleModal">Rules</span>
+							<input type="text" class="form-control validate-field" id="videoTitleInput" name="title" placeholder="Enter a video title" value="">
+							<p class="help-block">At least 5 characters</p>
+						</div>
+						<div class="form-group not-required">
+							<label for="videoDesc">Description</label>
+							<span href="#" class="link text-danger pull-right" data-toggle="modal" data-target="#rulesDescModal">Rules</span>
+							<textarea class="form-control validate-field" id="videoDesc" rows="5" name="description" placeholder="Enter a video description"></textarea>
+							<p class="help-block">Maximum 255 characters</p>
+						</div>
+						<!-- TODO sima usernek nem kell channel select -->
+						                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group not-required">
+                                    <label for="link_title">Promoted site link</label>
+                                    <input type="text" class="form-control validate-field" id="link_title" name="text_ad_title" placeholder="Enter title">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="link_url">Promoted site URL</label>
+                                    <input type="text" class="form-control validate-field" id="link_url" name="text_ad_url" placeholder="Enter URL">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <a href="#" class="remove btn btn-link">Remove</a>
+                            </div>
+                        </div>
+                        						<div class="form-group">
+							<label for="orientation1" class="required">Orientation</label>
+							<div id="orientationRadios" class="btn-group btn-radio-group" data-toggle="buttons" data-filters>
+								<label class="btn btn-radio" data-filter-ref="ori-straight">
+									<input type="radio" name="orientation" id="orientation1" class value="straight">
+									<p><i class="icon icon-straight"></i><span>Straight</span></p>
+								</label>
+								<label class="btn btn-radio" data-filter-ref="ori-gay">
+									<input type="radio" name="orientation" id="orientation2" value="gay">
+									<p><i class="icon icon-gay"></i><span>Gay</span></p>
+								</label>
+								<label class="btn btn-radio" data-filter-ref="ori-tranny">
+									<input type="radio" name="orientation" id="orientation3" value="tranny">
+									<p><i class="icon icon-tranny"></i><span>Tranny</span></p>
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
+
+						</div>
+						<div class="form-group">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="label-group">
+										<div class="clearfix">
+											<span id="categoryTypeIcon" class="label-icon hide"></span>
+											<div>
+												<label for="labelTitle" class="">Categories</label>
+												<p class="help-block">Choose the most fitting categories (max 3)</p>
+											</div>
+										</div>
+										<div class="label-group-footer">
+											<p id="selectedCategories" class="selection-list"></p>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="label-group">
+										<div id="listFilters" class="nav nav-tabs pull-right">
+											<li><a href="#top20" data-toggle="tab" data-filter-ref="cat-top">Top 20</a></li>
+											<li><a href="#nationality" data-toggle="tab" data-filter-ref="cat-nationality">Nationalities</a></li>
+											<li class="active"><a href="#all" data-toggle="tab" data-filter-ref="">All</a></li>
+										</div>
+									</div>
+								</div>
+							</div>
+							<ul id="categoryList" class="checkbox-list checkbox-list-disabled column-count-4" data-max-selectable="3" data-text-list="#selectedCategories">
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                            ori-gay
+                                                                                                                            ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="1" data-name="Amateur">
+                                                <p><span></span><strong>Amateur</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="3" data-name="Anal">
+                                                <p><span></span><strong>Anal</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="5" data-name="Arab">
+                                                <p><span></span><strong>Arab</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="7" data-name="Asian">
+                                                <p><span></span><strong>Asian</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="9" data-name="Ass">
+                                                <p><span></span><strong>Ass</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="11" data-name="Babe">
+                                                <p><span></span><strong>Babe</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                            ori-gay
+                                                                                                                            ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="149" data-name="Bareback">
+                                                <p><span></span><strong>Bareback</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="13" data-name="Bbw">
+                                                <p><span></span><strong>Bbw</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                            ori-gay
+                                                                                                                            ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="15" data-name="Bdsm">
+                                                <p><span></span><strong>Bdsm</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="151" data-name="Bear">
+                                                <p><span></span><strong>Bear</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="17" data-name="Beauty">
+                                                <p><span></span><strong>Beauty</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="19" data-name="Big Boobs">
+                                                <p><span></span><strong>Big Boobs</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="21" data-name="Big Cock">
+                                                <p><span></span><strong>Big Cock</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                                                                    ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="199" data-name="Big Tits">
+                                                <p><span></span><strong>Big Tits</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="23" data-name="Bisexual">
+                                                <p><span></span><strong>Bisexual</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                            ori-gay
+                                                                                                                            ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="25" data-name="Black">
+                                                <p><span></span><strong>Black</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="27" data-name="Blonde">
+                                                <p><span></span><strong>Blonde</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                            ori-gay
+                                                                                                                            ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="29" data-name="Blowjob">
+                                                <p><span></span><strong>Blowjob</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                            cat-nationality
+                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="31" data-name="Brazilian">
+                                                <p><span></span><strong>Brazilian</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                            cat-nationality
+                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="33" data-name="British">
+                                                <p><span></span><strong>British</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="35" data-name="Brunette">
+                                                <p><span></span><strong>Brunette</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="37" data-name="Busty">
+                                                <p><span></span><strong>Busty</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="39" data-name="Casting">
+                                                <p><span></span><strong>Casting</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="41" data-name="Celebrity">
+                                                <p><span></span><strong>Celebrity</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="43" data-name="College">
+                                                <p><span></span><strong>College</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="45" data-name="Compilation">
+                                                <p><span></span><strong>Compilation</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                    ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="47" data-name="Creampie">
+                                                <p><span></span><strong>Creampie</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="49" data-name="Cumshot">
+                                                <p><span></span><strong>Cumshot</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="161" data-name="Daddy">
+                                                <p><span></span><strong>Daddy</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="51" data-name="Deepthroat">
+                                                <p><span></span><strong>Deepthroat</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="53" data-name="Doctor">
+                                                <p><span></span><strong>Doctor</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="55" data-name="Ebony">
+                                                <p><span></span><strong>Ebony</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="57" data-name="Emo">
+                                                <p><span></span><strong>Emo</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="59" data-name="Femdom">
+                                                <p><span></span><strong>Femdom</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="165" data-name="Fisting">
+                                                <p><span></span><strong>Fisting</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="61" data-name="French">
+                                                <p><span></span><strong>French</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                                                                    ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="207" data-name="Fucks Girl">
+                                                <p><span></span><strong>Fucks Girl</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                                                                    ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="209" data-name="Fucks Guy">
+                                                <p><span></span><strong>Fucks Guy</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                            ori-gay
+                                                                                                                            ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="63" data-name="Gangbang">
+                                                <p><span></span><strong>Gangbang</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="225" data-name="Gay">
+                                                <p><span></span><strong>Gay</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                            cat-nationality
+                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="65" data-name="German">
+                                                <p><span></span><strong>German</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="67" data-name="Girlfriend">
+                                                <p><span></span><strong>Girlfriend</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="69" data-name="Granny">
+                                                <p><span></span><strong>Granny</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="71" data-name="Group">
+                                                <p><span></span><strong>Group</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="73" data-name="Hairy">
+                                                <p><span></span><strong>Hairy</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="75" data-name="Handjob">
+                                                <p><span></span><strong>Handjob</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="77" data-name="Hardcore">
+                                                <p><span></span><strong>Hardcore</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="79" data-name="Hentai">
+                                                <p><span></span><strong>Hentai</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="81" data-name="Hidden Cam">
+                                                <p><span></span><strong>Hidden Cam</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="83" data-name="Homemade">
+                                                <p><span></span><strong>Homemade</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="173" data-name="Hunk">
+                                                <p><span></span><strong>Hunk</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                            cat-nationality
+                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="85" data-name="Indian">
+                                                <p><span></span><strong>Indian</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="87" data-name="Interracial">
+                                                <p><span></span><strong>Interracial</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                            cat-nationality
+                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="89" data-name="Italian">
+                                                <p><span></span><strong>Italian</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                            cat-nationality
+                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="91" data-name="Japanese">
+                                                <p><span></span><strong>Japanese</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="93" data-name="JAV">
+                                                <p><span></span><strong>JAV</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                            cat-nationality
+                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="95" data-name="Korean">
+                                                <p><span></span><strong>Korean</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="97" data-name="Latin">
+                                                <p><span></span><strong>Latin</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="229" data-name="Latina">
+                                                <p><span></span><strong>Latina</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="99" data-name="Lesbian">
+                                                <p><span></span><strong>Lesbian</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="101" data-name="Massage">
+                                                <p><span></span><strong>Massage</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                            ori-gay
+                                                                                                                            ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="103" data-name="Masturbation">
+                                                <p><span></span><strong>Masturbation</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="105" data-name="Mature">
+                                                <p><span></span><strong>Mature</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="107" data-name="Milf">
+                                                <p><span></span><strong>Milf</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="183" data-name="Muscle">
+                                                <p><span></span><strong>Muscle</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="185" data-name="Old and young">
+                                                <p><span></span><strong>Old and young</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="109" data-name="Orgasm">
+                                                <p><span></span><strong>Orgasm</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="111" data-name="Party">
+                                                <p><span></span><strong>Party</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="113" data-name="Petite">
+                                                <p><span></span><strong>Petite</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="231" data-name="Pornstars">
+                                                <p><span></span><strong>Pornstars</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                    ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="115" data-name="Pov">
+                                                <p><span></span><strong>Pov</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="117" data-name="Public">
+                                                <p><span></span><strong>Public</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="119" data-name="Rough">
+                                                <p><span></span><strong>Rough</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                            cat-nationality
+                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="121" data-name="Russian">
+                                                <p><span></span><strong>Russian</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="123" data-name="Schoolgirl">
+                                                <p><span></span><strong>Schoolgirl</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="125" data-name="Shemale">
+                                                <p><span></span><strong>Shemale</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                                                                    ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="217" data-name="Small Tits">
+                                                <p><span></span><strong>Small Tits</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="127" data-name="Spanking">
+                                                <p><span></span><strong>Spanking</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="129" data-name="Squirting">
+                                                <p><span></span><strong>Squirting</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="131" data-name="Swinger">
+                                                <p><span></span><strong>Swinger</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="133" data-name="Teacher">
+                                                <p><span></span><strong>Teacher</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                    ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="135" data-name="Teen">
+                                                <p><span></span><strong>Teen</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="137" data-name="Threesome">
+                                                <p><span></span><strong>Threesome</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                            ori-gay
+                                                                                                                            ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="187" data-name="Toys">
+                                                <p><span></span><strong>Toys</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                                                            ori-gay
+                                                                                                                                                            ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="189" data-name="Twink">
+                                                <p><span></span><strong>Twink</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="139" data-name="Vintage">
+                                                <p><span></span><strong>Vintage</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight
+                                                                                                                            ori-gay
+                                                                                                                            ori-tranny
+                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="141" data-name="Webcam">
+                                                <p><span></span><strong>Webcam</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                                                    <li class="
+                                                                                    ori-straight cat-top-straight
+                                                                                                                                                                                                    ">
+                                        <div class="checkbox">
+                                             <label>
+                                                <input type="checkbox" name="categories[]" value="143" data-name="Wife">
+                                                <p><span></span><strong>Wife</strong></p>
+                                            </label>
+                                        </div>
+                                    </li>
+                                							</ul>
+						</div>
+						<div class="form-group">
+							<label for="videoTags" class="">Tags</label>
+							<span href="#" class="link text-danger pull-right" data-toggle="modal" data-target="#rulesTagsModal">Rules</span>
+							<input type="text" class="form-control tags-input tags-free-input" id="videoTags" name="tags" placeholder="Type to add tags" value="" autocomplete="off">
+							<div class="form-suggestions">
+								<p class="help-block text-muted">Suggestions</p>
+								<ul id="tagSuggestionsList"></ul>
+							</div>
+						</div>
+						<div class="form-group outer-tags-wrap">
+							<label for="videoPornstars" class="">Pornstars</label>
+							<input type="text" class="form-control tags-input tags-select-input outer-tags" name="pornstars" id="videoPornstars" placeholder="Start typing a pornstar name" autocomplete="off">
+<!--							<div class="form-suggestions">-->
+<!--								<p class="help-block text-muted">Suggestions</p>-->
+<!--								<ul id="pornstarSuggestionsList"></ul>-->
+<!--							</div>-->
+						</div>
+                        <div id="thumbnailList" class="form-group thumbnail-list-wrap">
+							<h4>Choose Thumbnail</h4>
+							<div id="pleaseWait" class="hide alert alert-info">
+								<strong>Upload in progress, please stand by</strong>
+							</div>
+                            <input type="hidden" id="default-thumb-input" name="default_thumb" value="1"/>
+							<ul class="thumbnail-list clearfix">
+								<li id="customThumbPreview" class="hide"><a href="#"></a></li>
+							</ul>
+						</div>
+                        					</fieldset>
+					<div id="formSubmitWrap" class="form-footer col-md-12">
+						<a href="http://uploadcenter.hardsextube.com" class="btn pull-left">Cancel</a>
+						<button type="submit" class="btn btn-primary pull-right">Submit</button>
+						<p class="pull-right help-block text-danger hide">Upload in progress, please stand by</p>
+					</div>
+
+				</div><!-- editVideoInfo -->
+
+            </div><!-- col-md-9 -->
+
+	    </form>
+
+	    <aside id="formSideBar" class="col-md-3 hide">
+			<section class="widget help-widget">
+				<h3>Need help?</h3>
+
+				<p>Encountered an issue?</p>
+
+				<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#contactModal">Contact Us</a>
+			</section>
+		</aside>
+
+		<div id="homeRules" class="col-md-12">
+			<h2 class="text-center text-primary">Rules</h2>
+			<ul class="default-list big-text column-count-2">
+				<li><p>Only upload content that you own or have the right to use for promotion</p></li>
+				<li><p>Adult content only that shows sexual acts and/or nudity</p></li>
+				<li><p>No banned content or banned words allowed: <a href="#" data-toggle="modal" data-target="#listOfWordsModal">check list of words</a></p></li>
+				<li><p>Only high quality video/audio - more about technical specifications <a href="#" data-toggle="modal" data-target="#techSpecModal">here</a></p></li>
+				<li><p>Min. video length 30 sec, shorter is rejected. Recommended: 9+ mins</p></li>
+				<li><p>Title, description and all meta data must be related to the video</p></li>
+				<li><p>Limited advertisments and watermarks: <a href="#" data-toggle="modal" data-target="#limitedAdsModal">more info</a></p></li>
+				<li><p>Hyperlinking to sites and using text with banned content is forbidden</p></li>
+			</ul>
+		</div>
+    </div>
+                </div><!-- Main -->
+            </div><!-- Container -->
+        
+        
+    <div class="modal fade" id="contactModal" tabindex="-1" role="dialog"
+    aria-labelledby="contactModalLabel" aria-hidden="true" data-banner-id>
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-body clearfix">
+                <h2 class="big">Contact Us</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <form id="contact">
+                    <div class="form-group">
+                        <label for="name" class="">Name</label>
+                        <input type="text" class="form-control validate-field" id="name" name="name"
+                            placeholder="Name" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="">My email address</label>
+                        <input type="email" class="form-control validate-field" id="email" name="email"
+                            placeholder="Email address" value="tedwantsmore@gmx.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="question" class="required">Please describe your question or issue</label>
+                        <textarea class="form-control validate-field" id="question" name="question"
+                            placeholder="Your question" rows="4"></textarea>
+                    </div>
+                    <div class="form-footer col-md-12">
+                        <button type="button" data-dismiss="modal" class="btn pull-left">Cancel</button>
+                        <button type="submit" class="btn btn-info">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+	<div class="modal fade" id="listOfWordsModal" tabindex="-1" role="dialog" aria-labelledby="listOfWordsModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-body clearfix">
+					<h2 class="big">Banned words</h2>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<ul class="clearfix">
+						<li><p>Anything suggesting Rape, Force, Abuse, Attack, Violence, Murder, Blood,	Gore</p></li>
+						<li><p>Animal, Bestiality, Zoophilia</p></li>
+						<li><p>Lolita, Pre-Teen, Young Looking, Children, Under 18 Years Old</p></li>
+						<li><p>Shit, Scat, Enema, Puke, Vomiting</p></li>
+						<li><p>Alcohol, Drinking, Getting Wasted, Crunk</p></li>
+						<li><p>Drugs, Cannabis, Cocaine, Ecstasy, Hallucinogens, Heroin, Methamphetamine</p></li>
+						<li><p>Incest and anything related: Mom-Son, Dad-Daughter, Brother-Sister, etc.</p></li>
+						<li><p>Any other illegal content that violates US &amp; International Law</p></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="limitedAdsModal" tabindex="-1" role="dialog" aria-labelledby="limitedAdsModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-body clearfix">
+					<h2 class="big">Limited advertisments</h2>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<ul class="clearfix">
+						<li><p>Pre and Post roll only, maximum 10 seconds, no banned content included</p></li>
+						<li><p>One watermark only in top/bottom-left/right corner, reasonable size, not	covering the video</p></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="techSpecModal" tabindex="-1" role="dialog" aria-labelledby="techSpecModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-body clearfix">
+					<h2 class="big">Technical specifications</h2>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="block-title">Video</h3>
+					<table width="100%" cellpadding="0" cellspacing="0" class="no-border">
+						<tr>
+							<td width="20%"><p><strong>Resolution</strong></p></td>
+							<td width="80%">
+								<p>Minimum: 640x480<br /><strong class="text-warning">Recommended: 1280x720p and up</strong></p>
+							</td>
+						</tr>
+						<tr>
+							<td width="20%"><p><strong>Codec</strong></p></td>
+							<td width="80%">
+								<p>H.264/MPEG-4 AVC</p>
+							</td>
+						</tr>
+					</table>
+					<h3 class="block-title">Audio</h3>
+					<table class="no-border" width="100%" cellpadding="0" cellspacing="0">
+						<tr>
+							<td width="20%"><p><strong>Codec</strong></p></td>
+							<td width="80%">
+								<p><strong class="text-warning">AAC 96kbit</strong></p>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="uploadVideoModal" tabindex="-1" role="dialog" aria-labelledby="uploadVideoModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-body clearfix">
+					<h2 class="big">Add Video from URL</h2>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<form>
+						<div class="form-group">
+							<label for="videoUrl" class="required">Url</label>
+							<input type="url" class="form-control" id="videoUrl" placeholder="start with http://">
+						</div>
+						<div class="form-footer col-md-12">
+							<button type="button" data-dismiss="modal" class="btn pull-left">Cancel</button>
+							<button type="submit" class="btn btn-primary">Upload</button>
+						</div>
+					</form>
+				</div>0
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="rulesTitleModal" tabindex="-1" role="dialog" aria-labelledby="rulesTitleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-body clearfix">
+					<h2 class="big">TITLE RULES AND RECOMMENDATIONS</h2>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<ul class="clearfix">
+						<li><p>Descriptive title true to the content of video</p></li>
+						<li><p>No banned or illegal words</p></li>
+						<li><p>Between 3 and 100 characters (avoid short titles if possible)</p></li>
+						<li><p>Allowed characters: A-Z / a-z / 0-9 / space / - , . !?</p></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="rulesDescModal" tabindex="-1" role="dialog" aria-labelledby="rulesDescModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-body clearfix">
+					<h2 class="big">DESCRIPTION RULES AND RECOMMENDATIONS</h2>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<ul class="clearfix">
+						<li><p>Detailed description true to the content of video</p></li>
+						<li><p>No banned or illegal words</p></li>
+						<li><p>Between 0 and 255 characters</p></li>
+						<li><p>Allowed characters: A-Z / a-z / 0-9 / space / - , . !?</p></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="rulesTagsModal" tabindex="-1" role="dialog" aria-labelledby="rulesTagsModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-body clearfix">
+					<h2 class="big">TAGS RULES AND RECOMMENDATIONS</h2>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<ul class="clearfix">
+						<li><p>Chose tags true to the content of video (max 6)</p></li>
+						<li><p>Between 0 and 16 characters (avoid short titles if possible)</p></li>
+						<li><p>Allowed characters: A-Z / a-z / 0-9 / space / -</p></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+             aria-labelledby="channelRulesModalLabel" aria-hidden="true">
+        </div>
+
+                <script type="text/x-handlebars-template" id="confirm-modal-tpl">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-body clearfix">
+                <h2 class="big">Please Confirm</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <div class="">
+                    <p class="text-center">{{ confirmText }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm pull-left" aria-hidden="true" data-dismiss="modal">
+                        Cancel
+                    </button>
+                    {{#each buttons}}
+                        <a class="btn btn-sm {{ class }}" onclick="{{ callback }}">
+                            {{ text }}
+                         </a>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="old-browser-warn-tpl">
+    <div class="alert alert-warning alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        For a smooth Upload Center experience consider using a browser with full HTML5 support (latest version of Chrome, Firefox or Safari)
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="error-feedback-tpl">
+    <div class="alert alert-dismissable alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        {{ message }}
+    </div>
+</script>
+        <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-46145228-2', 'hardsextube.com');
+    ga('send', 'pageview');
+
+</script>
+        <!-- THIRD PARTY JS -->
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script type="text/javascript" src="http://uploadcenter.hardsextube.com/assets/js/bootstrap.min.js"></script>
+
+        <!-- GULP:JS -->
+                <script type="text/javascript" src="http://cdn1b.static.hardsextube.com/uploadcenter/js/vendor_db996e409f538f09153b361de9cd6436.js"></script>
+        <script type="text/javascript" src="http://cdn2b.static.hardsextube.com/uploadcenter/js/scripts_2c3eef35726c081a2ab1a145a130eeef.js"></script>
+                <!-- /GULP:JS -->
+
+    </body>
+
+</html>
