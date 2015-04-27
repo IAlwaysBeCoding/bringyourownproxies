@@ -90,6 +90,8 @@ class InvalidAccount(AccountProblem):
 
 class CookiesFileDoesNotExist(AccountProblem):
     pass
+class VerificationLinkNotFound(AccountProblem):
+    pass
 
 class ParsingProblem(Exception):
     pass
@@ -104,4 +106,6 @@ class CaptchaProblem(Exception):
     pass
 
 class CaptchaRequired(CaptchaProblem):
+    pass
+class DeathByCaptchaProblem(CaptchaProblem):
     pass

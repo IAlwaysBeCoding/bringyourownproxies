@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import io
 import re
 import os
 import time
@@ -6,7 +7,6 @@ import time
 import requests
 import arrow
 import path
-import numpy as np
 
 from urlobject import URLObject
 from lxml import etree
@@ -17,8 +17,7 @@ from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
 from bringyourownproxies.httpclient import HttpSettings
 from bringyourownproxies.upload import Upload
 
-from bringyourownproxies.sites.errors import KummProblem
-
+from bringyourownproxies.sites.errors import KummProblem,NginxUploaderProblem
 
 class _Upload(Upload):
 
@@ -167,7 +166,6 @@ class KummUploader(object):
                     add_path('/autocomplete/tag').\
                     set_query_params([('sexuality',sexuality),('term',tag.lower())])
 
-
     def _upload_video(self,video_file,callback,session,proxy):
 
         upload_path = self._get_path_to_upload()
@@ -294,9 +292,120 @@ class NginxUploader(object):
 
         self.domain = domain
         self.http_settings = kwargs.get('http_settings',HttpSettings())
+        self.nginx_uploader_url = kwargs.get('nginx_uploader',
+                                             'http://direct.{domain}/admin/' \
+                                             'include/uploader_nginx.php'.format(domain=self.domain))
+
         self._chrsz = 8
-    def _upload_video(self):
-        pass
+
+    def upload(self,video_file,title,description,categories,tags,is_private,callback=None,session=None,proxy=None,**kwargs):
+
+        session = session or self.http_settings.session
+        proxy = proxy or self.http_settings.proxy
+
+        no_tags = kwargs.get('no_tags',False)
+        add_content_source_id = kwargs.get('add_content_source_id',False)
+
+        my_video_upload_url = 'http://www.{domain}/my_video_upload/'.format(domain=self.domain)
+
+        go_to_upload = session.get(my_video_upload_url,proxies=proxy)
+
+        doc = etree.fromstring(go_to_upload.content,HTMLParser())
+
+
+        filehash = self._upload_video(video_file,callback,session,proxy)
+
+        fields = []
+        if add_content_source_id:
+            found_content_source_id = doc.xpath('//input[@name="content_source_id"]/@value')
+            if not found_content_source_id:
+                raise NginxUploaderProblem('Cannot find required variable content_source_id')
+            content_source_id = found_content_source_id[0]
+            fields.append(('content_source_id',str(content_source_id)))
+
+
+        if not no_tags:
+            fields.append(('tags',str(",".join([tag for tag in tags]))))
+        fields.append(('action', 'add_new_complete'))
+        fields.append(('title',str(title)))
+        fields.append(('description',str(description)))
+        fields.append(('file',str(path.Path(video_file).name)))
+        fields.append(('file_hash',str(filehash)))
+        fields.append(('is_private',"1" if is_private else "0"))
+
+        for category in categories:
+            fields.append(('category_ids[]',str(category)))
+        encoder = MultipartEncoder(fields)
+
+        if callback:
+            monitor = MultipartEncoderMonitor(encoder,callback)
+        else:
+            monitor = MultipartEncoderMonitor(encoder)
+
+        #my_video_upload_url = 'http://httpbin.org/post'
+        submit_video = session.post(my_video_upload_url,
+                                    data=monitor,
+                                    proxies=proxy,
+                                    headers={'Content-Type': monitor.content_type})
+
+        with open('nginxuploader.html','w+') as f:
+            f.write(submit_video.content)
+
+
+    def _upload_video(self,video_file,callback,session,proxy):
+
+        session = session or self.http_settings.session
+        proxy = proxy or self.http_settings.proxy
+
+        filename = path.Path(video_file).name
+        filehash = self._generate_file_hash(filename)
+        fields =  []
+        fields.append(('filename',filehash))
+        fields.append(('content',(path.Path(video_file).name,open(video_file, 'rb'))))
+
+        encoder = MultipartEncoder(fields)
+
+        if callback:
+            monitor = MultipartEncoderMonitor(encoder,callback)
+        else:
+            monitor = MultipartEncoderMonitor(encoder)
+
+        url = '{nginx_uploader_url}?filename={filehash}' \
+            '&X-Progress-ID={filehash}'.format(nginx_uploader_url=self.nginx_uploader_url,
+                                               filehash=filehash)
+
+        self._get_upload_progress2(filehash)
+        upload_video = session.post(url,
+                                    data=monitor,
+                                    proxies=proxy,
+                                    headers={'Content-Type': monitor.content_type})
+
+        return filehash
+
+    def _get_upload_progress(self,filehash):
+
+        session = session or self.http_settings.session
+        proxy = proxy or self.http_settings.proxy
+
+        url = 'http://www.{domain}/admin/include/get_upload_status.php?'\
+            'filename={filehash}&X-Progress-ID={filehash}'\
+            '&rand={timestamp}'.format(domain=self.domain,filehash=filehash,timestamp=self._timestamp())
+
+        get_progress = session.get(url,proxies=proxy)
+        print get_progress.content
+
+    def _get_upload_progress2(self,filehash):
+
+        session = self.http_settings.session
+        proxy = self.http_settings.proxy
+
+        url = 'http://www.{domain}/get_upload_status2.php?'\
+            'X-Progress-ID={filehash}'\
+            '&rand={timestamp}'.format(domain=self.domain,filehash=filehash,timestamp=self._timestamp())
+
+        get_progress = session.get(url,proxies=proxy)
+        print get_progress.content
+
 
     def _generate_file_hash(self,filename):
         return self._encode('{filename}_{timestamp}'.format(filename=filename,timestamp=self._timestamp()))
@@ -305,27 +414,32 @@ class NginxUploader(object):
         return int(round(time.time() * 1000))
 
     def _encode(self,s):
-        return self._convert_to_hex(self._algo(self._convert_to_binary(s),len(s) + self._chrsz))
+        return self._convert_to_hex(self._algo(self._convert_to_binary(s),len(s) * self._chrsz))
 
     def _algo(self,x,lin):
-        print x
-        print lin
-        print lin >> 5
-        x[lin >> 5]  |= 0x80 << ((lin) % 32)
-        x_index = ((np.int32(lin + 64) >> 9 ) << 4) + 14
+
+        if lin >> 5 > len(x) - 1:
+            for i in xrange(len(x)-1,lin >> 5,1):
+                x.append(0)
+        x[-1] = 0x80 << ((lin) % 32)
+
+        x_index = ((( (lin + 64) & 0xFFFFFFFF )>> 9 ) << 4) + 14
         if x_index > len(x) - 1:
             for i in xrange(len(x)-1,x_index,1):
                 x.append(0)
+        x[-1] = lin
 
-        print x_index
-        x[x_index] = lin
+        copy_of_x = list(x)
+
+        for i in xrange(len(x)-1,256,1):
+            x.append(0)
 
         a = 1732584193
-        b = -2711733879
+        b = -271733879
         c = -1732584194
         d = 271733878
 
-        for i in xrange(0,len(x)-1,16):
+        for i in xrange(0,len(copy_of_x),16):
             olda = a
             oldb = b
             oldc = c
@@ -403,27 +517,37 @@ class NginxUploader(object):
         return [a,b,c,d]
 
     def _aaa(self,q,a,b,x,s,t):
-        return self._add(self._rol(self._add(self._add(a,q), self._add(x,t)),s),b)
+        a_q = self._add(a,q)
+        x_t = self._add(x,t)
+
+        add = self._add(a_q,x_t)
+        rol = self._rol(add,s)
+
+        ret = self._add(rol,b)
+
+        return ret
 
     def _bbb(self,a,b,c,d,x,s,t):
-        return self._aaa((b & c) | ((not b) & d),a,b,x,s,t)
+        ret = self._aaa((b & c) | ((~b) & d),a,b,x,s,t)
+        return ret
 
     def _ccc(self,a,b,c,d,x,s,t):
-        return self._aaa((b & d) | ( c & (not d)),a,b,x,s,t)
+        return self._aaa((b & d) | ( c & (~d)),a,b,x,s,t)
 
     def _ddd(self,a,b,c,d,x,s,t):
         return self._aaa(b ^ c ^ d,a,b,x,s,t)
 
     def _eee(self,a,b,c,d,x,s,t):
-        return self._aaa(c^(b|(not d)),a,b,x,s,t)
+        return self._aaa(c^(b|(~d)),a,b,x,s,t)
 
     def _add(self,x,y):
         lsw = (x & 0xFFFF) + (y & 0xFFFF)
-        msw = (x >> 16) + (y>>16) + (lsw >>16)
-        return (msw <<16) | (lsw & 0xFFFF)
+        msw = (x >> 16) + (y >> 16 ) + (lsw >> 16)
+        return ( msw << 16) | ( lsw & 0xFFFF)
 
     def _rol(self,num,cnt):
-        return (num << cnt) | (num >> np.int32(32 - cnt))
+        ret = (num << cnt) | ((num & 0xFFFFFFFF ) >> (32 - cnt))
+        return ret
 
     def _convert_to_binary(self,string):
         _bin = []
@@ -440,34 +564,48 @@ class NginxUploader(object):
 
         return _bin
 
-    def _convert_to_hex(binarray):
-
+    def _convert_to_hex(self,binarray):
         hex_tab = '0123456789abcdef'
         string = ''
-        for i in xrange(0,(len(binarray)*4)-1,1):
-            a = (binarray[i >> 2] >> ((i%4) * 8 + 4) & 0xF)
-            b = (binarray[i >> 2] >> ((i%4) * 8  & 0xF))
-            hex_tab_index = binarray[a+b]
-            string += hex_tab[hex_tab_index]
+        for i in xrange(0,(len(binarray)*4),1):
+            a = (binarray[i >> 2] >> ((i%4) * 8 + 4)) & 0xF
+            b = (binarray[i >> 2] >> ((i%4) * 8))  & 0xF
+
+            hex_tab_a = hex_tab[a]
+            hex_tab_b = hex_tab[b]
+
+            string += hex_tab_a+hex_tab_b
 
         return string
 
 if __name__ == '__main__':
-    from bringyourownproxies.sites import _4tubeAccount
-    account = _4tubeAccount(username="tedwantsmore",password="money1003",email="tedwantsmore@gmx.com")
+    from bringyourownproxies.sites import PrivateHomeClipsAccount,TubeCupAccount,HdZogAccount,MyLustAccount
+    account = MyLustAccount(username="tedwantsmore",password="money1003",email="tedwantsmore@gmx.com")
     account.login()
 
-    video_file = '/root/Dropbox/shower.mp4'
+    http_settings = account.http_settings
+
+    def progress(monitor):
+        pass
+
+    video_file = '/root/Dropbox/craigslistbitch.mp4'
     title = 'Hot girl taking a shower'
-    porn_stars = None
+    description = 'super hot girl taking a shower'
     tags = ('teen','black','amateur')
-    #staright = 1,gay =2,shemale=3
-    orientation = 1
-
-    uploader = NginxUploader(domain='http://www.privatehomeclips.com')
-    print uploader._generate_file_hash('shower.mp4')
-
-
+    categories = (24,232)
+    is_private = False
+    uploader = NginxUploader(domain='mylust.com',http_settings=http_settings)
+    nginx_uploader_url = 'http://mylust.com/uploader_nginx.php'
+    uploader.upload(video_file,
+                    title,
+                    description,
+                    categories,
+                    tags,
+                    is_private,
+                    callback=progress,
+                    add_screenshot=True,
+                    no_tags=True,
+                    nginx_uploader_url=nginx_uploader_url)
 
 
 

@@ -7,4 +7,6 @@ class CouldNotFindVar(AccountProblem):
 
 class KummProblem(UploadProblem):
     pass
+class NginxUploaderProblem(UploadProblem):
+    pass
 
