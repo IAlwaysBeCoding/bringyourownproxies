@@ -109,3 +109,5 @@ class CaptchaRequired(CaptchaProblem):
     pass
 class DeathByCaptchaProblem(CaptchaProblem):
     pass
+class RecaptchaProblem(CaptchaProblem):
+    pass

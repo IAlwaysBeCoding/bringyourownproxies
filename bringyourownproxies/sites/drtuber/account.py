@@ -18,24 +18,27 @@ class DrTuberAccount(_Account):
     @classmethod
     def create(cls,username,password,email,gender,**kwargs):
 
+        import io
+        from lxml import etree
+        from lxml.etree import HTMLParser
+
         def get_captcha_image():
             download_captcha = session.get('http://www.drtuber.com/captcha',proxies=proxy)
             captcha_data = io.BytesIO(download_captcha.content)
             return captcha_data
 
-        import io
-        from lxml import etree
-        from lxml.etree import HTMLParser
-
-        if gender == 'm':
+        if gender.lower() == 'm':
             gender = 'Male'
-        if gender == 'f':
+        if gender.lower() == 'f':
             gender = 'Female'
 
-        http_settings = HttpSettings()
+        http_settings = kwargs.get('http_settings',HttpSettings())
 
         session = kwargs.get('session',http_settings.session)
         proxy = kwargs.get('proxy',http_settings.proxy)
+        captcha_solver = kwargs.get('captcha_solver',DEFAULT_CAPTCHA_SOLVER)
+        maximum_waiting_time = kwargs.get('maximum_waiting_time',DEFAULT_CAPTCHA_MAXIMUM_WAITING)
+
 
         url = 'http://www.drtuber.com/ajax/popup_forms?form=signup'
         sign_up_form = session.get(url,proxies=proxy)
@@ -49,7 +52,9 @@ class DrTuberAccount(_Account):
         form_id = found_form_id[0]
 
         captcha_image = get_captcha_image()
-        captcha_response = cls.submit_captcha_and_wait(captcha_image,**kwargs)
+        captcha_response = cls.submit_captcha_and_wait(captcha_image,
+                                                       maximum_waiting_time=maximum_waiting_time,
+                                                       captcha_solver=captcha_solver)
 
         url = 'http://www.drtuber.com/signup/do?ajax=true&json=true'
 
@@ -75,7 +80,7 @@ class DrTuberAccount(_Account):
 
         remember_me = kwargs.get('remember_me',False)
 
-        return cls(username=username,password=password,email=email,remember_me=remember_me)
+        return cls(username=username,password=password,email=email,remember_me=remember_me,gender=gender)
 
     def login(self):
 
