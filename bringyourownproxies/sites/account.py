@@ -85,7 +85,7 @@ class _Account(OnlineAccount):
         return attempt_login
 
     @staticmethod
-    def verify_account(
+    def verify_account_in_html_email(
             http_settings,
             imap_server,
             username,
@@ -95,7 +95,6 @@ class _Account(OnlineAccount):
             match_substring=False,
             ssl=True):
 
-        import re
         from lxml import etree
         from lxml.etree import HTMLParser
         from imbox import Imbox
@@ -158,10 +157,74 @@ class _Account(OnlineAccount):
 
         session = http_settings.session
         proxy = http_settings.proxy
-
         verify = session.get(verification_link, proxies=proxy)
-
         return verify.content
+
+    @staticmethod
+    def verify_account_in_plain_email(
+                            http_settings,
+                            imap_server,
+                            username,
+                            password,
+                            sender,
+                            regexes,
+                            ssl=True):
+
+        import re
+        from imbox import Imbox
+
+        from bringyourownproxies.errors import VerificationLinkNotFound, AccountProblem
+
+        email_box = Imbox(imap_server, username, password, ssl)
+        msgs = email_box.messages(sent_from=sender)
+        verification_link = None
+        if isinstance(regexes, (list, tuple)):
+            if not isinstance(regexes[0], (list, tuple)):
+                if len(regexes) != 2:
+                    raise AccountProblem(
+                        'regexes needs to be a list/tuple each containing 2 tuple/list items' \
+                        ' one item is the regex the other is the group num when found')
+                else:
+                    regexes = [regexes]
+            else:
+                for regex in regexes:
+                    if isinstance(regex, (list, tuple)):
+                        if len(regex) != 2:
+                            raise AccountProblem(
+                                    'regexes needs to be a list/tuple each containing 2 tuple/list items' \
+                                        ' one item is the regex the other is the group num when found')
+                    else:
+                        raise AccountProblem(
+                                    'regexes needs to be a list/tuple each containing 2 tuple/list items' \
+                                    ' one item is the regex the other is the group num when found')
+        else:
+            raise AccountProblem(
+                        'regexes needs to be a list/tuple each containing 2 tuple/list items' \
+                        ' one item is the regex the other is the group num when found')
+
+        for msg in msgs:
+            uid, email = msg
+            content = email.body['plain'][0]
+            for regex_config in regexes:
+                regex,group_num = regex_config
+
+                found = re.search(regex,content)
+                if found:
+                    verification_link = found.group(group_num)
+                    break
+            if verification_link:
+                break
+
+        if not verification_link:
+            raise VerificationLinkNotFound('Could not find verification' \
+                                           'link from sender:{sender}'.format(sender=sender))
+
+        session = http_settings.session
+        proxy = http_settings.proxy
+        verify = session.get(verification_link, proxies=proxy)
+        return verify.content
+
+
 
     @staticmethod
     def submit_captcha_and_wait(
@@ -169,69 +232,11 @@ class _Account(OnlineAccount):
             maximum_waiting_time=DEFAULT_CAPTCHA_MAXIMUM_WAITING,
             captcha_solver=DEFAULT_CAPTCHA_SOLVER):
 
-        import time
+        from bringyourownproxies.captcha import submit_captcha_and_wait
 
-        def poll_death_by_captcha(captcha_id):
-            import json
-            import requests
-            url = 'http://api.dbcapi.me/api/captcha/' \
-                '{captcha_id}'.format(captcha_id=captcha_id)
-
-            check_status = requests.get(
-                url, headers={
-                    'Accept': 'application/json'})
-
-            try:
-                response = json.loads(check_status.content)
-                return response['text']
-
-            except ValueError:
-                if check_status.content == 'not+found':
-                    raise DeathByCaptchaProblem('Not a valid captcha id')
-
-        captcha_response = None
-
-        if isinstance(captcha_solver, DeathByCaptcha):
-
-            response = captcha_solver.upload(captcha)
-            if 'error' in response:
-                raise DeathByCaptchaProblem(
-                    'Error while submitting '
-                    'captcha:{error}'.format(
-                        error=response['error']))
-
-            if 'is_correct' in response:
-                if response['is_correct']:
-                    if not response['text']:
-                        current_waiting_time = 0
-
-                        while current_waiting_time < maximum_waiting_time:
-                            poll = poll_death_by_captcha(response['captcha'])
-                            if poll:
-                                captcha_response = poll
-                                break
-                            else:
-                                time.sleep(5)
-                                current_waiting_time += 5
-
-                        if not captcha_response:
-                            raise DeathByCaptchaProblem(
-                                'Timed out, took more than '
-                                'than the maximum amount of '
-                                'time:{t} allowed to retrieve a '
-                                'response'.format(
-                                    t=maximum_waiting_time))
-                    else:
-                        captcha_response = response['text']
-                else:
-                    raise DeathByCaptchaProblem('Captcha is incorrect')
-            else:
-                raise DeathByCaptchaProblem(
-                    'Unknown response by deathbycaptcha')
-
-            return captcha_response
-        else:
-            raise CaptchaProblem('Unknown captcha solver')
+        return submit_captcha_and_wait(captcha,
+                                maximum_waiting_time=maximum_waiting_time,
+                                captcha_solver=captcha_solver)
 
     def _find_sign_out(self, response, **kwargs):
 

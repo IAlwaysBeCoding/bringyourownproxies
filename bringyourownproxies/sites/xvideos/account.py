@@ -106,9 +106,9 @@ class XvideosAccount(_Account):
 
         captcha_image = get_recaptcha_image(challenge=recaptcha_challenge)
         captcha_response = cls.submit_captcha_and_wait(
-            captcha_image,
-            captcha_solver=captcha_solver,
-            maximum_waiting_time=maximum_waiting_time)
+                                                    captcha_image,
+                                                    captcha_solver=captcha_solver,
+                                                    maximum_waiting_time=maximum_waiting_time)
 
         post = {'referer': '',
                 'recaptcha_challenge_field': recaptcha_challenge,
@@ -135,6 +135,10 @@ class XvideosAccount(_Account):
         sign_up_errors = get_sign_up_errors(html=create_account.content)
 
         if sign_up_errors:
+            for error in sign_up_errors:
+                if error == 'Bad CAPTCHA.':
+                    raise CaptchaProblem('Wrong captcha')
+
             raise AccountProblem(
                 'Failed creating xvideos.com '
                 'account due to errors:{e}'.format(
@@ -151,6 +155,30 @@ class XvideosAccount(_Account):
                    region=region,
                    city=city,
                    remember_me=remember_me)
+
+    @staticmethod
+    def verify_account(http_settings,imap_server,username,password,ssl=True):
+
+        from lxml import etree
+        from lxml.etree import HTMLParser,tostring
+
+        clicked_link = _Account.verify_account_in_plain_email(http_settings,
+                                                            imap_server,
+                                                            username,
+                                                            password,
+                                                            sender='xvideos.com',
+                                                            regexes=(r'this\s+URL:\s+(.*?).\s+',1),
+                                                            ssl=True)
+
+
+        doc = etree.fromstring(clicked_link,HTMLParser())
+        found_success_msg = doc.xpath('//p[@class="inlineOK"]')
+        if found_success_msg:
+            p = found_success_msg[0].text
+            if p == 'Your email is now validated.':
+                return True
+        else:
+            raise AccountProblem('Failed verifying youporn account due to unknown error')
 
 
     def login(self):
@@ -183,9 +211,9 @@ class XvideosAccount(_Account):
             return True
 
 if __name__ == '__main__':
-    username = 'ilovepornalot1003'
-    password = 'Artiach1003'
-    email = 'emoneybizzy@gmail.com'
+    username = 'timisthebestdude'
+    password = 'wegohardallday'
+    email = 'timisthebestdude@gmail.com'
     gender = 'm'
     first_name = 'Derek'
     name = 'Derek'
@@ -193,14 +221,24 @@ if __name__ == '__main__':
     country = 'US'
     region = 'CA'
     city = 'West Sacramento'
-    create_account = XvideosAccount.create(
-        username,
-        password,
-        email,
-        gender,
-        name,
-        first_name,
-        birthdate,
-        country,
-        region,
-        city)
+    http_settings = HttpSettings()
+    http_settings.set_proxy(ip='127.0.0.1',port=3003)
+    '''
+    create_account = XvideosAccount.create(username,
+                                        password,
+                                        email,
+                                        gender,
+                                        name,
+                                        first_name,
+                                        birthdate,
+                                        country,
+                                        region,
+                                        city,
+                                        http_settings=http_settings)
+    '''
+    #create_account = YouPornAccount.create('timisthebest','wegohardallday','timisthebestdude@gmail.com','m',http_settings=http_settings)
+    account = XvideosAccount(username,password,email,http_settings=http_settings)
+    account.login()
+
+    verify_account = XvideosAccount.verify_account(account.http_settings,'imap.gmail.com','timisthebestdude@gmail.com','wegohardallday')
+

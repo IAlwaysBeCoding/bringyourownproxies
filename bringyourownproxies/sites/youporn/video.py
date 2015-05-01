@@ -18,7 +18,7 @@ from bringyourownproxies.sites.youporn.author import YouPornAuthor
 from bringyourownproxies.sites.youporn.comment import YouPornComment
 
 __all__ = ['YouPornTag','YouPornTitle','YouPornDescription',
-        'YouPornTag','YouPornCategory','YouPornVideoParser',
+        'YouPornCategory','YouPornVideoParser',
         'YouPornVideo','YouPornVideoUploadRequest','YouPornVideoUploaded']
 
 class YouPornTitle(Title):

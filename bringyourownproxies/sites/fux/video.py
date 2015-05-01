@@ -1,20 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import sys
-import traceback
-
-import path
-
-from lxml import etree
-from lxml.etree import HTMLParser,tostring
-
 from bringyourownproxies.video import (VideoUploadRequest,VideoUploaded,Tag,Category,Title)
 from bringyourownproxies.errors import (InvalidTag,InvalidCategory,InvalidTitle)
 
 
 __all__ = ['FuxTitle','FuxTag','FuxCategory',
             'FuxVideoUploadRequest','FuxVideoUploaded']
-                
+
 class FuxTitle(Title):
     SITE = 'Fux'
     SITE_URL = 'www.fux.com'
@@ -40,12 +32,12 @@ class FuxCategory(Category):
                 raise InvalidCategory('Invalid Category Name:{name}, it does not match a category id'.format(name=name))
 
             self.category_id = get_category_id
-            
+
         super(FuxCategory,self).__init__(name=name,**kwargs)
-    
+
 
     def _find_category_id(self,category):
-        
+
         if not category.lower() in self.CATEGORIES:
             raise InvalidCategory('Invalid category. Orientation can only be straight,gay or transsexual')
         else:
@@ -54,11 +46,11 @@ class FuxCategory(Category):
 
 class FuxVideoUploadRequest(VideoUploadRequest):
 
-    
+
     def __init__(self,video_file,title,tags,category,**kwargs):
-        
+
         self.porn_stars = kwargs.get('porn_stars',None)
-                
+
         self.autocorrect_tags = kwargs.get('autocorrect_tags',False)
         self.add_all_autocorrect_tags = kwargs.get('add_all_autocorrect_tags',False)
         self.drop_incorrect_tags = kwargs.get('drop_incorrect_tags',False)
@@ -66,15 +58,15 @@ class FuxVideoUploadRequest(VideoUploadRequest):
         requirements = [(category,(FuxCategory),InvalidCategory),
                         (tags,FuxTag,InvalidTag),
                         (title,FuxTitle,InvalidTitle)]
-        
+
         self._verify_upload_requirements(requirements)
-        
+
         super(FuxVideoUploadRequest,self).__init__(video_file=video_file,
                                                         title=title,
                                                         tags=tags,
                                                         category=category,
                                                         **kwargs)
-        
+
     def __repr__(self):
 
         return "<Fux UploadRequest title:{title} tags:{tags} category:{category}" \
@@ -88,5 +80,5 @@ class FuxVideoUploaded(VideoUploaded):
     pass
 
 
-    
-    
+
+

@@ -1,12 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import sys
-import traceback
-
-import path
-
-from lxml import etree
-from lxml.etree import HTMLParser,tostring
 
 from bringyourownproxies.video import VideoUploadRequest,VideoUploaded,Tag,Category,Title
 from bringyourownproxies.errors import InvalidTag,InvalidCategory,InvalidTitle

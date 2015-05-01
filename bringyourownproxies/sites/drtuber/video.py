@@ -1,12 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import sys
-import traceback
-
-import path
-
-from lxml import etree
-from lxml.etree import HTMLParser,tostring
 
 from bringyourownproxies.video import (VideoUploadRequest,VideoUploaded,Tag,
 										Category,Description,Title)
@@ -32,7 +25,6 @@ class DrTuberTag(Tag):
     SITE = 'DrTuber'
     SITE_URL = 'www.drtuber.com'
 
-
 class DrTuberCategory(Category):
     SITE = 'DrTuber'
     SITE_URL = 'www.drtuber.com'
@@ -47,9 +39,8 @@ class DrTuberCategory(Category):
                 raise InvalidCategory('Invalid Category Name:{name}, it does not match a category id'.format(name=name))
 
             self.category_id = get_category_id
-            
+
         super(DrTuberCategory,self).__init__(name=name,**kwargs)
-    
 
 class DrTuberCategoryStraight(DrTuberCategory):
     CATEGORIES = {
@@ -154,7 +145,7 @@ class DrTuberCategoryStraight(DrTuberCategory):
 		"vintage": "92",
 		"voyeur": "93",
 		"webcam": "94"}
-    
+
     def _find_category_id(self,category):
 
         if category.lower() in self.CATEGORIES:
@@ -234,14 +225,14 @@ class DrTuberCategoryGay(DrTuberCategory):
                 "threesome": "80",
                 "vintage": "77",
                 "webcam": "78"}
-    
+
     def _find_category_id(self,category):
-           
+
         if category.lower() in self.CATEGORIES:
             return self.CATEGORIES[category.lower()]
 
 class DrTuberCategoryTranssexual(DrTuberCategory):
-       
+
     CATEGORIES = {
 		"amateur": "138",
 		"asian": "173",
@@ -278,7 +269,7 @@ class DrTuberCategoryTranssexual(DrTuberCategory):
 		"teens": "166",
 		"toys": "158",
 		"webcam": "168"}
-    
+
     def _find_category_id(self,category):
 
         if category.lower() in self.CATEGORIES:
@@ -286,22 +277,22 @@ class DrTuberCategoryTranssexual(DrTuberCategory):
 
 class DrTuberVideoUploadRequest(VideoUploadRequest):
 
-    
+
     def __init__(self,video_file,title,tags,category,description,**kwargs):
-        
+
         self.site_link = kwargs.get('site_link',None)
         self.site_name = kwargs.get('site_name',None)
         self.porn_star = kwargs.get('porn_star',None)
         self.is_private = kwargs.get('is_private',False)
         self.thumbnail_id = kwargs.get('thumbnail_id',1)
-        
+
         requirements = [(category,(DrTuberCategoryStraight,DrTuberCategoryGay,DrTuberCategoryTranssexual),InvalidCategory),
                         (tags,DrTuberTag,InvalidTag),
                         (title,DrTuberTitle,InvalidTitle),
                         (description,DrTuberDescription,InvalidDescription)]
-        
+
         self._verify_upload_requirements(requirements)
-        
+
         super(DrTuberVideoUploadRequest,self).__init__(video_file=video_file,
                                                         title=title,
                                                         tags=tags,
@@ -315,5 +306,5 @@ class DrTuberVideoUploaded(VideoUploaded):
 
 
     #print tnaflix_video.get_comments()
-    
-    
+
+

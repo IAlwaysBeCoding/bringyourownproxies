@@ -18,7 +18,6 @@ class YouPornAccount(_Account):
     def __init__(self,username,password,email,**kwargs):
         super(YouPornAccount,self).__init__(username=username,password=password,email=email,**kwargs)
 
-
     @classmethod
     def create(cls,username,password,email,gender,**kwargs):
 
@@ -37,12 +36,8 @@ class YouPornAccount(_Account):
 
         session.get('http://www.youporn.com',proxies=proxy)
         ip = session.get('http://www.getip.com/',proxies=proxy)
-        with open('/root/Dropbox/get_ip.html','w+') as f:
-            f.write(ip.content)
         register_page = session.get('http://www.youporn.com/register/',proxies=proxy)
 
-        with open('/root/Dropbox/youporn_registration_page.html','w+') as f:
-            f.write(register_page.content)
         post = {'registration[username]':username,
                 'registration[password]':password,
                 'registration[confirm_password]':password,
@@ -51,25 +46,16 @@ class YouPornAccount(_Account):
                 'registration[terms_of_service]':'1',
                 'registration[local_data]':'{}'}
 
-        print post
         create_account = session.post('http://www.youporn.com/register/',data=post,proxies=proxy)
 
-        with open('/root/Dropbox/youporn_outlook_create.html','w+') as f:
-            f.write(create_account.content)
         doc = etree.fromstring(create_account.content,HTMLParser())
+        errors = []
+        find_errors = doc.xpath('//ul[@class="error"]/li')
+        if find_errors:
+            errors = [e.text for e in find_errors]
 
-        inner_content_h1  = doc.xpath('//div[@class="content-inner"]/h1')
-        found_success_msg = False
-        if inner_content_h1:
-            for h1 in inner_content_h1:
-                if h1.text:
-                    if 'Please check your email and confirm your address.' in h1.text:
-                        found_success_msg = True
-                        break
-
-        if not found_success_msg:
-            raise AccountProblem('Did get message back saying to confirm email address. '\
-                                 'Youporn account creation failed')
+        if errors:
+            raise AccountProblem('Youporn account creation failed due to errors:{e}'.format(e=' AND '.join(errors)))
 
         return cls(username=username,password=password,email=email,gender=gender,**kwargs)
 
@@ -79,30 +65,28 @@ class YouPornAccount(_Account):
         from lxml import etree
         from lxml.etree import HTMLParser,tostring
 
-        clicked_link = _Account.verify_account(http_settings,
-                                                imap_server,
-                                                username,
-                                                password,
-                                                sender='youporn.com',
-                                                clues=('text','Activate Your Free Account'),
-                                                match_substring=True,
-                                                ssl=True)
+        clicked_link = _Account.verify_account_in_html_email(http_settings,
+                                                        imap_server,
+                                                        username,
+                                                        password,
+                                                        sender='youporn.com',
+                                                        clues=('text','Activate Your Free Account'),
+                                                        match_substring=True,
+                                                        ssl=True)
 
         doc = etree.fromstring(clicked_link,HTMLParser())
-        inner_content = doc.xpath('//div[@class="content-inner"]')
-        if inner_content:
-           inner_doc = etree.fromstring(tostring(inner_content[0]),HTMLParser())
-           h1 = inner_doc.xpath('//h1')
-           if h1:
-               if h1[0].text:
-                   if 'An error has occured!' in h1[0].text:
-                       error_txt = inner_doc.xpath('//p')[0].text
-                       raise AccountProblem('Failed verifying youporn account due to:{e}'.format(e=error_txt))
+        found_success_msg = doc.xpath('//div[@class="userMessageContent"]//p')
+        if found_success_msg:
+            p = found_success_msg[0].text
+            if p == 'Your account has been activated successfully':
+                return True
+        else:
+            error_msg = doc.xpath('//div[@class="content-inner"]//p')
+            if error_msg:
+                raise AccountProblem('Failed verifying youporn account due to:{e}'.format(e=error_msg[0].text))
 
-        raise AccountProblem('Failed verifying youporn account due to unknown error')
+            raise AccountProblem('Failed verifying youporn account due to unknown error')
 
-        with open('/root/Dropbox/youporn_outlook_clicked.html','w+') as f:
-            f.write(clicked_link)
 
     def login(self):
 
@@ -138,9 +122,9 @@ if __name__ == '__main__':
     from bringyourownproxies.sites import YouPornAccount
     #account = YouPornAccount('emoneybizzy','money1003','emoneybizzy@gmail.com')
     http_settings = HttpSettings()
-    http_settings.set_proxy(ip='127.0.0.1',port=3001)
-    create_account = YouPornAccount.create('IamprettyFamous1003','money1003','iamprettyfamouskid@gmail.com','m',http_settings=http_settings)
-    verify_account = YouPornAccount.verify_account(http_settings,'imap.gmail.com','Iamprettyfamouskid@gmail.com','money1003')
+    http_settings.set_proxy(ip='127.0.0.1',port=3003)
+    #create_account = YouPornAccount.create('timisthebest','wegohardallday','timisthebestdude@gmail.com','m',http_settings=http_settings)
+    verify_account = YouPornAccount.verify_account(http_settings,'imap.gmail.com','timisthebestdude@gmail.com','wegohardallday')
     #verify_account = YouPornAccount.verify_account(account.http_settings,'imap.gmail.com','emoneybizzy@gmail.com','money1003')
     #account.login()
 

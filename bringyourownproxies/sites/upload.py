@@ -39,7 +39,6 @@ class UbrUploader(object):
         self.path_to_cgi = kwargs.get('path_to_cgi','/cgi-bin/')
         self.path_to_ubr = kwargs.get('path_to_ubr','/')
 
-
     def _get_path_to_ubr(self):
         domain = URLObject(self.domain)
         return domain.with_path(self.path_to_ubr)
