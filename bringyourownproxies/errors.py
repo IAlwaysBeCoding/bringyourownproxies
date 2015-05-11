@@ -18,10 +18,10 @@ class InvalidVideoType(VideoProblem):
 
 class VideoFileDoesNotExist(VideoProblem):
     pass
-
+class VideoParserError(VideoProblem):
+    pass
 class InvalidVideoUploadRequest(VideoProblem):
     pass
-
 class InvalidRequirements(VideoProblem):
     pass
 
