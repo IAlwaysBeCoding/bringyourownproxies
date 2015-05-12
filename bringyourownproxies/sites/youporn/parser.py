@@ -43,13 +43,19 @@ class YouPornVideoParser(VideoParser):
         " scrolling=no name=yp_embed_video>" \
         "</iframe>".format(url=video_url)
 
-        print embed_code
         author_name = document.xpath('//button[@data-name]//@data-name')[0]
         author_href = document.xpath('//div[@class="author-block--line"]//a')[0].attrib['href']
         author = YouPornAuthor(name=author_name,href=author_href)
-        total_comments =document.xpath('//li[@id="tabComments"]//a[@href="javascript:void(0)"]')[0] \
-                         .text.replace('Comments (','').replace(')','')
 
+        has_zero_comments = document.xpath('//div[@id="tab-comments"]//h2[@class="psi"]')
+        if has_zero_comments:
+            if has_zero_comments[0].text == 'All Comments (0)':
+                total_comments = 0
+        else:
+            total_comments = document.xpath('//div[@id="tab-comments"]/ul/h2')[0] \
+                         .text.replace('All Comments (','').replace(')','')
+
+        print total_comments
         return {'total_comments':int(total_comments),
                 'author':author,
                 'porn_stars':porn_stars,

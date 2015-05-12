@@ -3,10 +3,8 @@
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin,AccountNotActivated,NotLogined
 from bringyourownproxies.httpclient import HttpSettings
-
 from bringyourownproxies.sites.account import _Account
-
-from bringyourownproxies.sites import YouPornProfile
+from bringyourownproxies.sites.youporn.properties import YouPornProfile
 
 __all__ = ['YouPornAccount']
 
