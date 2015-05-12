@@ -6,7 +6,7 @@ import path
 
 from ua_parser import user_agent_parser
 from lxml import etree
-from lxml.etree import HTMLParser, tostring
+from lxml.etree import HTMLParser
 
 from bringyourownproxies.errors import (
     InvalidVideoUploadRequest,
@@ -14,16 +14,17 @@ from bringyourownproxies.errors import (
     NotLogined,
     FailedUpload,
     CannotFindVar,
-    InvalidThumbnailId)
+    InvalidThumbnailId,
+    InvalidCategory)
 
 from bringyourownproxies.sites.upload import _Upload
 from bringyourownproxies.sites.hardsextube.account import HardSexTubeAccount
-from bringyourownproxies.sites.hardsextube.video import (HardSexTubeVideoUploadRequest, HardSexTubeCategoryStraight
-                                                         )
-
+from bringyourownproxies.sites.hardsextube.video import HardSexTubeVideoUploadRequest
+from bringyourownproxies.sites.hardsextube.properties import (HardSexTubeCategoryStraight,
+                                                            HardSexTubeCategoryGay,
+                                                            HardSexTubeCategoryTranssexual)
 
 __all__ = ['HardSexTubeUpload']
-
 
 class HardSexTubeUpload(_Upload):
 
@@ -57,9 +58,11 @@ class HardSexTubeUpload(_Upload):
                 orientation = 'straight'
             elif isinstance(category,HardSexTubeCategoryGay):
                 orientation = 'gay'
-            else:
+            elif isinstance(category,HardSexTubeCategoryTranssexual):
                 orientation = 'tranny'
-
+            else:
+                raise InvalidCategory('Hardsextube category needs to be straight' \
+                                      ' gay or transsexual')
             self.call_hook(
                 'started',
                 video_upload_request=self.video_upload_request,
@@ -111,7 +114,6 @@ class HardSexTubeUpload(_Upload):
                 account=self.account,
                 traceback=traceback.format_exc(),
                 exc_info=sys.exc_info())
-            print traceback.format_exc()
 
             if self.bubble_up_exception:
                 raise exc

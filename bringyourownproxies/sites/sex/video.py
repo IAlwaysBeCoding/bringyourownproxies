@@ -3,21 +3,11 @@
 import re
 import path
 
-from bringyourownproxies.video import OnlineVideo,VideoUploadRequest,Tag
+from bringyourownproxies.video import OnlineVideo,VideoUploadRequest
 from bringyourownproxies.errors import InvalidVideoParser
-
 from bringyourownproxies.sites.sex.parser import SexParser
 
-__all__ = ['SexTag','SexVideoPinRequest','SexVideoPin']
-
-class SexTag(Tag):
-    SITE = 'Sex'
-    SITE_URL = 'www.sex.com'
-
-    def __init__(self,name,**kwargs):
-        self.href = kwargs.pop('href') if kwargs.get('href',False) else None
-
-        super(SexTag,self).__init__(name=name,**kwargs)
+__all__ = ['SexVideoPinRequest','SexVideoPin']
 
 class SexVideoPinRequest(VideoUploadRequest):
 

@@ -2,11 +2,12 @@ import re
 
 from bringyourownproxies.parser import VideoParser
 from bringyourownproxies.sites.sex.errors import CouldNotParseFramePinUlr
+from bringyourownproxies.sites.sex.properties import SexTag,SexComment
 
-from bringyourownproxies.sites.sex.video import SexTag
-from bringyourownproxies.sites.sex.comment import SexComment
+__all__ = ['SexParser']
 
 class SexParser(VideoParser):
+
     def get_frame_url(self,html):
 
         doc = self.etree.fromstring(html,self.parser)
@@ -85,5 +86,4 @@ class SexParser(VideoParser):
                 'exact_uploaded_date':exact_uploaded_date,
                 'comments':comments,
                 'total_comments':int(total_comments)}
-
 

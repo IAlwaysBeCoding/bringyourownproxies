@@ -1,22 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from bringyourownproxies.video import VideoUploadRequest, VideoUploaded, Tag, Title
+from bringyourownproxies.video import VideoUploadRequest, VideoUploaded
 from bringyourownproxies.errors import InvalidTag, InvalidTitle
+from bringyourownproxies.sites.redtube.properties import RedTubeTag,RedTubeTitle
 
-
-__all__ = ['RedTubeTitle', 'RedTubeTag',
-           'RedTubeVideoUploadRequest', 'RedTubeVideoUploaded']
-
-
-class RedTubeTitle(Title):
-    SITE = 'RedTube'
-    SITE_URL = 'www.pornhub.com'
-
-
-class RedTubeTag(Tag):
-    SITE = 'RedTube'
-    SITE_URL = 'www.pornhub.com'
-
+__all__ = ['RedTubeVideoUploadRequest', 'RedTubeVideoUploaded']
 
 class RedTubeVideoUploadRequest(VideoUploadRequest):
 
@@ -34,7 +22,6 @@ class RedTubeVideoUploadRequest(VideoUploadRequest):
                                                         title=title,
                                                         tags=tags,
                                                         **kwargs)
-
 
 class RedTubeVideoUploaded(VideoUploaded):
     pass

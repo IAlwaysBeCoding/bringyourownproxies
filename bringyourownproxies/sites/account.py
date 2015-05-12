@@ -25,7 +25,6 @@ JSON_SUCCESS_KEY = []
 JSON_ERROR_KEY = []
 JSON_ERROR_MESSAGES_KEY = []
 
-
 class _Account(OnlineAccount):
 
     def _login(self, **kwargs):

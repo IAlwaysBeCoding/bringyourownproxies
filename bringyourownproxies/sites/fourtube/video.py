@@ -2,48 +2,10 @@
 # -*- coding: utf-8 -*-
 from bringyourownproxies.video import (VideoUploadRequest,VideoUploaded,Tag,Category,Title)
 from bringyourownproxies.errors import (InvalidTag,InvalidCategory,InvalidTitle)
+from bringyourownproxies.sites.fourtube.properties import _4tubeTag,_4tubeCategory,_4tubeTitle
 
 
-
-__all__ = ['_4tubeTitle','_4tubeTag','_4tubeCategory',
-            '_4tubeVideoUploadRequest','_4tubeVideoUploaded']
-
-class _4tubeTitle(Title):
-    SITE = '_4tube'
-    SITE_URL = 'www.4tuber.com'
-
-class _4tubeTag(Tag):
-    SITE = '_4tube'
-    SITE_URL = 'www.4tuber.com'
-
-
-class _4tubeCategory(Category):
-    SITE = '_4tube'
-    SITE_URL = 'www.4tuber.com'
-    CATEGORIES = {'straight':1,
-                'gay':2,
-                'shemale':3}
-    def __init__(self,name,**kwargs):
-
-        self.category_id = kwargs.get('category_id',None)
-        if self.category_id is None:
-            get_category_id = self._find_category_id(category=name)
-
-            if get_category_id is None:
-                raise InvalidCategory('Invalid Category Name:{name}, it does not match a category id'.format(name=name))
-
-            self.category_id = get_category_id
-
-        super(_4tubeCategory,self).__init__(name=name,**kwargs)
-
-
-    def _find_category_id(self,category):
-
-        if not category.lower() in self.CATEGORIES:
-            raise InvalidCategory('Invalid category. Orientation can only be straight,gay or transsexual')
-        else:
-            return self.CATEGORIES[category.lower()]
-
+__all__ = ['_4tubeVideoUploadRequest','_4tubeVideoUploaded']
 
 class _4tubeVideoUploadRequest(VideoUploadRequest):
 
@@ -75,7 +37,6 @@ class _4tubeVideoUploadRequest(VideoUploadRequest):
                                                 tags=",".join([t.name for t in self.tags]),
                                                 category=self.category.name,
                                                 description=self.description.name[:25])
-
 
 class _4tubeVideoUploaded(VideoUploaded):
     pass

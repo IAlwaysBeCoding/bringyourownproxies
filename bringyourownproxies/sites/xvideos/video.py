@@ -1,29 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import urllib
 import re
 
-from bringyourownproxies.parser import VideoParser
-from bringyourownproxies.video import (VideoUploadRequest,OnlineVideo,
-                                        VideoUploaded,Tag,Description,Title)
+from bringyourownproxies.video import VideoUploadRequest,OnlineVideo,VideoUploaded
 from bringyourownproxies.errors import InvalidTag,InvalidDescription,InvalidTitle
+from bringyourownproxies.sites.xvideos.properties import XvideosTag,XvideosDescription,XvideosTitle
 
-
-__all__ = ['XvideosTitle','XvideosTag','XvideosDescription',
-            'XvideosVideoUploadRequest','XvideosVideoUploaded',
-           'XvideosVideo']
-class XvideosTitle(Title):
-    SITE = 'Xvideos'
-    SITE_URL = 'www.xvideos.com'
-
-class XvideosTag(Tag):
-    SITE = 'Xvideos'
-    SITE_URL = 'www.xvideos.com'
-
-class XvideosDescription(Description):
-
-	SITE = 'Xvideos'
-	SITE_URL = 'www.xvideos.com'
+__all__ = ['XvideosVideoUploadRequest','XvideosVideoUploaded','XvideosVideo']
 
 class XvideosVideoUploadRequest(VideoUploadRequest):
 
@@ -48,9 +31,6 @@ class XvideosVideoUploadRequest(VideoUploadRequest):
     			'tags':[t.name for t in self.tags],
     			'is_private':'1' if self.is_private else '0',
     			'description':self.description.name}
-
-class XvideosVideoUploaded(VideoUploaded):
-    pass
 
 class XvideosVideo(OnlineVideo):
     SITE = 'Xvideos'
@@ -135,4 +115,6 @@ if __name__ == '__main__':
     print video_stats
     print download_url
 
+class XvideosVideoUploaded(VideoUploaded):
+    pass
 

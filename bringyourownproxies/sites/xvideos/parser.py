@@ -4,6 +4,7 @@ import re
 from bringyourownproxies.parser import VideoParser
 from bringyourownproxies.errors import VideoParserError
 
+__all__ = ['XvideosVideoParser']
 class XvideosVideoParser(VideoParser):
 
     def get_video_stats(self,html):

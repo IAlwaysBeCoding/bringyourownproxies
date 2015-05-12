@@ -1,7 +1,11 @@
-from bringyourownproxies.parser import VideoParser
+import re
 
-from bringyourownproxies.sites import (YouPornComment,YouPornTag,YouPornCategory,
-                                       YouPornAuthor)
+from bringyourownproxies.parser import VideoParser
+from bringyourownproxies.errors import VideoParserError
+from bringyourownproxies.sites.youporn.properties import (YouPornComment,YouPornTag,
+                                                          YouPornCategory,YouPornAuthor)
+__all__ = ['YouPornVideoParser']
+
 class YouPornVideoParser(VideoParser):
 
     def get_video_stats(self,html):
@@ -16,6 +20,7 @@ class YouPornVideoParser(VideoParser):
         views = document.xpath('//div[@id="stats-views"]/text()')[0].replace(',','')
         uploaded_date = document.xpath('//div[@id="stats-date"]/text()')[0]
         title = document.xpath('//div[@class="container_15"]/h1[@class="grid_9"]')[0].text
+
         get_video_details = document.xpath('//ul[@class="info-list-content"]//a')
 
         for a in get_video_details:
@@ -32,7 +37,7 @@ class YouPornVideoParser(VideoParser):
                 elif item_type == 'pornstar':
                     porn_stars.append((a.text,a.attrib['href']))
 
-        video_url = doc.xpath('//link[@href]/@href')[0]
+        video_url = document.xpath('//link[@href]/@href')[0]
         embed_code = "<iframe src={url}" \
         " frameborder=0 height=481 width=608" \
         " scrolling=no name=yp_embed_video>" \
@@ -100,4 +105,4 @@ class YouPornVideoParser(VideoParser):
         else:
             return (None,None,None)
 
-c
+

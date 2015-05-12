@@ -22,7 +22,6 @@ from bringyourownproxies.sites.pornhub.video import PornhubVideoUploadRequest
 
 __all__ = ['PornhubUpload']
 
-
 class PornhubUpload(_Upload):
 
     def start(self):

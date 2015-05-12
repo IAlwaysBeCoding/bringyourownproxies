@@ -6,133 +6,15 @@ import traceback
 
 import path
 
-from lxml import etree
-from lxml.etree import HTMLParser,tostring
-
-from bringyourownproxies.video import (OnlineVideo,VideoUploadRequest,VideoUploaded,
-                                       Tag,Category,Description,Title)
+from bringyourownproxies.video import OnlineVideo,VideoUploadRequest,VideoUploaded
 from bringyourownproxies.errors import (InvalidVideoUrl,InvalidVideoParser,InvalidTag,
                                         InvalidCategory,InvalidTitle,InvalidDescription)
 
 from bringyourownproxies.sites.youporn.parser import YouPornVideoParser
-from bringyourownproxies.sites.youporn.author import YouPornAuthor
-from bringyourownproxies.sites.youporn.comment import YouPornComment
+from bringyourownproxies.sites.youporn.properties import (YouPornTag,YouPornCategory,YouPornDescription,
+                                                        YouPornTitle)
 
-__all__ = ['YouPornTag','YouPornTitle','YouPornDescription',
-        'YouPornCategory','YouPornVideo','YouPornVideoUploadRequest',
-        'YouPornVideoUploaded']
-
-class YouPornTitle(Title):
-    SITE = 'YouPorn'
-    SITE_URL = 'www.youporn.com'
-
-class YouPornDescription(Description):
-    SITE = 'YouPorn'
-    SITE_URL = 'www.youporn.com'
-
-class YouPornTag(Tag):
-    SITE = 'YouPorn'
-    SITE_URL = 'www.youporn.com'
-
-    def __init__(self,name,**kwargs):
-        self.href = kwargs.pop('href') if kwargs.get('href',False) else None
-
-        super(YouPornTag,self).__init__(name=name,**kwargs)
-
-class YouPornCategory(Category):
-    SITE = 'YouPorn'
-    SITE_URL = 'www.youporn.com'
-
-    CATEGORIES = {'amateur':'1',
-                'hairy': '46',
-                'brunette': '52',
-                'squirting': '39',
-                'german': '58',
-                'bisexual': '5',
-                'handjob': '22',
-                'milf': '29',
-                'fantasy': '42',
-                'pantyhose': '57',
-                'fingering': '62',
-                'asian': '3',
-                'latina': '49',
-                'blonde': '51',
-                'hentai': '23',
-                'rimming': '43',
-                'ebony': '8',
-                'solo male': '60',
-                'interview': '41',
-                'gonzo': '50',
-                'vintage': '33',
-                'threesome': '38',
-                'shaved': '54',
-                'lesbian': '26',
-                'pov': '36',
-                'big butt': '6',
-                'voyeur': '34',
-                'bbw': '4',
-                'fetish': '18',
-                'shemale': '31',
-                'panties': '56',
-                'compilation': '11',
-                'european': '48',
-                'solo girl': '27',
-                'cunnilingus': '15',
-                'gay': '20',
-                'funny': '19',
-                'female friendly': '67',
-                'big tits': '7',
-                'redhead': '53',
-                'blowjob': '9',
-                'creampie': '13',
-                'facial': '17',
-                'kissing': '40',
-                'webcam': '35',
-                'anal': '2',
-                'dp': '16',
-                'couples': '12',
-                'instructional': '24',
-                'romantic': '61',
-                'straight sex': '47',
-                'dildos/toys': '44',
-                'teen': '32',
-                'public': '30',
-                'cumshots': '37',
-                'interracial': '25',
-                'orgy': '21',
-                'mature': '28',
-                'college': '10',
-                'swallow': '59',
-                'massage': '64',
-                'masturbation': '55'}
-
-    def __init__(self,name,**kwargs):
-
-        self.href = kwargs.pop('href') if kwargs.get('href',False) else None
-        self.category_id = kwargs.get('category_id',None)
-        if self.category_id is None:
-            get_category_id = self._find_category_id(category=name)
-
-            if get_category_id is None and self.href is not None:
-                find_category_id = re.match('/(.*?)/(.*?)/(.*?)/',self.href,re.I|re.M)
-                if find_category_id:
-                    self.category_id = find_category_id.group(2)
-                else:
-                    raise InvalidCategory('Invalid Category Name, it does not match a category id')
-
-            elif get_category_id is not None:
-                self.category_id = get_category_id
-            else:
-
-                raise InvalidCategory('Invalid Category Name, it does not match a category id')
-
-
-        super(YouPornCategory,self).__init__(name=name,**kwargs)
-
-    def _find_category_id(self,category):
-
-        if category.lower() in self.CATEGORIES:
-            return self.CATEGORIES[category.lower()]
+__all__ = ['YouPornVideo','YouPornVideoUploadRequest','YouPornVideoUploaded']
 
 class YouPornVideo(OnlineVideo):
     SITE = 'YouPorn'
@@ -186,8 +68,6 @@ class YouPornVideo(OnlineVideo):
             save_at = path.Path.joinpath(saving_path,filename)
 
             go_to_video = self.go_to_video()
-            session = self.http_settings.session
-            proxy = self.http_settings.proxy
             video_url = self.video_parser.get_download_url(go_to_video)
             self._download(video_url,name_to_save_as)
 

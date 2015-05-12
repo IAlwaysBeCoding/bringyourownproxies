@@ -7,14 +7,10 @@ import random
 
 import path
 
-from lxml import etree
-from lxml.etree import HTMLParser, tostring
-
 from bringyourownproxies.errors import (
     InvalidVideoUploadRequest,
     InvalidAccount,
     NotLogined,
-    InvalidTitle,
     FailedUpload,
     CannotFindVar)
 
@@ -45,16 +41,13 @@ class RedTubeUpload(_Upload):
 
             session = self.account.http_settings.session
             proxy = self.account.http_settings.proxy
-
-            go_to_upload_splash = session.get(
-                'http://www.redtube.com/uploadsplash',
-                proxies=proxy)
+            session.get('http://www.redtube.com/uploadsplash',proxies=proxy)
 
             self.call_hook(
                 'started',
                 video_upload_request=self.video_upload_request,
                 account=self.account)
-            isLogged = session.post('http://www.redtube.com/upload/islogged',proxies=proxy)
+            session.post('http://www.redtube.com/upload/islogged',proxies=proxy)
             self._upload()
 
         except Exception as exc:
@@ -65,7 +58,6 @@ class RedTubeUpload(_Upload):
                 account=self.account,
                 traceback=traceback.format_exc(),
                 exc_info=sys.exc_info())
-            print traceback.format_exc()
 
             if self.bubble_up_exception:
                 raise exc
@@ -144,7 +136,7 @@ class RedTubeUpload(_Upload):
         fields.append(('fileSize', str(path.Path(video_file).getsize())))
         fields.append(('tags', str('|'.join([t.name for t in tags]))))
         fields.append(('filesCount', str('1')))
-        fields.append(('type', str('1')))
+        fields.append(('type', '2' if is_private else '1'))
         fields.append(('title', title.name))
         fields.append(('MultiPowUpload_browserCookie',str(cookies)))
         fields.append(('MultiPowUploadId', str(generate_pow_upload_id())))

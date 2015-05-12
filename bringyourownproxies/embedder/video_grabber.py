@@ -13,7 +13,6 @@ class VideoGrabber(object):
         self.http_settings = http_settings
         self._sites = SITES
 
-
     def grab_embed_code(self,url):
         session = self.http_settings.session
         proxy = self.http_settings.proxy

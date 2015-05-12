@@ -2,12 +2,7 @@
 import sys
 import traceback
 
-import path
-
-from lxml import etree
-from lxml.etree import HTMLParser,tostring
-
-from bringyourownproxies.errors import (InvalidVideoUploadRequest,InvalidAccount,NotLogined)
+from bringyourownproxies.errors import InvalidVideoUploadRequest,InvalidAccount,NotLogined
 from bringyourownproxies.sites.upload import _Upload
 from bringyourownproxies.sites.porntube.account import PornTubeAccount
 from bringyourownproxies.sites.porntube.video import PornTubeVideoUploadRequest
@@ -22,17 +17,17 @@ class PornTubeUpload(_Upload):
             if not isinstance(self.video_upload_request,PornTubeVideoUploadRequest):
                 raise InvalidVideoUploadRequest('Invalid video_upload_request, ' \
                                         'it needs to be a PornTubeVideoUploadRequest instance')
-                                        
+
             if not isinstance(self.account,PornTubeAccount):
                 raise InvalidAccount('Invalid account, it needs to be a PornTubeAccount instance')
-            
-            
+
+
             if not self.account.is_logined():
                 raise NotLogined('PornTube account is not logined')
-            
+
             self.call_hook('started',video_upload_request=self.video_upload_request,account=self.account)
 
-                
+
             domain="http://porntube.com"
             website="porntube"
             username = self.account.username
@@ -40,7 +35,7 @@ class PornTubeUpload(_Upload):
             drop_incorrect_tags = self.video_upload_request.drop_incorrect_tags
             add_all_autocorrect_tags = self.video_upload_request.add_all_autocorrect_tags
             autocorrect_tags = self.video_upload_request.autocorrect_tags
-            
+
             uploader = KummUploader(domain,
                                     website,
                                     username,
@@ -48,15 +43,15 @@ class PornTubeUpload(_Upload):
                                     drop_incorrect_tags=drop_incorrect_tags,
                                     add_all_autocorrect_tags=add_all_autocorrect_tags,
                                     autocorrect_tags=autocorrect_tags)
-                                    
+
             video_file = self.video_upload_request.video_file
             title = self.video_upload_request.title
             porn_stars = self.video_upload_request.porn_stars
             tags = [t.name for t in self.video_upload_request.tags]
-            orientation = self.video_upload_request.category.category_id                        
+            orientation = self.video_upload_request.category.category_id
 
             uploader.upload(video_file,title,porn_stars,tags,orientation)
-                
+
         except Exception as exc:
 
             self.call_hook('failed',video_upload_request=self.video_upload_request,
@@ -64,16 +59,16 @@ class PornTubeUpload(_Upload):
                                     traceback=traceback.format_exc(),
                                     exc_info=sys.exc_info())
 
-            print traceback.format_exc()    
+            print traceback.format_exc()
             if self.bubble_up_exception:
                 raise exc
-        
+
         else:
 
             self.call_hook('finished',
                             video_request=self.video_upload_request,
                             account=self.account,
                             settings={''})
-            
+
             return {'status':True}
 
