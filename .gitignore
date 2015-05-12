@@ -5,3 +5,4 @@ dist/
 *.swn
 *.swo
 *.swp
+.ropeproject
