@@ -43,6 +43,7 @@ class YouPornVideoParser(VideoParser):
         " scrolling=no name=yp_embed_video>" \
         "</iframe>".format(url=video_url)
 
+        print embed_code
         author_name = document.xpath('//button[@data-name]//@data-name')[0]
         author_href = document.xpath('//div[@class="author-block--line"]//a')[0].attrib['href']
         author = YouPornAuthor(name=author_name,href=author_href)
