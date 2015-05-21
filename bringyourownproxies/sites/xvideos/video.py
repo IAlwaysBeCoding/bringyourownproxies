@@ -38,18 +38,18 @@ class XvideosVideo(OnlineVideo):
 
     def __init__(self,title=None,category=None,**kwargs):
 
-        self.url = kwargs.pop('url') if kwargs.get('url',False) else None
-        self.video_id = kwargs.pop('video_id') if kwargs.get('video_id',False) else self._get_video_id()
-        self.video_parser = kwargs.pop('video_parser') if kwargs.get('video_parser',False) else XvideosVideoParser()
-        self.ratings = kwargs.pop('ratings') if kwargs.get('ratings',False) else None
-        self.ratings_percentage = kwargs.pop('ratings_percentage') if kwargs.get('ratings_percentage',False) else None
-        self.views = kwargs.pop('views') if kwargs.get('views',False) else None
-        self.uploaded_date = kwargs.pop('uploaded_date') if kwargs.get('uploaded_date',False) else None
-        self.categories = kwargs.pop('categories') if kwargs.get('categories',False) else None
-        self.tags = kwargs.pop('tags') if kwargs.get('tags',False) else None
-        self.author = kwargs.pop('author') if kwargs.get('author',False) else None
-        self.porn_stars = kwargs.pop('porn_stars') if kwargs.get('porn_stars',False) else None
-        self.total_comments = kwargs.pop('total_comments') if kwargs.get('total_comments',False) else None
+        self.url = kwargs.pop('url',None)
+        self.video_id = kwargs.pop('video_id',self._get_video_id())
+        self.video_parser = kwargs.pop('video_parser',XvideosVideoParser())
+        self.ratings = kwargs.pop('ratings',None)
+        self.ratings_percentage = kwargs.pop('ratings_percentage',None)
+        self.views = kwargs.pop('views',None)
+        self.uploaded_date = kwargs.pop('uploaded_date',None)
+        self.categories = kwargs.pop('categories',None)
+        self.tags = kwargs.pop('tags',None)
+        self.author = kwargs.pop('author',None)
+        self.porn_stars = kwargs.pop('porn_stars',None)
+        self.total_comments = kwargs.pop('total_comments',None)
 
         if not isinstance(self.video_parser,XvideosVideoParser):
             raise InvalidVideoParser('parser is not a valid XvideosVideoParser')

@@ -56,9 +56,9 @@ class OnlineVideo(Video):
     def __init__(self,url,title,category,**kwargs):
 
         self.url = url
-        self.iter_size = kwargs.pop('iter_size') if kwargs.get('iter_size',False) else 1024
-        self.http_settings = kwargs.pop('http_settings') if kwargs.get('http_settings',False) else HttpSettings()
-        self.bubble_up_exception = kwargs.pop('bubble_up_exception') if kwargs.get('bubble_up_exception',False) else False
+        self.iter_size = kwargs.pop('iter_size',1024)
+        self.http_settings = kwargs.pop('http_settings',HttpSettings())
+        self.bubble_up_exception = kwargs.pop('bubble_up_exception',False)
 
         hooks = kwargs.pop('hooks') if kwargs.get('hooks',False) else {}
 

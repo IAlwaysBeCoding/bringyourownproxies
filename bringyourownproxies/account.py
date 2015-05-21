@@ -25,8 +25,8 @@ class OnlineAccount(Account):
     def __init__(self,username,password,**kwargs):
         self.username = username
         self.password = password
-        self.http_settings = kwargs.pop('http_settings') if kwargs.get('http_settings',False) else HttpSettings()
-        self.email = kwargs.pop('email') if kwargs.get('email',False) else None
+        self.http_settings = kwargs.pop('http_settings',HttpSettings())
+        self.email = kwargs.pop('email',None)
         super(OnlineAccount,self).__init__(username=username,password=password,**kwargs)
 
     @classmethod
@@ -39,7 +39,6 @@ class OnlineAccount(Account):
 
     def login(self,**kwargs):
         raise NotImplementedError('Subclasses should implement this')
-
 
     def _put_cookies_in_a_dict(self,cookies_loc):
 

@@ -85,7 +85,6 @@ class YouPornAccount(_Account):
 
             raise AccountProblem('Failed verifying youporn account due to unknown error')
 
-
     def login(self):
 
         login  = self._login(username='login[username]',

@@ -13,8 +13,7 @@ class SexVideoPinRequest(VideoUploadRequest):
 
     def __init__(self,video_file,title,tags,board,**kwargs):
         self.board = board
-        self.sex_tags = kwargs.pop('sex_tags') if kwargs.get('sex_tags',False) else []
-
+        self.sex_tags = kwargs.pop('sex_tags',[])
 
         super(SexVideoPinRequest,self).__init__(video_file=video_file,
                                                 title=title,
@@ -33,12 +32,12 @@ class SexVideoPin(OnlineVideo):
     SITE = 'Sex'
     SITE_URL = 'www.sex.com'
     def __init__(self,url=None,title=None,category=None,**kwargs):
-        self.pin_id = kwargs.pop('pin_id') if kwargs.get('pin_id',False) else None
-        self.sex_parser = kwargs.pop('sex_parser') if kwargs.get('sex_parser',False) else SexParser()
-        self.pinned_date = kwargs.pop('pinned_date') if kwargs.get('pinned_date',False) else None
-        self.author = kwargs.pop('author') if kwargs.get('author',False) else None
-        self.tags = kwargs.pop('tags') if kwargs.get('tags',False) else None
-        self.total_comments = kwargs.pop('total_comments') if kwargs.get('total_comments',False) else None
+        self.pin_id = kwargs.pop('pin_id',None)
+        self.sex_parser = kwargs.pop('sex_parser',SexParser())
+        self.pinned_date = kwargs.pop('pinned_date',None)
+        self.author = kwargs.pop('author',None)
+        self.tags = kwargs.pop('tags',None)
+        self.total_comments = kwargs.pop('total_comments',None)
 
         if type(self.sex_parser) != SexParser:
             raise InvalidVideoParser('parser is not a valid SexParser')

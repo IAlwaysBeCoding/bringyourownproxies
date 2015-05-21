@@ -25,18 +25,18 @@ class XvideosUpload(_Upload):
             if not isinstance(self.video_upload_request,XvideosVideoUploadRequest):
                 raise InvalidVideoUploadRequest('Invalid video_upload_request, ' \
                                         'it needs to be a XvideosVideoUploadRequest instance')
-                                        
+
             if not isinstance(self.account,XvideosAccount):
                 raise InvalidAccount('Invalid account, it needs to be a XvideosAccount instance')
-            
+
             if not self.account.is_logined():
                 raise NotLogined('Xvideos account is not logined')
-            
+
             self.call_hook('started',video_upload_request=self.video_upload_request,account=self.account)
 
             session = self.account.http_settings.session
             proxy = self.account.http_settings.proxy
-            
+
             go_to_upload = session.get('http://upload.xvideos.com/account/uploads/new',proxies=proxy)
 
             doc = etree.fromstring(go_to_upload.content,HTMLParser())
@@ -59,17 +59,17 @@ class XvideosUpload(_Upload):
                 tags = tags.name
 
             fields = []
-            
+
             fields.append(('APC_UPLOAD_PROGRESS',get_apc_upload_progress[0]))
             fields.append(('message',''))
             fields.append(('tags',tags))
             fields.append(('upload_file',(path.Path(video_file).name,open(video_file, 'rb'))))
             encoder = type(self).create_multipart_encoder(fields)
-            
-            self.upload_monitor = type(self).create_multipart_monitor(encoder=encoder,callback=self._hooks['uploading'])                                                
 
-            self.call_hook('uploading',video_upload_request=self.video_upload_request,account=self.account)            
-            
+            self.upload_monitor = type(self).create_multipart_monitor(encoder=encoder,callback=self._hooks['uploading'])
+
+            self.call_hook('uploading',video_upload_request=self.video_upload_request,account=self.account)
+
             url = 'http://upload.xvideos.com/account/uploads/submit?video_type=other'
             upload_video = session.post(url,
                                         data=self.upload_monitor,
@@ -88,10 +88,9 @@ class XvideosUpload(_Upload):
                         find_video_id = re.match(r'/account/uploads/(.*?)/edit',url)
                         if find_video_id:
                             video_id = find_video_id.group(1)
-                    
                     raise CannotFindVar('Cannot find video id after finishing uploading video')
-                
-                raise FailedUpload('Unknown status,failed uploading to xvideos')    
+
+                raise FailedUpload('Unknown status,failed uploading to xvideos')
 
         except Exception as exc:
 
@@ -99,29 +98,29 @@ class XvideosUpload(_Upload):
                                     account=self.account,
                                     traceback=traceback.format_exc(),
                                     exc_info=sys.exc_info())
-            
+
             if self.bubble_up_exception:
                 raise exc
-        
+
         else:
 
             self.call_hook('finished',
                             video_request=self.video_upload_request,
                             account=self.account,
                             settings={'video_id':video_id})
-            
+
             return {'status':True}
 
     @staticmethod
     def update_video_settings(settings,video_id,account):
-        
+
         session = account.http_settings.session
         proxy = account.http_settings.proxy
 
         if not account.is_logined():
             raise NotLogined('YouPorn account is not logined')
         url = 'http://upload.xvideos.com/account/uploads/{videoId}/edit'.format(videoId=video_id)
-        
+
         go_to_video = session.get(url,proxies=proxy)
         post =  {"title]":settings['title'],
                 "description]":settings['description'],
@@ -142,5 +141,5 @@ class XvideosUpload(_Upload):
             if find_error:
                 error = find_error[0].text
                 raise FailedUpdatingVideoSettings('Failed updating video settings due to error:{err}'.format(err=error))
-            
+
             raise FailedUpdatingVideoSettings('Unknown error while updating video settings')

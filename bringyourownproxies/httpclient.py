@@ -117,8 +117,8 @@ class DynamicProxySwitcher(HttpSettings):
 
     def __init__(self,user_agent=None,proxy=None,cookies=None,session=None,**kwargs):
         #Try to see if proxies and use_random_proxy was passed to kwargs. If it was pop them out so we can later pass them as **kwargs to super()
-        proxies = kwargs.pop('proxies') if kwargs.get('proxies',False) else None
-        use_random_proxy = kwargs.pop('use_random_proxy') if kwargs.get('use_random_proxy',False) else False
+        proxies = kwargs.pop('proxies',None)
+        use_random_proxy = kwargs.pop('use_random_proxy',False)
 
         if proxies is None:
             raise MissingValidProxySettings('proxies is set to None,proxies need to be a valid list containing dictionaries of proxies configuration')
@@ -199,8 +199,8 @@ class DynamicUserAgentSwitcher(HttpSettings):
 
     def __init__(self,user_agent=None,proxy=None,cookies=None,session=None,**kwargs):
         #Check to see if user_agents and use_random_user_agent is in kwargs,and if they are pop them or set it to None
-        user_agents = kwargs.pop('user_agents') if kwargs.get('user_agents',False) else None
-        use_random_user_agent = kwargs.pop('use_random_user_agent') if kwargs.get('use_random_user_agent',False) else False
+        user_agents = kwargs.pop('user_agents',None)
+        use_random_user_agent = kwargs.pop('use_random_user_agent',False)
 
         if user_agents is None:
             raise MissingValidUserAgentSettings('user_agents is set to None.It needs to be a list and have 1 or more User-Agents ')
@@ -277,12 +277,12 @@ class DynamicUserAgentProxySwitcher(DynamicProxySwitcher,DynamicUserAgentSwitche
     def __init__(self,user_agent=None,proxy=None,cookies=None,session=requests.Session(),**kwargs):
 
         #Set the default proxy settings
-        proxies = kwargs.pop('proxies') if kwargs.get('proxies',False) else None
-        use_random_proxy = kwargs.pop('use_random_proxy') if kwargs.get('use_random_proxy',False) else False
+        proxies = kwargs.pop('proxies',None)
+        use_random_proxy = kwargs.pop('use_random_proxy',False)
 
         #Set the default User-Agent settings
-        user_agents = kwargs.pop('user_agents') if kwargs.get('user_agents',False) else None
-        use_random_user_agent = kwargs.pop('use_random_user_agent') if kwargs.get('use_random_user_agent',False) else False
+        user_agents = kwargs.pop('user_agents',None)
+        use_random_user_agent = kwargs.pop('use_random_user_agent',False)
 
         super(DynamicUserAgentProxySwitcher,self).__init__(user_agent=user_agent,
                                                             proxy=proxy,

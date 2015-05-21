@@ -55,7 +55,28 @@ class YouPornVideoParser(VideoParser):
             total_comments = document.xpath('//div[@id="tab-comments"]/ul/h2')[0] \
                          .text.replace('All Comments (','').replace(')','')
 
-        print total_comments
+        has_description = document.xpath('//div[@id="videoDescription"]')
+        if has_description:
+            description = document.xpath('//div[@id="videoDescription"]//p')[0].text
+        else:
+            description = ''
+
+        found_default_thumbnail = re.search(r'"default_thumbnail_url":"(.*?)"',html)
+        if not found_default_thumbnail:
+            raise VideoParserError('Cannot get thumbnail image for youporn video')
+
+        thumbnail = found_default_thumbnail.group(1)
+
+        found_duration_seconds = re.search(r'"duration_in_seconds":"(.*?)"',html)
+        if not found_duration_seconds:
+            raise VideoParserError('Cannot get duration in seconds for youporn video')
+        duration_seconds = found_duration_seconds.group(1)
+
+        found_duration_text = re.search(r'"duration_f":"(.*?)"',html)
+        if not found_duration_text:
+            raise VideoParserError('Cannot get duration text for youporn video')
+        duration_text = found_duration_text.group(1)
+
         return {'total_comments':int(total_comments),
                 'author':author,
                 'porn_stars':porn_stars,
@@ -66,6 +87,10 @@ class YouPornVideoParser(VideoParser):
                 'ratings':ratings,
                 'ratings_percentage':ratings_percentage,
                 'title':title,
+                'thumbnail':thumbnail,
+                'duration_seconds':duration_seconds,
+                'duration_text':duration_text,
+                'description':description,
                 'embed_code':embed_code}
 
     def get_download_url(self,html):
