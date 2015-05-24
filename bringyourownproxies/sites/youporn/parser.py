@@ -8,7 +8,7 @@ __all__ = ['YouPornVideoParser']
 
 class YouPornVideoParser(VideoParser):
 
-    def get_video_stats(self,html):
+    def get_video_stats(self,html,**kwargs):
 
         categories = []
         tags = []
@@ -93,7 +93,7 @@ class YouPornVideoParser(VideoParser):
                 'description':description,
                 'embed_code':embed_code}
 
-    def get_download_url(self,html):
+    def get_download_url(self,html,**kwargs):
         document = self.etree.fromstring(html,self.parser)
         get_video_url = document.xpath('//video[@id="player-html5"]/@src')
         if not get_video_url:
@@ -136,5 +136,4 @@ class YouPornVideoParser(VideoParser):
 
         else:
             return (None,None,None)
-
 

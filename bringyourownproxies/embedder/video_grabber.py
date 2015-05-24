@@ -1,15 +1,19 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import io
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
 
 from bringyourownproxies.httpclient import HttpSettings
 from bringyourownproxies.embedder.errors import VideoGrabberProblem
-from bringyourownproxies.embedder.sites import (youporn,motherless,drtuber,redtube)
+from bringyourownproxies.embedder.sites import (youporn,motherless,
+                                                drtuber,redtube,pornhub)
 
 SITES = {'youporn':youporn,
          'motherless':motherless,
          'drtuber':drtuber,
-         'redtube':redtube}
+         'redtube':redtube,
+         'pornhub':pornhub}
 
 class VideoGrabber(object):
 
@@ -36,7 +40,6 @@ class VideoGrabber(object):
         go_to_video,site = self._go_to_video(url)
         return self.grab(site,go_to_video)
 
-
     def grab_download_url(self,url,**kwargs):
         go_to_video,site = self._go_to_video(url)
 
@@ -48,8 +51,8 @@ class VideoGrabber(object):
 
     def grab(self,site,html,**kwargs):
 
-        get_video_url = kwargs.get('get_video_url',False)
-        get_video_stats = kwargs.get('get_video_stats',True)
+        get_video_url = kwargs.pop('get_video_url',False)
+        get_video_stats = kwargs.pop('get_video_stats',True)
         download_url = None
         video_stats = None
 
@@ -59,7 +62,7 @@ class VideoGrabber(object):
                 download_url = self._sites[site](html=html,get='download',**kwargs)
                 result.append(download_url)
             if get_video_stats:
-                video_stats = self._sites[site](html=html,get='stats')
+                video_stats = self._sites[site](html=html,get='stats',**kwargs)
                 result.append(video_stats)
 
             if len(result) == 1:
@@ -74,12 +77,13 @@ if __name__ == '__main__':
     url = 'http://www.youporn.com/watch/9171547/blonde-teen-in-interracial-gangbang/'
     url = 'http://motherless.com/FF8FFDF'
     url = 'http://www.redtube.com/7928'
-    url = 'http://www.drtuber.com/video/2217855/katie-summers-ass-and-face-drilling-deep-by-mike-adriano'
+    #url = 'http://www.drtuber.com/video/2217855/katie-summers-ass-and-face-drilling-deep-by-mike-adriano'
+    url = 'http://www.pornhub.com/view_video.php?viewkey=31372320'
 
     video_stats = video_grabber.grab_video_stats(url)
-    download_url = video_grabber.grab_download_url(url)
-    print video_stats
-    print download_url
+    download_url = video_grabber.grab_download_url(url,download_quality='720')
+    print 'video_stats:{v}'.format(v=video_stats)
+    print 'download_url:{d}'.format(d=download_url)
 
     #youporn_video = video_grabber.grab_embed_code(url)
     #print youporn_video

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import urllib
 import re
 
@@ -7,6 +9,7 @@ from bringyourownproxies.errors import VideoParserError
 __all__ = ['RedTubeParser']
 
 class RedTubeParser(VideoParser):
+
     def _get_categories(self,html):
 
         categories = []
@@ -45,6 +48,15 @@ class RedTubeParser(VideoParser):
         all_txt = td_doc.xpath('//text()')[1].strip().replace('ADDED ','')
 
         return all_txt
+
+    def _get_download_options(self,html):
+        find_video_options = re.search(r'{"hd":"(.*?)","480p":"(.*?)","mobile":"(.*?)",}]}',html)
+        if find_video_options:
+            return {'hd':find_video_options.group(1),
+                    '480':find_video_options.group(2),
+                    'mobile':find_video_options.group(3)}
+
+        raise VideoParserError('Could not parse video download options for redtube.com video')
 
     def get_video_stats(self,html):
 
@@ -88,13 +100,13 @@ class RedTubeParser(VideoParser):
                 'title':title,
                 'views':views}
 
+    def _get_download_options(self,html,**kwargs):
 
-    def _get_download_options(self,html):
-        find_video_options = re.search(r'{"hd":"(.*?)","480p":"(.*?)","mobile":"(.*?)",}]}',html)
+        find_video_options = re.search(r'{"hd":"(.*?)","480p":"(.*?)","mobile":"(.*?)"}\]}',html)
         if find_video_options:
-            return {'hd':find_video_options.group(1),
-                    '480':find_video_options.group(2),
-                    'mobile':find_video_options.group(3)}
+            return {'720':None if not find_video_options.group(1) else find_video_options.group(1),
+                    '480':None if not find_video_options.group(2) else find_video_options.group(2),
+                    'mobile':None if not find_video_options.group(3) else find_video_options.group(3)}
 
         raise VideoParserError('Could not parse video download options for redtube.com video')
 
@@ -114,5 +126,5 @@ class RedTubeParser(VideoParser):
             if download_quality in download_options:
                 return download_options[download_quality]
 
-            raise VideoParser('Invalid download quality, only available options are hd,480,mobile or default')
+            raise VideoParser('Invalid download quality, only available options are 720,480,mobile or default')
 

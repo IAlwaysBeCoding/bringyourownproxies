@@ -7,7 +7,6 @@ from bringyourownproxies.errors import VideoParserError
 __all__ = ['DrTuberParser']
 
 class DrTuberParser(VideoParser):
-
     def _get_categories(self,html):
 
         categories = []
@@ -17,7 +16,7 @@ class DrTuberParser(VideoParser):
 
         return categories
 
-    def get_video_stats(self,html):
+    def get_video_stats(self,html,**kwargs):
 
         document = self.etree.fromstring(html,self.parser)
         title = document.xpath('//p[@class="title_substrate"]')[0].text
@@ -49,8 +48,7 @@ class DrTuberParser(VideoParser):
                 'uploaded_date':uploaded_date,
                 'title':title}
 
-
-    def get_download_url(self,html):
+    def get_download_url(self,html,**kwargs):
 
         document = self.etree.fromstring(html,self.parser)
         download_url = document.xpath('//source[@src]/@src')

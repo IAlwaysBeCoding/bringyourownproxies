@@ -73,7 +73,7 @@ class MotherlessParser(VideoParser):
                         replace(',','')
                         for txt in h2_doc.xpath('//text()')])
 
-    def get_video_stats(self,html):
+    def get_video_stats(self,html,**kwargs):
 
         document = self.etree.fromstring(html,self.parser)
         comments = self._get_all_comments(html=html)
@@ -99,8 +99,7 @@ class MotherlessParser(VideoParser):
                 'title':title,
                 'favorited':favorited}
 
-
-    def get_download_url(self,html):
+    def get_download_url(self,html,**kwargs):
 
         found_download_url = re.search(r"__fileurl = '(.*?)';",html)
         if not found_download_url:
