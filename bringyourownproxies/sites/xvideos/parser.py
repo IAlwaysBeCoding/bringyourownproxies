@@ -4,10 +4,10 @@ import re
 from bringyourownproxies.parser import VideoParser
 from bringyourownproxies.errors import VideoParserError
 
-__all__ = ['XvideosVideoParser']
-class XvideosVideoParser(VideoParser):
+__all__ = ['XvideosParser']
 
-    def get_video_stats(self,html):
+class XvideosParser(VideoParser):
+    def get_video_stats(self,html,**kwargs):
         tags = []
 
         document = self.etree.fromstring(html,self.parser)
@@ -33,7 +33,7 @@ class XvideosVideoParser(VideoParser):
                 'ratings':ratings,
                 'ratings_percentage':ratings_percentage}
 
-    def get_download_url(self,html):
+    def get_download_url(self,html,**kwargs):
 
         found_flv_url = re.search(r'flv_url=(.*?)\&amp;',html)
         if not found_flv_url:

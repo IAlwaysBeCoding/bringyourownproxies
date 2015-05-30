@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import io
-from lxml import etree
-from lxml.etree import HTMLParser,tostring
-
 from bringyourownproxies.httpclient import HttpSettings
 from bringyourownproxies.embedder.errors import VideoGrabberProblem
 from bringyourownproxies.embedder.sites import (youporn,motherless,
-                                                drtuber,redtube,pornhub)
+                                                drtuber,redtube,
+                                                pornhub,xvideos)
 
 SITES = {'youporn':youporn,
          'motherless':motherless,
          'drtuber':drtuber,
          'redtube':redtube,
-         'pornhub':pornhub}
+         'pornhub':pornhub,
+         'xvideos':xvideos}
 
 class VideoGrabber(object):
 
@@ -75,16 +73,15 @@ class VideoGrabber(object):
 if __name__ == '__main__':
     video_grabber = VideoGrabber()
     url = 'http://www.youporn.com/watch/9171547/blonde-teen-in-interracial-gangbang/'
-    url = 'http://motherless.com/FF8FFDF'
-    url = 'http://www.redtube.com/7928'
+    #url = 'http://motherless.com/FF8FFDF'
+    #url = 'http://www.redtube.com/7928'
     #url = 'http://www.drtuber.com/video/2217855/katie-summers-ass-and-face-drilling-deep-by-mike-adriano'
-    url = 'http://www.pornhub.com/view_video.php?viewkey=31372320'
-
+    #url = 'http://www.pornhub.com/view_video.php?viewkey=31372320'
+    #url = 'http://www.xvideos.com/video10858627/omg_big_tits_granny_really_loves_when_it_hurts'
     video_stats = video_grabber.grab_video_stats(url)
-    download_url = video_grabber.grab_download_url(url,download_quality='720')
+    download_url = video_grabber.grab_download_url(url,download_quality='480')
     print 'video_stats:{v}'.format(v=video_stats)
     print 'download_url:{d}'.format(d=download_url)
 
     #youporn_video = video_grabber.grab_embed_code(url)
     #print youporn_video
-

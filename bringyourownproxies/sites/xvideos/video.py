@@ -7,7 +7,6 @@ from bringyourownproxies.errors import InvalidTag,InvalidDescription,InvalidTitl
 from bringyourownproxies.sites.xvideos.properties import XvideosTag,XvideosDescription,XvideosTitle
 
 __all__ = ['XvideosVideoUploadRequest','XvideosVideoUploaded','XvideosVideo']
-
 class XvideosVideoUploadRequest(VideoUploadRequest):
 
     def __init__(self,video_file,title,tags,description,**kwargs):
@@ -40,7 +39,7 @@ class XvideosVideo(OnlineVideo):
 
         self.url = kwargs.pop('url',None)
         self.video_id = kwargs.pop('video_id',self._get_video_id())
-        self.video_parser = kwargs.pop('video_parser',XvideosVideoParser())
+        self.video_parser = kwargs.pop('video_parser',XvideosParser())
         self.ratings = kwargs.pop('ratings',None)
         self.ratings_percentage = kwargs.pop('ratings_percentage',None)
         self.views = kwargs.pop('views',None)
@@ -51,8 +50,8 @@ class XvideosVideo(OnlineVideo):
         self.porn_stars = kwargs.pop('porn_stars',None)
         self.total_comments = kwargs.pop('total_comments',None)
 
-        if not isinstance(self.video_parser,XvideosVideoParser):
-            raise InvalidVideoParser('parser is not a valid XvideosVideoParser')
+        if not isinstance(self.video_parser,XvideosParser):
+            raise InvalidVideoParser('parser is not a valid XvideosParser')
 
         super(XvideosVideo,self).__init__(title=title,
                                         category=category,
@@ -109,7 +108,7 @@ class XvideosVideo(OnlineVideo):
 if __name__ == '__main__':
     import requests
     download = requests.get('http://www.xvideos.com/video11357701/japanese_schoolgirl_bus_chikan')
-    parser = XvideosVideoParser()
+    parser = XvideosParser()
     download_url = parser.get_download_url(html=download.content)
     video_stats = parser.get_video_stats(html=download.content)
     print video_stats

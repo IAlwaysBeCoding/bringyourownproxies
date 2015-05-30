@@ -4,9 +4,9 @@ from bringyourownproxies.parser import VideoParser
 from bringyourownproxies.errors import VideoParserError
 from bringyourownproxies.sites.youporn.properties import (YouPornComment,YouPornTag,
                                                           YouPornCategory,YouPornAuthor)
-__all__ = ['YouPornVideoParser']
+__all__ = ['YouPornParser']
 
-class YouPornVideoParser(VideoParser):
+class YouPornParser(VideoParser):
 
     def get_video_stats(self,html,**kwargs):
 
@@ -66,8 +66,9 @@ class YouPornVideoParser(VideoParser):
             raise VideoParserError('Cannot get thumbnail image for youporn video')
 
         thumbnail = found_default_thumbnail.group(1)
-
-        found_duration_seconds = re.search(r'"duration_in_seconds":"(.*?)"',html)
+        with open('/root/Dropbox/youporn_parse.html','w+') as f:
+            f.write(html)
+        found_duration_seconds = re.search(r'"duration_in_seconds":(.*?)',html)
         if not found_duration_seconds:
             raise VideoParserError('Cannot get duration in seconds for youporn video')
         duration_seconds = found_duration_seconds.group(1)

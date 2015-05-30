@@ -10,7 +10,7 @@ from bringyourownproxies.video import OnlineVideo,VideoUploadRequest,VideoUpload
 from bringyourownproxies.errors import (InvalidVideoUrl,InvalidVideoParser,InvalidTag,
                                         InvalidCategory,InvalidTitle,InvalidDescription)
 
-from bringyourownproxies.sites.youporn.parser import YouPornVideoParser
+from bringyourownproxies.sites.youporn.parser import YouPornParser
 from bringyourownproxies.sites.youporn.properties import (YouPornTag,YouPornCategory,YouPornDescription,
                                                         YouPornTitle)
 
@@ -24,7 +24,7 @@ class YouPornVideo(OnlineVideo):
 
         self.url = kwargs.pop('url',None)
         self.video_id = kwargs.pop('video_id',self._get_video_id())
-        self.video_parser = kwargs.pop('video_parser',YouPornVideoParser())
+        self.video_parser = kwargs.pop('video_parser',YouPornParser())
         self.ratings = kwargs.pop('ratings',None)
         self.ratings_percentage = kwargs.pop('ratings_percentage',None)
         self.views = kwargs.pop('views',None)
@@ -35,8 +35,8 @@ class YouPornVideo(OnlineVideo):
         self.porn_stars = kwargs.pop('porn_stars',None)
         self.total_comments = kwargs.pop('total_comments',None)
 
-        if not isinstance(self.video_parser,YouPornVideoParser):
-            raise InvalidVideoParser('parser is not a valid YouPornVideoParser')
+        if not isinstance(self.video_parser,YouPornParser):
+            raise InvalidVideoParser('parser is not a valid YouPornParser')
 
         super(YouPornVideo,self).__init__(title=title,
                                         category=category,

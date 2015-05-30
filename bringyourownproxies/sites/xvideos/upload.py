@@ -6,10 +6,10 @@ import re
 import path
 
 from lxml import etree
-from lxml.etree import HTMLParser,tostring
+from lxml.etree import HTMLParser
 
 from bringyourownproxies.errors import (InvalidVideoUploadRequest,InvalidAccount,NotLogined,
-                                        InvalidTitle,FailedUpload,CannotFindVar,FailedUpdatingVideoSettings)
+                                        FailedUpload,CannotFindVar,FailedUpdatingVideoSettings)
 
 from bringyourownproxies.sites.upload import _Upload
 from bringyourownproxies.sites.xvideos.account import XvideosAccount

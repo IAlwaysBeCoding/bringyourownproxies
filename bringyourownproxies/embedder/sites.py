@@ -1,22 +1,24 @@
 from functools import partial
 
-from bringyourownproxies.sites import (YouPornVideoParser,MotherlessParser,
-                                       DrTuberParser,RedTubeParser,PornhubParser)
+from bringyourownproxies.sites import (YouPornParser,MotherlessParser,
+                                       DrTuberParser,RedTubeParser,
+                                       PornhubParser,XvideosParser)
 from bringyourownproxies.embedder.errors import VideoGrabberProblem
 
 def get_stats(site,html,get='stats',**kwargs):
     if site == 'motherless':
         parser = MotherlessParser()
     elif site == 'youporn':
-        parser = YouPornVideoParser()
+        parser = YouPornParser()
     elif site == 'drtuber':
         parser = DrTuberParser()
     elif site == 'redtube':
         parser = RedTubeParser()
     elif site == 'pornhub':
         parser = PornhubParser()
+    elif site == 'xvideos':
+        parser = XvideosParser()
 
-    print 'site:{s}'.format(s=site)
     if get == 'stats':
         result = parser.get_video_stats(html,**kwargs)
     elif get == 'download':
@@ -32,3 +34,4 @@ motherless = partial(get_stats,site='motherless')
 drtuber = partial(get_stats,site='drtuber')
 redtube = partial(get_stats,site='redtube')
 pornhub = partial(get_stats,site='pornhub')
+xvideos = partial(get_stats,site='xvideos')

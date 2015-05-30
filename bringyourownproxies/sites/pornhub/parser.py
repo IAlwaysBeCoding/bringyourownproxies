@@ -1,4 +1,3 @@
-import urllib
 import re
 
 from bringyourownproxies.parser import VideoParser
@@ -57,15 +56,33 @@ class PornhubParser(VideoParser):
         uploaded_date = date_doc.xpath('//span[@class="white"]')[0].text
         return uploaded_date
 
+    def _get_title(self,html):
+
+        found_title = re.search(r'video_title":"(.*?)"',html)
+        if not found_title:
+            raise VideoParserError('Cannot find video title in pornhub.com video')
+        return found_title.group(1)
+
     def _get_download_options(self,html,**kwargs):
 
         regex = '"quality_720p":"(.*?)","quality_240p":"(.*?)","quality_180p":"(.*?)","quality_480p":"(.*?)",'
         find_video_options = re.search(regex,html)
         if find_video_options:
-             return {'720':None if not find_video_options.group(1) else find_video_options.group(1),
-                    '240':None if not find_video_options.group(2) else find_video_options.group(2),
-                    '180':None if not find_video_options.group(3) else find_video_options.group(3),
-                    '480':None if not find_video_options.group(4) else find_video_options.group(4)}
+
+            video_urls = []
+            password = self._get_title(html=html)
+
+            for i in xrange(1,5):
+                encrypted_url = find_video_options.group(i)
+                if encrypted_url:
+                    video_urls.append(aes_decrypt_text(encrypted_url,password,32).decode('utf-8'))
+                else:
+                    video_urls.append(None)
+
+            return {'720':video_urls[0],
+                    '240':video_urls[1],
+                    '180':video_urls[2],
+                    '480':video_urls[3]}
 
         raise VideoParserError('Could not parse video download options for pornhub.com video')
 
@@ -105,16 +122,11 @@ class PornhubParser(VideoParser):
 
         duration_seconds = found_duration.group(1)
 
-        found_title = re.search(r'video_title":"(.*?)"',html)
-        if not found_title:
-            raise VideoParserError('Cannot find video title in pornhub.com video')
 
-        title = found_title.group(1)
+        title = self._get_title(html=html)
         download_options = self._get_download_options(html=html)
-        print 'download options:{p}'.format(p=download_options)
         options = [download_options[download] for download in download_options]
-        video_urls = list(map(lambda s: aes_decrypt_text(s, title, 32).decode('utf-8'), options))
-        print video_urls
+
         return {'author':author,
                 'tags':tags,
                 'categories':categories,
