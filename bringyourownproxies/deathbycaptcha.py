@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
+#!/usr/bin/python
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
+#!/usr/bin/python
 from bringyourownproxies.utils import show_printable_chars
 from bringyourownproxies.video import Tag,Category,Description,Title
 from bringyourownproxies.profile import Profile,BasicProfile,LocationProfile

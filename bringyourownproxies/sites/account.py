@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
 
 from lxml import etree
 from lxml.etree import HTMLParser, tostring

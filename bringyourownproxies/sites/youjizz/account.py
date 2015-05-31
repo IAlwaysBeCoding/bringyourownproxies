@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
+#!/usr/bin/python
 import base64
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin

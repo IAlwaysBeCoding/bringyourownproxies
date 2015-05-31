@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
+#!/usr/bin/python
 import random
 import requests
 from requests.packages import urllib3

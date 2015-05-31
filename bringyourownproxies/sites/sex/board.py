@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
 
 import requests
 from lxml import etree

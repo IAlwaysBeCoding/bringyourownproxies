@@ -1,5 +1,7 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#!/usr/bin/python
+#!/usr/bin/python
+#!/usr/bin/env python
 import urllib
 import re
 
@@ -91,7 +93,7 @@ class RedTubeParser(VideoParser):
                 'title':title,
                 'views':views}
 
-    def _get_download_options(self,html):
+    def get_download_options(self,html):
 
         find_video_options = re.search(r'{"hd":"(.*?)","480p":"(.*?)","mobile":"(.*?)"}\]}',html)
         if find_video_options:

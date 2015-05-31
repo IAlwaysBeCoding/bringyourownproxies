@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
 from bringyourownproxies.video import VideoUploadRequest,VideoUploaded
 from bringyourownproxies.errors import InvalidTag,InvalidCategory,InvalidTitle
 from bringyourownproxies.sites.fux.properties import FuxTitle,FuxTag,FuxCategory

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
 
 from bringyourownproxies.captcha import DEFAULT_CAPTCHA_SOLVER,DEFAULT_CAPTCHA_MAXIMUM_WAITING
 from bringyourownproxies.video import OnlineVideo,VideoUploadRequest,VideoUploaded

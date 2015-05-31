@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
+#!/usr/bin/python
 
 from bringyourownproxies.errors import AccountProblem, InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
