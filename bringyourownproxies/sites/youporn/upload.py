@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-#!/usr/bin/python
 import os
 import json
 import sys

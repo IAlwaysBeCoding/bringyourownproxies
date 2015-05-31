@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-#!/usr/bin/python
 import arrow
 
 def show_printable_chars(text):

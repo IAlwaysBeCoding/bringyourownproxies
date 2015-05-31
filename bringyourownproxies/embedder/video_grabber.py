@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-#!/usr/bin/python
-#!/usr/bin/env python
 from bringyourownproxies.httpclient import HttpSettings
 from bringyourownproxies.embedder.errors import VideoGrabberProblem
 from bringyourownproxies.embedder.sites import (youporn,motherless,
@@ -49,6 +47,7 @@ class VideoGrabber(object):
                         get_video_stats=False,
                          **kwargs)
 
+
     def grab(self,site,html,**kwargs):
 
         get_video_url = kwargs.pop('get_video_url',False)
@@ -81,6 +80,8 @@ if __name__ == '__main__':
     #url = 'http://www.pornhub.com/view_video.php?viewkey=31372320'
     #url = 'http://www.xvideos.com/video10858627/omg_big_tits_granny_really_loves_when_it_hurts'
     video_stats = video_grabber.grab_video_stats(url)
+    #download_url = video_grabber.grab_download_url(url,download_quality='480')
+    #download_url = video_grabber.grab_download_url(url,download_quality='480')
     download_url = video_grabber.grab_download_url(url,download_quality='480')
     print 'video_stats:{v}'.format(v=video_stats)
     print 'download_url:{d}'.format(d=download_url)

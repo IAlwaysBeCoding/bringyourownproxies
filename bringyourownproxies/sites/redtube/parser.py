@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-#!/usr/bin/python
-#!/usr/bin/env python
 import urllib
 import re
 

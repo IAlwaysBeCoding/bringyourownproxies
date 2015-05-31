@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-#!/usr/bin/python
 from functools import partial
 
 from bringyourownproxies.sites import (YouPornParser,MotherlessParser,

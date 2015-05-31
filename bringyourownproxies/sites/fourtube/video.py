@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-#!/usr/bin/python
 from bringyourownproxies.video import (VideoUploadRequest,VideoUploaded,Tag,Category,Title)
 from bringyourownproxies.errors import (InvalidTag,InvalidCategory,InvalidTitle)
 from bringyourownproxies.sites.fourtube.properties import _4tubeTag,_4tubeCategory,_4tubeTitle

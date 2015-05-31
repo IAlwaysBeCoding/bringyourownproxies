@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-#!/usr/bin/python
 """
 from formatbytes.formatbytes import FormatBytes
 from clint.textui.progress import Bar as ProgressBar

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-#!/usr/bin/python
 from bringyourownproxies.video import Tag,Description,Title
 
 class XvideosTag(Tag):
