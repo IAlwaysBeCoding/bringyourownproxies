@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+#!/usr/bin/python
 
 from bringyourownproxies.utils import show_printable_chars
 from bringyourownproxies.comment import OnlineComment

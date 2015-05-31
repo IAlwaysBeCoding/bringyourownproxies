@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from bringyourownproxies.video import Tag,Category,Title

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+#!/usr/bin/python
 import re
 
 from bringyourownproxies.parser import VideoParser
@@ -66,8 +68,7 @@ class YouPornParser(VideoParser):
             raise VideoParserError('Cannot get thumbnail image for youporn video')
 
         thumbnail = found_default_thumbnail.group(1)
-        with open('/root/Dropbox/youporn_parse.html','w+') as f:
-            f.write(html)
+
         found_duration_seconds = re.search(r'"duration_in_seconds":(.*?)',html)
         if not found_duration_seconds:
             raise VideoParserError('Cannot get duration in seconds for youporn video')
@@ -93,13 +94,6 @@ class YouPornParser(VideoParser):
                 'duration_text':duration_text,
                 'description':description,
                 'embed_code':embed_code}
-
-    def get_download_url(self,html,**kwargs):
-        document = self.etree.fromstring(html,self.parser)
-        get_video_url = document.xpath('//video[@id="player-html5"]/@src')
-        if not get_video_url:
-            raise VideoParserError('Cannot find video download url for youporn video')
-        return get_video_url[0]
 
     def get_all_comments(self,html):
         comments = []
@@ -137,4 +131,46 @@ class YouPornParser(VideoParser):
 
         else:
             return (None,None,None)
+    def get_download_options(self,html,**kwargs):
+
+        options = {'720':None,
+                   '480':None,
+                   '240':None,
+                   '180':None}
+
+        doc = self.etree.fromstring(html,self.parser)
+        download_options = doc.xpath('//ul[@class="downloadList"]/li')
+        if not download_options:
+            raise VideoParserError('Could not find all the video download '\
+                                   'options for youporn.com video')
+
+        for li in download_options:
+
+            li_doc = self.etree.fromstring(self.tostring(li),self.parser)
+            link = li_doc.xpath('//a')[0]
+
+            for quality in ['/720p','/480p','/240p','/180p']:
+                if quality in link.attrib['href']:
+                    options[quality.replace('/','').replace('p','')] = link.attrib['href']
+                    break
+
+        return options
+
+    def get_download_url(self,html,**kwargs):
+
+        download_quality = kwargs.get('download_quality','default')
+        download_options = self._get_download_options(html=html)
+        if download_quality == 'default':
+
+            for quality in ['720','480','240','180']:
+                if download_options[quality]:
+                    return download_options[quality]
+
+            raise VideoParserError('Could not find video download url for youporn.com video')
+
+        else:
+            if download_quality in download_options:
+                return download_options[download_quality]
+
+            raise VideoParserError('Invalid download quality, only available options are 720,480,240,180 or default')
 

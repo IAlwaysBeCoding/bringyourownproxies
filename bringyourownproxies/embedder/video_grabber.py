@@ -1,5 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#!/usr/bin/python
+#!/usr/bin/env python
 from bringyourownproxies.httpclient import HttpSettings
 from bringyourownproxies.embedder.errors import VideoGrabberProblem
 from bringyourownproxies.embedder.sites import (youporn,motherless,

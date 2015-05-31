@@ -49,15 +49,6 @@ class RedTubeParser(VideoParser):
 
         return all_txt
 
-    def _get_download_options(self,html):
-        find_video_options = re.search(r'{"hd":"(.*?)","480p":"(.*?)","mobile":"(.*?)",}]}',html)
-        if find_video_options:
-            return {'hd':find_video_options.group(1),
-                    '480':find_video_options.group(2),
-                    'mobile':find_video_options.group(3)}
-
-        raise VideoParserError('Could not parse video download options for redtube.com video')
-
     def get_video_stats(self,html):
 
         document = self.etree.fromstring(html,self.parser)
@@ -84,7 +75,7 @@ class RedTubeParser(VideoParser):
         found_video_id = re.search(r'var iVideoID = (.*?);',html)
 
         if not found_video_id:
-            raise VideoParserError('Could not find video id for drtuber video')
+            raise VideoParserError('Could not find video id for redtube.com video')
 
         embed_code = '<iframe src=http://www.embed.redtube.com?id={video_id}' \
                     '&bgcolor=000000 width=640 height=360 frameborder=0 ' \
@@ -100,31 +91,26 @@ class RedTubeParser(VideoParser):
                 'title':title,
                 'views':views}
 
-    def _get_download_options(self,html,**kwargs):
+    def _get_download_options(self,html):
 
         find_video_options = re.search(r'{"hd":"(.*?)","480p":"(.*?)","mobile":"(.*?)"}\]}',html)
         if find_video_options:
             return {'720':None if not find_video_options.group(1) else find_video_options.group(1),
                     '480':None if not find_video_options.group(2) else find_video_options.group(2),
-                    'mobile':None if not find_video_options.group(3) else find_video_options.group(3)}
+                    '240':None if not find_video_options.group(3) else find_video_options.group(3)}
 
         raise VideoParserError('Could not parse video download options for redtube.com video')
 
     def get_download_url(self,html,**kwargs):
 
         download_quality = kwargs.get('download_quality','default')
+        download_options = self._get_download_options(html=html)
         if download_quality == 'default':
-            document = self.etree.fromstring(html,self.parser)
-            download_url = document.xpath('//source[@src]/@src')
-            if not download_url:
-                raise VideoParserError('Could not find video download url for drtuber video')
-
-            return download_url[0]
 
         else:
             download_options = self._get_download_options(html=html)
             if download_quality in download_options:
                 return download_options[download_quality]
 
-            raise VideoParser('Invalid download quality, only available options are 720,480,mobile or default')
+            raise VideoParser('Invalid download quality, only available options are 720,480,240 or default')
 

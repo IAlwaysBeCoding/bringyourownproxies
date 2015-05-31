@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+#!/usr/bin/python
 import re
 
 from bringyourownproxies.parser import VideoParser
@@ -63,7 +65,7 @@ class PornhubParser(VideoParser):
             raise VideoParserError('Cannot find video title in pornhub.com video')
         return found_title.group(1)
 
-    def _get_download_options(self,html,**kwargs):
+    def get_download_options(self,html,**kwargs):
 
         regex = '"quality_720p":"(.*?)","quality_240p":"(.*?)","quality_180p":"(.*?)","quality_480p":"(.*?)",'
         find_video_options = re.search(regex,html)
