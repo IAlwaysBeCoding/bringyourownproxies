@@ -15,10 +15,10 @@ SITES = {'youporn':youporn,
 
 class VideoGrabber(object):
 
+    #DOWNLOAD_QUALITY = ['1080','720','480','340
     def __init__(self,http_settings=HttpSettings()):
         self.http_settings = http_settings
         self._sites = SITES
-
     def _go_to_video(self,url):
         session = self.http_settings.session
         proxy = self.http_settings.proxy
@@ -74,11 +74,11 @@ class VideoGrabber(object):
 if __name__ == '__main__':
     video_grabber = VideoGrabber()
     url = 'http://www.youporn.com/watch/9171547/blonde-teen-in-interracial-gangbang/'
-    #url = 'http://motherless.com/FF8FFDF'
-    #url = 'http://www.redtube.com/7928'
-    #url = 'http://www.drtuber.com/video/2217855/katie-summers-ass-and-face-drilling-deep-by-mike-adriano'
-    #url = 'http://www.pornhub.com/view_video.php?viewkey=31372320'
-    #url = 'http://www.xvideos.com/video10858627/omg_big_tits_granny_really_loves_when_it_hurts'
+    url = 'http://motherless.com/FF8FFDF'
+    url = 'http://www.redtube.com/7928'
+    url = 'http://www.drtuber.com/video/2217855/katie-summers-ass-and-face-drilling-deep-by-mike-adriano'
+    url = 'http://www.pornhub.com/view_video.php?viewkey=31372320'
+    url = 'http://www.xvideos.com/video10858627/omg_big_tits_granny_really_loves_when_it_hurts'
     video_stats = video_grabber.grab_video_stats(url)
     #download_url = video_grabber.grab_download_url(url,download_quality='480')
     #download_url = video_grabber.grab_download_url(url,download_quality='480')

@@ -579,24 +579,25 @@ class NginxUploader(object):
         return string
 
 if __name__ == '__main__':
-    from bringyourownproxies.sites import PrivateHomeClipsAccount,TubeCupAccount,HdZogAccount,MyLustAccount
-    account = MyLustAccount(username="tedwantsmore",password="money1003",email="tedwantsmore@gmx.com")
-    account.login()
-
-    http_settings = account.http_settings
-
+    from bringyourownproxies.sites import PrivateHomeClipsAccount
     def progress(monitor):
-        pass
-
+        print monitor
     video_file = '/root/Dropbox/craigslistbitch.mp4'
     title = 'Hot girl taking a shower'
     description = 'super hot girl taking a shower'
     tags = ('teen','black','amateur')
     categories = (24,232)
     is_private = False
+
+    username = 'tedwantsmore'
+    email = 'tedwantsmore@gmx.com'
+    password = 'money1003'
+    account = PrivateHomeClipsAccount(username,password,email)
+    account.login()
+    http_settings = account.http_settings
     uploader = NginxUploader(domain='mylust.com',http_settings=http_settings)
     nginx_uploader_url = 'http://mylust.com/uploader_nginx.php'
-    uploader.upload(video_file,
+    upload = uploader.upload(video_file,
                     title,
                     description,
                     categories,
@@ -606,7 +607,7 @@ if __name__ == '__main__':
                     add_screenshot=True,
                     no_tags=True,
                     nginx_uploader_url=nginx_uploader_url)
-
+    print upload
 
 
 

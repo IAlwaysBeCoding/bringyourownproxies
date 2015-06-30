@@ -45,12 +45,10 @@ class OnlineAccount(Account):
 
         cookies = {}
         for domain in cookies_loc:
-            if not domain in cookies:
-                cookies[domain] = {}
+            cookies[domain] = cookies.get(domain,{})
 
             for path in cookies_loc[domain]:
-                if not path in cookies[domain]:
-                    cookies[domain][path] = {}
+                cookies[domain][path] = cookies[domain].get(path,{})
 
                 for cookie in cookies_loc[domain][path]:
                     cookies[domain][path][cookie] = cookies_loc[domain][path][cookie].value
@@ -76,20 +74,16 @@ class OnlineAccount(Account):
         cookies_loc = self.http_settings.session.cookies._cookies
         cookies = self._put_cookies_in_a_dict(cookies_loc=cookies_loc)
 
-        raw_cookies = json.loads(data)
+        r_cookies = json.loads(data)
 
-        for raw_cookies_domain in raw_cookies:
-            if not raw_cookies_domain in cookies_loc:
-                cookies_loc[raw_cookies_domain] = {}
+        for r_c_domain in r_cookies:
+            cookies_loc.get(r_c_domain,{})
 
-            for raw_cookies_path in raw_cookies[raw_cookies_domain]:
-                if not raw_cookies_path in cookies_loc[raw_cookies_domain]:
-                    cookies_loc[raw_cookies_domain][raw_cookies_path] = {}
-
-                for raw_cookie in raw_cookies[raw_cookies_domain][raw_cookies_path]:
-                    if not raw_cookie in cookies_loc[raw_cookies_domain][raw_cookies_path]:
-                        new_cookie = create_cookie(raw_cookie,
-                                                    raw_cookies[raw_cookies_domain][raw_cookies_path][raw_cookie])
-                        cookies_loc[raw_cookies_domain][raw_cookies_path][raw_cookie] = new_cookie
+            for r_c_path in r_cookies[r_c_domain]:
+                cookies_loc[r_c_domain][r_c_path] = cookies_loc[r_c_domain].get(r_c_path,{})
+                for raw_cookie in r_cookies[r_c_domain][r_c_path]:
+                    new_cookie = create_cookie(raw_cookie,
+                                            r_cookies[r_c_domain][r_c_path][raw_cookie])
+                    cookies_loc[r_c_domain][r_c_path][raw_cookie] = new_cookie
 
 

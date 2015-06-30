@@ -106,11 +106,16 @@ class RedTubeParser(VideoParser):
         download_quality = kwargs.get('download_quality','default')
         download_options = self._get_download_options(html=html)
         if download_quality == 'default':
+            for quality in  ['720','480','240']:
+                if download_options[quality]:
+                    return download_options[quality]
 
+            raise VideoParserError('Did not find the download url for redtube.com video')
         else:
             download_options = self._get_download_options(html=html)
             if download_quality in download_options:
                 return download_options[download_quality]
 
-            raise VideoParser('Invalid download quality, only available options are 720,480,240 or default')
+            raise VideoParser('Invalid download quality for redtube.com video '\
+                              ', only available options are 720,480,240 or default')
 
