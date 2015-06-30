@@ -1,6 +1,0 @@
-*.pyc
-*.swp
-*.json
-build
-dist
-iron_core.egg-info
