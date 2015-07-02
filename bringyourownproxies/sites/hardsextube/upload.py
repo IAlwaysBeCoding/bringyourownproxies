@@ -115,7 +115,6 @@ class HardSexTubeUpload(_Upload):
                 account=self.account,
                 traceback=traceback.format_exc(),
                 exc_info=sys.exc_info())
-
             if self.bubble_up_exception:
                 raise exc
 
@@ -216,10 +215,10 @@ class HardSexTubeUpload(_Upload):
         session.headers.update({'Origin':'http://uploadcenter.hardsextube.com',
                                 'Referer':'http://uploadcenter.hardsextube.com/',
                                 })
-        form_validate = session.post(url,
-                                     data=post,
-                                     proxies=proxy,
-                                     headers=h if h else None)
+        session.post(url,
+                    data=post,
+                    proxies=proxy,
+                    headers=h if h else None)
 
     def _log_start(self,upload_id):
 
@@ -239,7 +238,7 @@ class HardSexTubeUpload(_Upload):
         session = self.account.http_settings.session
         proxy = self.account.http_settings.proxy
 
-        ua_info = user_agent_parser.Parser(self.account.http_settings.user_agent)
+        ua_info = user_agent_parser.Parse(self.account.http_settings.user_agent)
         family = ua_info['os']['family']
         browser = ua_info['user_agent']['family']
         url = 'http://uploadcenter.hardsextube.com/upload/log-client-info'

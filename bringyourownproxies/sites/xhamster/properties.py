@@ -2,6 +2,10 @@
 #!/usr/bin/python
 from bringyourownproxies.video import Category,Description,Title
 
+__all__ = ['XhamsterTitle','XhamsterDescription','XhamsterCategory',
+           'XhamsterCategoryStraight','XhamsterCategoryGay',
+           'XhamsterCategoryTranssexual']
+
 class XhamsterTitle(Title):
     SITE = 'Xhamster'
     SITE_URL = 'www.youporn.com'

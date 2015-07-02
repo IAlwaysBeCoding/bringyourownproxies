@@ -20,7 +20,6 @@ class SexVideoPinRequest(VideoUploadRequest):
                                                 tags=tags,
                                                 **kwargs)
 
-
     def __repr__(self):
 
         return "<Sex VideoPin Request title:{title} tags:{tags}" \

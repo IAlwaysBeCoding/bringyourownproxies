@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-from bringyourownproxies.video import Tag
+from bringyourownproxies.video import Tag,Title
 from bringyourownproxies.utils import show_printable_chars
 from bringyourownproxies.comment import OnlineComment
 
-__all__ = ['SexTag','SexComment']
+__all__ = ['SexTag','SexComment','SexTitle']
+
+class SexTitle(Title):
+    SITE = 'Sex'
+    SITE_URL = 'www.sex.com'
+
+    def __init__(self,name,**kwargs):
+        self.href = kwargs.pop('href') if kwargs.get('href',False) else None
+        super(SexTitle,self).__init__(name=name,**kwargs)
 
 class SexTag(Tag):
 

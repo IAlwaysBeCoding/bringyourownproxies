@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
+from lxml import etree
+from lxml.etree import HTMLParser
 
-from bringyourownproxies.errors import AccountProblem,InvalidLogin,AccountNotActivated,NotLogined
+from bringyourownproxies.errors import AccountProblem,InvalidLogin,AccountNotActivated
 from bringyourownproxies.httpclient import HttpSettings
 from bringyourownproxies.sites.account import _Account
-from bringyourownproxies.sites.youporn.properties import YouPornProfile
 
 __all__ = ['YouPornAccount']
 
@@ -18,9 +19,6 @@ class YouPornAccount(_Account):
 
     @classmethod
     def create(cls,username,password,email,gender,**kwargs):
-
-        from lxml import etree
-        from lxml.etree import HTMLParser
 
         if gender.lower() == 'm':
             gender = 'male'

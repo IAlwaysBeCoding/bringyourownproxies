@@ -223,8 +223,6 @@ class _Account(OnlineAccount):
         verify = session.get(verification_link, proxies=proxy)
         return verify.content
 
-
-
     @staticmethod
     def submit_captcha_and_wait(
             captcha,

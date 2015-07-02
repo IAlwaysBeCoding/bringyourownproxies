@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
+import io
+from lxml import etree
+from lxml.etree import HTMLParser
 
 from bringyourownproxies.errors import AccountProblem,InvalidLogin,CannotFindVar
 from bringyourownproxies.httpclient import HttpSettings
 from bringyourownproxies.sites.account import _Account
+from bringyourownproxies.captcha import (
+                            DEFAULT_CAPTCHA_SOLVER,
+                            DEFAULT_CAPTCHA_MAXIMUM_WAITING)
 
 __all__ = ['DrTuberAccount']
 
@@ -19,9 +25,6 @@ class DrTuberAccount(_Account):
     @classmethod
     def create(cls,username,password,email,gender,**kwargs):
 
-        import io
-        from lxml import etree
-        from lxml.etree import HTMLParser
 
         def get_captcha_image():
             download_captcha = session.get('http://www.drtuber.com/captcha',proxies=proxy)

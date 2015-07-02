@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
-import io
 import re
 import os
 import time
 
-import requests
 import arrow
 import path
 
 from urlobject import URLObject
 from lxml import etree
-from lxml.etree import HTMLParser,tostring
+from lxml.etree import HTMLParser
 
 from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
 
@@ -57,7 +55,6 @@ class UbrUploader(object):
         proxy = proxy or self.http_settings.proxy
 
         main_url = self._get_path_to_ubr()
-
         now = arrow.utcnow().timestamp
         later = arrow.utcnow().timestamp
         q = "rnd_id={rnd_id}&_{_}={_}".format(rnd_id=now,_=later)
@@ -392,7 +389,6 @@ class NginxUploader(object):
             '&rand={timestamp}'.format(domain=self.domain,filehash=filehash,timestamp=self._timestamp())
 
         get_progress = session.get(url,proxies=proxy)
-        print get_progress.content
 
     def _get_upload_progress2(self,filehash):
 

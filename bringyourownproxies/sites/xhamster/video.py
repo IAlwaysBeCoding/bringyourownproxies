@@ -5,6 +5,12 @@ from bringyourownproxies.captcha import DEFAULT_CAPTCHA_SOLVER,DEFAULT_CAPTCHA_M
 from bringyourownproxies.video import OnlineVideo,VideoUploadRequest,VideoUploaded
 from bringyourownproxies.errors import InvalidCategory,InvalidTitle,InvalidDescription
 
+from bringyourownproxies.sites.xhamster.properties import (XhamsterCategoryStraight,
+                                                           XhamsterCategoryGay,
+                                                           XhamsterCategoryTranssexual,
+                                                           XhamsterTitle,
+                                                           XhamsterDescription)
+
 __all__ = ['XhamsterVideoUploadRequest','XhamsterVideoUploaded']
 
 class XhamsterVideoUploadRequest(VideoUploadRequest):

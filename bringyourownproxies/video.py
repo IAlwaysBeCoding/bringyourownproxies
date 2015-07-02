@@ -215,7 +215,6 @@ class VideoUploadRequest(object):
         self.description = description
         self._success = None
 
-
     def _verify_video_file(self):
         video_path = path.Path(self.video_file)
 
@@ -274,7 +273,6 @@ class VideoUploadRequest(object):
                     if not isinstance(var,instance_type):
                         raise exception_class("Invalid {var} type, is not a valid " \
                                                 " type:{instance_type}".format(var=var,instance_type=instance_type))
-
 
     def succeeded(self):
         self._success = True

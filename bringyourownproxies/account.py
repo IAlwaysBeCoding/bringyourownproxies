@@ -41,6 +41,9 @@ class OnlineAccount(Account):
     def login(self,**kwargs):
         raise NotImplementedError('Subclasses should implement this')
 
+    def is_logined(self):
+        raise NotImplementedError('is_logined needs to be implemented by the subclasses of this class')
+
     def _put_cookies_in_a_dict(self,cookies_loc):
 
         cookies = {}
@@ -77,13 +80,13 @@ class OnlineAccount(Account):
         r_cookies = json.loads(data)
 
         for r_c_domain in r_cookies:
-            cookies_loc.get(r_c_domain,{})
+            cookies_loc[str(r_c_domain)] = cookies_loc.get(str(r_c_domain),{})
 
             for r_c_path in r_cookies[r_c_domain]:
-                cookies_loc[r_c_domain][r_c_path] = cookies_loc[r_c_domain].get(r_c_path,{})
+                cookies_loc[str(r_c_domain)][str(r_c_path)] = cookies_loc[str(r_c_domain)].get(str(r_c_path),{})
                 for raw_cookie in r_cookies[r_c_domain][r_c_path]:
-                    new_cookie = create_cookie(raw_cookie,
+                    new_cookie = create_cookie(str(raw_cookie),
                                             r_cookies[r_c_domain][r_c_path][raw_cookie])
-                    cookies_loc[r_c_domain][r_c_path][raw_cookie] = new_cookie
+                    cookies_loc[str(r_c_domain)][str(r_c_path)][str(raw_cookie)] = new_cookie
 
 

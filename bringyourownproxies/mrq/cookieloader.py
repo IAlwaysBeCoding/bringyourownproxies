@@ -23,7 +23,7 @@ class CookieLoader(object):
 
         return session
 
-    def from_json(self,json_cookies_file,session=Session()):
+    def set_cookies_from_json(self,json_cookies_file,session=Session()):
         with open(json_cookies_file,'r') as f:
             raw_json = f.read()
 

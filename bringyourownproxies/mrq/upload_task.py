@@ -8,10 +8,19 @@ from cookieloader import CookieLoader
 from mrq.task import Task
 
 
+class UploadVideoException(Exception):
+    pass
+
+
 class UploadVideo(Task):
 
     cookie_loader = CookieLoader()
-
+    '''
+    tag_builder = TagBuilder()
+    category_builder = CategoryBuilder()
+    title_builder = TitleBuilder()
+    description_builder = DescriptionBuilder()
+    '''
     def run(self,params):
 
         self.class_upload = params.get('class_upload',_Upload)
@@ -33,7 +42,8 @@ class UploadVideo(Task):
         self.redis_host = params.get('redis_host',None)
         self.redis_port = params.get('redis_port',None)
         self.redis_db = params.get('redis_db',None)
-        self.option_save_redis = params.get('save_redis',True)
+        self.option_use_proxies = params.get('use_proxies',True)
+        self.option_use_redis = params.get('save_redis',True)
         self.option_use_cookies = params.get('use_cookies',True)
         self.option_save_cookies = params.get('save_cookies',True)
 
@@ -41,9 +51,32 @@ class UploadVideo(Task):
                                 password=self.account_password,
                                 email=self.account_email)
 
+    def verify_account_works(self):
 
-    def load_cookies_from_json(self,json_file):
-        session = self.cookie_loader.from_jsonson(json_file)
+        if not self.option_use_cookies:
+            self.site_account.login()
+
+            if not self.site_account.is_logined():
+                raise UploadVideoException('Could not logged in successfully' \
+                                           ' at {url}'. \
+                                           format(url=self.site_account.SITE_URL))
+        else:
+            if self.account_cookies:
+                _session = self.account_cookies.http_settings.session
+                self.cookie_loader.set_cookies_from_json(json_cookies_file=self.account_cookies,
+                                                        session=_session)
+
+            if not self.site_account.is_logined():
+                self.site_account.login()
+
+                if not self.site_account.is_logined():
+                    raise UploadVideoException('Cookies were invalid and ' \
+                                               'could not logged in successfully' \
+                                               ' at {url}'. \
+                                               format(url=self.site_account.SITE_URL))
+
+    def load_cookies_from_json(self,json_file,session):
+        session = self.cookie_loader.from_json(json_file,session=Session())
         return session.cookies._cookies
 
 
@@ -54,8 +87,6 @@ if __name__ == '__main__':
     from bringyourownproxies.sites import YouPornAccount
     username = 'tedwantsmore'
     password = 'money1003'
-    email = 'tedwantsmore@gmx.com'
-    youporn_account = YouPornAccount(username=username,password=password,email=email)
     #youporn_account.login()
     #youporn_account.save_cookies('/root/Dropbox/youporn_cookies.txt')
     #youporn_account.load_cookies('/root/Dropbox/youporn_cookies.txt')
@@ -67,7 +98,7 @@ if __name__ == '__main__':
     #s.get('http://www.youporn.com')
 
     cookie_loader = CookieLoader()
-    cookie_loader.from_json(json_cookies_file='/root/Dropbox/youporn_cookies.txt',session=a_s)
+    cookie_loader.set_cookies_from_json(json_cookies_file='/root/Dropbox/youporn_cookies.txt',session=a_s)
 
     print '************************'
     #print s.cookies._cookies

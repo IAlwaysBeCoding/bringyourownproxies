@@ -161,14 +161,6 @@ class YouPornVideoUploadRequest(VideoUploadRequest):
                                                         description=description,
                                                         **kwargs)
 
-    def __repr__(self):
-
-        return "<YouPorn UploadRequest title:{title} tags:{tags} category:{category}" \
-            " description:{description}>".format(title=self.title.name,
-                                                tags=",".join([t.name for t in self.tags]),
-                                                category=self.category.name,
-                                                description=self.description.name[:25])
-
     def create_video_settings(self):
         return {"title":str(self.title),
                 "description":str(self.description),

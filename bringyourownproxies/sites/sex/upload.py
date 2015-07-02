@@ -67,7 +67,7 @@ class SexUploadVideo(_Upload):
                                     account=self.account,
                                     traceback=traceback.format_exc(),
                                     exc_info=sys.exc_info())
-
+            print traceback.format_exc()
             if self.bubble_up_exception:
                 raise exc
 
@@ -80,7 +80,6 @@ class SexUploadVideo(_Upload):
 
             if is_uploaded:
                 return {'status':True, 'video_id':is_uploaded}
-
 
     def _update_temporary_video_pin(self,tmp_video):
         if not self.account.is_logined():
@@ -95,6 +94,7 @@ class SexUploadVideo(_Upload):
 
 
         post = {"custom_tags":",".join([t.name.lower() for t in self.video_upload_request.sex_tags]),
+                "tags[]":self.video_upload_request.sex_tags[0].name.lower(),
                 "board":self.video_upload_request.board.board_id,
                 "board_name":self.video_upload_request.board.name,
                 "title":str(self.video_upload_request.title),
@@ -102,7 +102,8 @@ class SexUploadVideo(_Upload):
 
 
         set_settings = session.post(url,data=post,proxies=proxy)
-
+        with open('/root/Dropbox/sex_pin_test.html','w+') as f:
+            f.write(set_settings.content)
         if 'Congratulations! Your pin has been added.' in set_settings.content:
             doc = etree.fromstring(set_settings.content,HTMLParser())
             get_video_id = doc.xpath('//a[@target="_blank"]')[0].attrib['href'].replace('http://www.sex.com/pin/','').replace('/','')

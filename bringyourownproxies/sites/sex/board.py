@@ -12,7 +12,7 @@ from bringyourownproxies.sites.sex.account import SexAccount
 __all__ = ['SexBoard']
 
 class SexBoard(object):
-    
+
     def __init__(self,name,board_id,**kwargs):
         self.name = name
         self.board_id = board_id
@@ -20,7 +20,7 @@ class SexBoard(object):
 
     @classmethod
     def create(cls,name,description,account):
-        
+
         session = account.http_settings.session
         proxy = account.http_settings.proxy
         if type(account) != SexAccount:
@@ -28,7 +28,7 @@ class SexBoard(object):
                                                 'it needs to be a SexAccount instance')
         if not account.is_logined():
             raise NotLogined('Sex account is not logined')
-        
+
         create_board_form = session.get('http://www.sex.com/board/edit',proxies=proxy)
         post = {'name':name,'description':description,'submit':'Create Board'}
         create_new_board = session.post('http://www.sex.com/board/edit',data=post,proxies=proxy)
@@ -49,19 +49,17 @@ class SexBoard(object):
 
             if not get_title:
                 raise BoardProblem('Cannot find new board name that was created')
-                
+
             if get_title[0].text == name:
                 get_board_id = board_doc.xpath('//a[@class="btn btn-block"]/@href')
 
                 if not get_board_id:
                     raise BoardProblem('Cannot find new board id that was created')
-                
+
                 board_id = get_board_id[0].replace('/board/edit/','')
-                return cls(name=name,board_id=board_id,description=description)                
+                return cls(name=name,board_id=board_id,description=description)
 
-        raise BoardProblem('Could not find board name inside dashboard')        
-        
-
+        raise BoardProblem('Could not find board name inside dashboard')
 
 def create_board():
     pass
@@ -71,5 +69,5 @@ if __name__ == '__main__':
     account = SexAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
     account.login()
     board = SexBoard.create(name='test board',description='test board description',account=account)
-    print board 
-    
+    print board
+

@@ -6,6 +6,7 @@ from bringyourownproxies.profile import Profile,BasicProfile,LocationProfile
 from bringyourownproxies.author import OnlineAuthor
 from bringyourownproxies.comment import OnlineComment
 
+from bringyourownproxies.errors import InvalidCategory
 __all__ = ['YouPornTag','YouPornCategory','YouPornDescription',
            'YouPornTitle','YouPornProfile','YouPornAuthor',
            'YouPornComment']

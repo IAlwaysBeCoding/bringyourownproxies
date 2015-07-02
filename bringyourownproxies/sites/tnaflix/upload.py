@@ -69,7 +69,7 @@ class TnaflixUpload(_Upload):
             tag_ids = channel_ids
             video_file = self.video_upload_request.video_file
 
-            uploader = UbrUploader(domain='tna.flixupload.com',
+            uploader = UbrUploader(domain='http://tna.flixupload.com',
                                     path_to_ubr='/',
                                     http_settings=self.account.http_settings,
                                     callback=self._hooks['uploading'])
@@ -86,7 +86,7 @@ class TnaflixUpload(_Upload):
                                     account=self.account,
                                     traceback=traceback.format_exc(),
                                     exc_info=sys.exc_info())
-
+            print traceback.format_exc()
             if self.bubble_up_exception:
                 raise exc
 

@@ -80,6 +80,8 @@ class XhamsterUpload(_Upload):
                                         headers={'Content-Type': self.upload_monitor.content_type})
 
             found_after_upload = re.search(r"UberUpload.redirectAfterUpload\('(.*?)',",attempt_upload.content)
+            with open('/root/Dropbox/xhamster_upload_2.html','w+') as f:
+                f.write(attempt_upload.content)
             if not found_after_upload:
                 raise FailedUpload('Could not find after upload redirect url from xhamster.com')
 
@@ -191,6 +193,8 @@ class XhamsterUpload(_Upload):
             'upload_id={upload_id}&_={t}'.format(upload_id=upload_id,t=self._timestamp())
 
         start_upload = session.get(url,proxies=proxy)
+        with open('/root/Dropbox/xhamster_upload_1.html','w+') as f:
+            f.write(start_upload.content)
 
     def _timestamp(self):
         return int(round(time.time() * 1000))

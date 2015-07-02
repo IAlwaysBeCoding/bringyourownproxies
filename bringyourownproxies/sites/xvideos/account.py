@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
+from lxml import etree
+from lxml.etree import HTMLParser
 
-from bringyourownproxies.errors import AccountProblem, InvalidLogin
+from bringyourownproxies.errors import AccountProblem,CannotFindVar
+from bringyourownproxies.captcha import (
+                            DEFAULT_CAPTCHA_SOLVER,
+                            DEFAULT_CAPTCHA_MAXIMUM_WAITING,
+                            CaptchaProblem,
+                            get_new_recaptcha_challenge,
+                            get_recaptcha_image)
+
 from bringyourownproxies.httpclient import HttpSettings
 
 from bringyourownproxies.sites.account import _Account
@@ -41,19 +50,6 @@ class XvideosAccount(_Account):
             region,
             city,
             **kwargs):
-
-        from lxml import etree
-        from lxml.etree import HTMLParser
-
-        from bringyourownproxies.errors import CannotFindVar
-        from bringyourownproxies.recaptcha import get_new_challenge, get_image
-        from bringyourownproxies.captcha import (
-            DEFAULT_CAPTCHA_SOLVER,
-            DEFAULT_CAPTCHA_MAXIMUM_WAITING,
-            CaptchaProblem,
-            RecaptchaProblem,
-            get_new_recaptcha_challenge,
-            get_recaptcha_image)
 
         def get_recaptcha_key(html):
             doc = etree.fromstring(html, HTMLParser())
@@ -180,7 +176,6 @@ class XvideosAccount(_Account):
                 return True
         else:
             raise AccountProblem('Failed verifying youporn account due to unknown error')
-
 
     def login(self):
         attempt_login = self._login(
