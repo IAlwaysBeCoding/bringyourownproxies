@@ -35,6 +35,10 @@ from bringyourownproxies.sites import (XhamsterCategoryStraight,XhamsterCategory
                                         XhamsterDescription,XhamsterVideoUploadRequest,
                                         XhamsterUpload,XhamsterAccount)
 
+from bringyourownproxies.sites import (XvideosVideoUploadRequest,XvideosUpload,
+                                       XvideosAccount,XvideosTag,
+                                       XvideosDescription,XvideosTitle)
+
 from bringyourownproxies.sites.account import _Account
 from bringyourownproxies.sites.upload import _Upload
 
@@ -92,7 +96,8 @@ class UploadBuilder(BaseBuilder):
              'redtube':RedTubeUpload,
              'sex':SexUploadVideo,
              'tnaflix':TnaflixUpload,
-             'xhamster':XhamsterUpload}
+             'xhamster':XhamsterUpload,
+             'xvideos':XvideosUpload}
 
     def __init__(self,site):
         super(UploadBuilder,self).__init__(site)
@@ -115,7 +120,8 @@ class AccountBuilder(BaseBuilder):
              'redtube':RedTubeAccount,
              'sex':SexAccount,
              'tnaflix':TnaflixAccount,
-             'xhamster':XhamsterAccount}
+             'xhamster':XhamsterAccount,
+             'xvideos':XvideosAccount}
 
     def __init__(self,site):
         super(AccountBuilder,self).__init__(site)
@@ -126,7 +132,6 @@ class AccountBuilder(BaseBuilder):
                                 password=password,
                                 email=email,
                                 **kwargs)
-
 
 class VideoRequestBuilder(BaseBuilder):
 
@@ -198,7 +203,14 @@ class VideoRequestBuilder(BaseBuilder):
                          'title':XhamsterTitle,
                          'video_upload_request':XhamsterVideoUploadRequest,
                          'multiple':{'tags':False,'categories':True}
-                         }
+                         },
+             'xvideos':{'tag':XvideosTag,
+                        'category':None,
+                        'description':XvideosDescription,
+                        'title':XvideosTitle,
+                        'video_upload_request':XvideosVideoUploadRequest,
+                        'multiple':{'tags':True,'categories':False}
+                        }
              }
 
     def __init__(self,site):
@@ -239,7 +251,6 @@ class VideoRequestBuilder(BaseBuilder):
                                                 'for category:{c}'.format(c=category))
 
         return klazz_category
-
 
     def create_tag(self,tag,**kwargs):
         return self.klazz_tag(name=tag,**kwargs)
@@ -315,6 +326,8 @@ class VideoRequestBuilder(BaseBuilder):
             if 'tag' in properties:
                 properties['tags'] = properties['tag']
                 del properties['tag']
+            if self.site == 'sex':
+                properties['sex_tags'] = properties['tags']
 
             request = klazz(**properties)
             return request
@@ -352,9 +365,10 @@ if __name__ == '__main__':
     from clint.textui.progress import Bar as ProgressBar
     import path
     site = 'xhamster'
-    request_factory = VideoRequestBuilder(site)
-    account_factory = AccountBuilder(site)
-    upload_factory = UploadBuilder(site)
+    f = {'account':AccountBuilder(site),
+         'upload':UploadBuilder(site),
+         'video':VideoRequestBuilder(site)
+        }
     username = 'tedwantsmore'
     password = 'money1003'
     email = 'tedwantsmore@gmx.com'
@@ -384,7 +398,6 @@ if __name__ == '__main__':
                         category=video_upload_request.category,
                         description=video_upload_request.description)
 
-
     def uploading(*args,**kwargs):
         monitor = args[0]
         bar.show(monitor.bytes_read)
@@ -402,20 +415,20 @@ if __name__ == '__main__':
 
 
 
-    request = request_factory.create_upload_request(video_file=video_file,
-                                        description=description,
-                                        title=title,
-                                        tag=tags,
-                                        category=categories,
-                                        allow_comments=False,
-                                        category_type=category_type,
-                                        board=board)
+    request = f['video'].create_upload_request(video_file=video_file,
+                                                description=description,
+                                                title=title,
+                                                tag=tags,
+                                                category=categories,
+                                                allow_comments=False,
+                                                category_type=category_type,
+                                                board=board)
 
-    account = account_factory.create_account(username=username,
+    account = f['account'].create_account(username=username,
                                             password=password,
                                             email=email)
 
-    upload = upload_factory.create_upload(account=account,
+    upload = f['upload'].create_upload(account=account,
                                         video_upload_request=request,
                                         hooks={'started':started,
                                                  'uploading':uploading,
@@ -423,6 +436,7 @@ if __name__ == '__main__':
                                                  'finished':finished})
 
     account.login()
+    print account.is_logined()
     #account.save_cookies('/root/Dropbox/youporn_cookies.txt')
     #account.load_cookies('/root/Dropbox/youporn_cookies.txt')
     upload.start()

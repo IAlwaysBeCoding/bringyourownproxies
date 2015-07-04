@@ -12,12 +12,14 @@ from lxml import etree
 from lxml.etree import HTMLParser,tostring
 
 from bringyourownproxies.captcha import (submit_captcha_and_wait,report_bad_captcha,
-                                         get_new_recaptcha_challenge,get_recaptcha_image)
+                                         get_new_recaptcha_challenge,get_recaptcha_image,
+                                         CaptchaProblem)
 from bringyourownproxies.errors import (InvalidVideoUploadRequest,InvalidAccount,
                                         NotLogined,FailedUpload,FailedUpdatingVideoSettings)
 from bringyourownproxies.sites.upload import _Upload
 from bringyourownproxies.sites.xhamster.account import XhamsterAccount
 from bringyourownproxies.sites.xhamster.video import XhamsterVideoUploadRequest
+from bringyourownproxies.sites.xhamster.errors import FailedChangingThumbnailId,VideoNotReadyForThumbnail
 
 __all__ = ['XhamsterUpload']
 
@@ -105,7 +107,8 @@ class XhamsterUpload(_Upload):
                             account=self.account,
                             settings={})
 
-            return {'status':True,'video_id':upload_requested['video_id']}
+            return {'status':True}
+            #return {'status':True,'video_id':upload_request'video_id']}
 
     def _solve_captcha(self):
 
@@ -231,7 +234,7 @@ class XhamsterUpload(_Upload):
             else:
                 return True
         else:
-            raise FailedUpdatingVideoSettings('Unknown status:{s}'.format(s=update_video_settings.content))
+            raise FailedUpdatingVideoSettings('Unknown status:{s}'.format(s=update_settings.content))
 
     @staticmethod
     def get_thumb_nails(video_id,account):

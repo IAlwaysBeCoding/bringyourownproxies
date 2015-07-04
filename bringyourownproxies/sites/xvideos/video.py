@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 import re
+import sys
+import traceback
+import path
 
 from bringyourownproxies.video import VideoUploadRequest,OnlineVideo,VideoUploaded
-from bringyourownproxies.errors import InvalidTag,InvalidDescription,InvalidTitle
+from bringyourownproxies.errors import (InvalidTag,InvalidDescription,InvalidTitle,
+                                        InvalidVideoParser,InvalidVideoUrl)
 from bringyourownproxies.sites.xvideos.properties import XvideosTag,XvideosDescription,XvideosTitle
+from bringyourownproxies.sites.xvideos.parser import XvideosParser
 
 __all__ = ['XvideosVideoUploadRequest','XvideosVideoUploaded','XvideosVideo']
+
 class XvideosVideoUploadRequest(VideoUploadRequest):
 
     def __init__(self,video_file,title,tags,description,**kwargs):
@@ -83,8 +89,6 @@ class XvideosVideo(OnlineVideo):
             save_at = path.Path.joinpath(saving_path,filename)
 
             go_to_video = self.go_to_video()
-            session = self.http_settings.session
-            proxy = self.http_settings.proxy
             video_url = self.video_parser.get_download_url(go_to_video)
             self._download(video_url,name_to_save_as)
 

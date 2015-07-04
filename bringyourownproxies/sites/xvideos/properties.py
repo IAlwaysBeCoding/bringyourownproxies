@@ -2,6 +2,8 @@
 #!/usr/bin/python
 from bringyourownproxies.video import Tag,Description,Title
 
+__all__ = ['XvideosTag','XvideosDescription','XvideosTitle']
+
 class XvideosTag(Tag):
     SITE = 'Xvideos'
     SITE_URL = 'www.xvideos.com'

@@ -42,17 +42,15 @@ class XvideosUpload(_Upload):
 
             doc = etree.fromstring(go_to_upload.content,HTMLParser())
 
+            with open('/root/Dropbox/xvideos_get_apc_upload_progress.html','w+') as f:
+                f.write(go_to_upload.content)
             get_apc_upload_progress = doc.xpath('//input[@name="APC_UPLOAD_PROGRESS"]/@value')
 
             if len(get_apc_upload_progress) == 0:
                 raise CannotFindVar('Cannot find input field with name:APC_UPLOAD_PROGRESS')
 
             video_file = self.video_upload_request.video_file
-            title = self.video_upload_request.title.name
             tags = self.video_upload_request.tags
-            description = self.video_upload_request.description.name
-            is_private = self.video_upload_request.is_private
-            orientation = self.video_upload_request.orientation
 
             if isinstance(tags,(tuple,list)):
                 tags = " ".join([t.name for t in tags])
@@ -92,7 +90,8 @@ class XvideosUpload(_Upload):
                     raise CannotFindVar('Cannot find video id after finishing uploading video')
 
                 raise FailedUpload('Unknown status,failed uploading to xvideos')
-
+            settings = self.video_upload_request.create_video_settings()
+            type(self).update_video_settings(settings,video_id,self.account)
         except Exception as exc:
 
             self.call_hook('failed',video_upload_request=self.video_upload_request,
@@ -122,7 +121,7 @@ class XvideosUpload(_Upload):
             raise NotLogined('YouPorn account is not logined')
         url = 'http://upload.xvideos.com/account/uploads/{videoId}/edit'.format(videoId=video_id)
 
-        go_to_video = session.get(url,proxies=proxy)
+        session.get(url,proxies=proxy)
         post =  {"title]":settings['title'],
                 "description]":settings['description'],
                 "hide":settings['is_private'],

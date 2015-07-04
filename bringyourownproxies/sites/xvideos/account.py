@@ -17,7 +17,6 @@ from bringyourownproxies.sites.account import _Account
 
 __all__ = ['XvideosAccount']
 
-
 class XvideosAccount(_Account):
 
     SITE = 'Xvideos'
@@ -155,9 +154,6 @@ class XvideosAccount(_Account):
 
     @staticmethod
     def verify_account(http_settings,imap_server,username,password,ssl=True):
-
-        from lxml import etree
-        from lxml.etree import HTMLParser,tostring
 
         clicked_link = _Account.verify_account_in_plain_email(http_settings,
                                                             imap_server,

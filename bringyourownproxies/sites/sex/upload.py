@@ -14,6 +14,7 @@ from bringyourownproxies.sites.sex.account import SexAccount
 from bringyourownproxies.sites.sex.video import SexVideoPinRequest
 
 __all__ = ['SexUploadVideo']
+
 class SexUploadVideo(_Upload):
 
     def start(self,**kwargs):
@@ -54,12 +55,13 @@ class SexUploadVideo(_Upload):
                                         proxies=proxy,
                                         headers={'Content-Type': self.upload_monitor.content_type,"Connection":"Keep-Alive"})
 
-
+            with open('/root/Dropbox/sex_pin_attempt_upload.html','w+') as f:
+                f.write(attempt_upload.content)
             if attempt_upload.content == 'Error: You cannot upload more than 5 videos per hour':
                 raise FailedUpload('Reach uploading limit')
 
 
-            is_uploaded = self._update_temporary_video_pin(tmp_video=attempt_upload.content)
+            video_id = self._update_temporary_video_pin(tmp_video=attempt_upload.content)
 
         except Exception as exc:
 
@@ -76,10 +78,10 @@ class SexUploadVideo(_Upload):
             self.call_hook('finished',
                             video_request=self.video_upload_request,
                             account=self.account,
-                            settings={'video_id':upload_requested['video_id']})
+                            settings={'video_id':video_id})
 
-            if is_uploaded:
-                return {'status':True, 'video_id':is_uploaded}
+            if video_id:
+                return {'status':True, 'video_id':video_id}
 
     def _update_temporary_video_pin(self,tmp_video):
         if not self.account.is_logined():
@@ -128,10 +130,25 @@ class SexUploadVideo(_Upload):
                 'submit':'Save Changes'}
 
         change_pin = session.post(url,data=post,proxies=proxy)
+        with open('/root/Dropbox/sex_pin_change_video_settings.html','w+') as f:
+            f.write(change_pin.content)
         doc = etree.fromstring(change_pin.content,HTMLParser())
         if doc.xpath('//h2'):
             if doc.xpath('//h2')[0].text == "The page you're looking for could not be found.":
                 raise InvalidVideoUrl('Invalid video id, it could not be found on sex.com')
 
         return True
+
+
+if __name__ == '__main__':
+    from bringyourownproxies.sites import SexAccount,SexUploadVideo
+    account = SexAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
+    account.login()
+    video_id = 29433679
+    settings = {'board_id':696286,
+                'tags':('Anal','Teen','Petite'),
+                'title':'Petite getting drilled hard by huge cock'}
+    account.save_cookies('/root/Dropbox/sex_cookies.txt')
+    account.load_cookies('/root/Dropbox/sex_cookies.txt')
+    pin = SexUploadVideo.change_video_pin_settings(video_id,settings,account)
 
