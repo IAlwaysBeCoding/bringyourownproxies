@@ -83,7 +83,7 @@ if __name__ == '__main__':
                                                  'finished':finished})
 
     #account.login()
-    #account.save_cookies('/root/Dropbox/youporn_cookies.txt')
+    account.save_cookies('/root/Dropbox/youporn_cookies.txt')
     account.load_cookies('/root/Dropbox/youporn_cookies.txt')
     print account.is_logined()
     #upload.start()

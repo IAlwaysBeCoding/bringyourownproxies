@@ -9,6 +9,7 @@ from requests.cookies import create_cookie
 
 from bringyourownproxies.httpclient import HttpSettings
 from bringyourownproxies.errors import CookiesFileDoesNotExist
+from bringyourownproxies.cookies import CookieLoader
 
 class Account(object):
     def __init__(self,username=None,password=None,**kwargs):
@@ -22,6 +23,7 @@ class OnlineAccount(Account):
     parser = HTMLParser()
     etree = etree
     tostring = tostring
+    cookie_loader = CookieLoader()
 
     def __init__(self,username,password,**kwargs):
         self.username = username
@@ -44,24 +46,10 @@ class OnlineAccount(Account):
     def is_logined(self):
         raise NotImplementedError('is_logined needs to be implemented by the subclasses of this class')
 
-    def _put_cookies_in_a_dict(self,cookies_loc):
-
-        cookies = {}
-        for domain in cookies_loc:
-            cookies[domain] = cookies.get(domain,{})
-
-            for path in cookies_loc[domain]:
-                cookies[domain][path] = cookies[domain].get(path,{})
-
-                for cookie in cookies_loc[domain][path]:
-                    cookies[domain][path][cookie] = cookies_loc[domain][path][cookie].value
-
-        return cookies
-
     def save_cookies(self,filename):
 
         cookies_loc = self.http_settings.session.cookies._cookies
-        cookies = self._put_cookies_in_a_dict(cookies_loc=cookies_loc)
+        cookies = self.cookie_loader.session_cookies_to_json(cookies_loc=cookies_loc)
 
         with open(filename,'w+') as f:
             f.write(json.dumps(cookies))
@@ -71,22 +59,6 @@ class OnlineAccount(Account):
         if not f.exists():
             raise CookiesFileDoesNotExist('cookie file:{f} does not exist'.format(f=filename))
 
-        with open(filename,'r') as f:
-            data = f.read()
-
-        cookies_loc = self.http_settings.session.cookies._cookies
-        cookies = self._put_cookies_in_a_dict(cookies_loc=cookies_loc)
-
-        r_cookies = json.loads(data)
-
-        for r_c_domain in r_cookies:
-            cookies_loc[str(r_c_domain)] = cookies_loc.get(str(r_c_domain),{})
-
-            for r_c_path in r_cookies[r_c_domain]:
-                cookies_loc[str(r_c_domain)][str(r_c_path)] = cookies_loc[str(r_c_domain)].get(str(r_c_path),{})
-                for raw_cookie in r_cookies[r_c_domain][r_c_path]:
-                    new_cookie = create_cookie(str(raw_cookie),
-                                            r_cookies[r_c_domain][r_c_path][raw_cookie])
-                    cookies_loc[str(r_c_domain)][str(r_c_path)][str(raw_cookie)] = new_cookie
-
+        self.cookie_loader.set_cookies_from_json(json_cookies_file=filename,
+                                                 session=self.http_settings.session)
 
