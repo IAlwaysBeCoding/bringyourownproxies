@@ -345,8 +345,6 @@ class NginxUploader(object):
                                     proxies=proxy,
                                     headers={'Content-Type': monitor.content_type})
 
-        with open('nginxuploader.html','w+') as f:
-            f.write(submit_video.content)
 
 
     def _upload_video(self,video_file,callback,session,proxy):
@@ -400,7 +398,6 @@ class NginxUploader(object):
             '&rand={timestamp}'.format(domain=self.domain,filehash=filehash,timestamp=self._timestamp())
 
         get_progress = session.get(url,proxies=proxy)
-        print get_progress.content
 
 
     def _generate_file_hash(self,filename):
@@ -573,39 +570,4 @@ class NginxUploader(object):
             string += hex_tab_a+hex_tab_b
 
         return string
-
-if __name__ == '__main__':
-    from bringyourownproxies.sites import PrivateHomeClipsAccount
-    def progress(monitor):
-        print monitor
-    video_file = '/root/Dropbox/craigslistbitch.mp4'
-    title = 'Hot girl taking a shower'
-    description = 'super hot girl taking a shower'
-    tags = ('teen','black','amateur')
-    categories = (24,232)
-    is_private = False
-
-    username = 'tedwantsmore'
-    email = 'tedwantsmore@gmx.com'
-    password = 'money1003'
-    account = PrivateHomeClipsAccount(username,password,email)
-    account.login()
-    http_settings = account.http_settings
-    uploader = NginxUploader(domain='mylust.com',http_settings=http_settings)
-    nginx_uploader_url = 'http://mylust.com/uploader_nginx.php'
-    upload = uploader.upload(video_file,
-                    title,
-                    description,
-                    categories,
-                    tags,
-                    is_private,
-                    callback=progress,
-                    add_screenshot=True,
-                    no_tags=True,
-                    nginx_uploader_url=nginx_uploader_url)
-    print upload
-
-
-
-
 

@@ -109,15 +109,6 @@ class XvideosVideo(OnlineVideo):
 
             return True
 
-if __name__ == '__main__':
-    import requests
-    download = requests.get('http://www.xvideos.com/video11357701/japanese_schoolgirl_bus_chikan')
-    parser = XvideosParser()
-    download_url = parser.get_download_url(html=download.content)
-    video_stats = parser.get_video_stats(html=download.content)
-    print video_stats
-    print download_url
-
 class XvideosVideoUploaded(VideoUploaded):
     pass
 

@@ -55,8 +55,6 @@ class SexUploadVideo(_Upload):
                                         proxies=proxy,
                                         headers={'Content-Type': self.upload_monitor.content_type,"Connection":"Keep-Alive"})
 
-            with open('/root/Dropbox/sex_pin_attempt_upload.html','w+') as f:
-                f.write(attempt_upload.content)
             if attempt_upload.content == 'Error: You cannot upload more than 5 videos per hour':
                 raise FailedUpload('Reach uploading limit')
 
@@ -69,7 +67,6 @@ class SexUploadVideo(_Upload):
                                     account=self.account,
                                     traceback=traceback.format_exc(),
                                     exc_info=sys.exc_info())
-            print traceback.format_exc()
             if self.bubble_up_exception:
                 raise exc
 
@@ -104,8 +101,6 @@ class SexUploadVideo(_Upload):
 
 
         set_settings = session.post(url,data=post,proxies=proxy)
-        with open('/root/Dropbox/sex_pin_test.html','w+') as f:
-            f.write(set_settings.content)
         if 'Congratulations! Your pin has been added.' in set_settings.content:
             doc = etree.fromstring(set_settings.content,HTMLParser())
             get_video_id = doc.xpath('//a[@target="_blank"]')[0].attrib['href'].replace('http://www.sex.com/pin/','').replace('/','')
@@ -130,8 +125,6 @@ class SexUploadVideo(_Upload):
                 'submit':'Save Changes'}
 
         change_pin = session.post(url,data=post,proxies=proxy)
-        with open('/root/Dropbox/sex_pin_change_video_settings.html','w+') as f:
-            f.write(change_pin.content)
         doc = etree.fromstring(change_pin.content,HTMLParser())
         if doc.xpath('//h2'):
             if doc.xpath('//h2')[0].text == "The page you're looking for could not be found.":
@@ -139,16 +132,4 @@ class SexUploadVideo(_Upload):
 
         return True
 
-
-if __name__ == '__main__':
-    from bringyourownproxies.sites import SexAccount,SexUploadVideo
-    account = SexAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    video_id = 29433679
-    settings = {'board_id':696286,
-                'tags':('Anal','Teen','Petite'),
-                'title':'Petite getting drilled hard by huge cock'}
-    account.save_cookies('/root/Dropbox/sex_cookies.txt')
-    account.load_cookies('/root/Dropbox/sex_cookies.txt')
-    pin = SexUploadVideo.change_video_pin_settings(video_id,settings,account)
 

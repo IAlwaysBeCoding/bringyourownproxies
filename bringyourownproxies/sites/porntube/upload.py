@@ -4,7 +4,7 @@ import sys
 import traceback
 
 from bringyourownproxies.errors import InvalidVideoUploadRequest,InvalidAccount,NotLogined
-from bringyourownproxies.sites.upload import _Upload
+from bringyourownproxies.sites.upload import _Upload,KummUploader
 from bringyourownproxies.sites.porntube.account import PornTubeAccount
 from bringyourownproxies.sites.porntube.video import PornTubeVideoUploadRequest
 
@@ -60,7 +60,6 @@ class PornTubeUpload(_Upload):
                                     traceback=traceback.format_exc(),
                                     exc_info=sys.exc_info())
 
-            print traceback.format_exc()
             if self.bubble_up_exception:
                 raise exc
 

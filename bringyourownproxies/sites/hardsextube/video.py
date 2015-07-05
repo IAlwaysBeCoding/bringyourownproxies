@@ -54,4 +54,3 @@ class HardSexTubeVideoUploadRequest(VideoUploadRequest):
 class HardSexTubeVideoUploaded(VideoUploaded):
     pass
 
-    # print tnaflix_video.get_comments()

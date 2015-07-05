@@ -78,7 +78,6 @@ class YouPornVideo(OnlineVideo):
                                     name_to_save_as=name_to_save_as,
                                     traceback=traceback.format_exc(),
                                     exc_info=sys.exc_info())
-            print traceback.format_exc()
             if self.bubble_up_exception:
                 raise exc
         else:
@@ -174,22 +173,4 @@ class YouPornVideoUploadRequest(VideoUploadRequest):
 
 class YouPornVideoUploaded(VideoUploaded):
     pass
-
-if __name__ == '__main__':
-
-    def downloading(**kwargs):
-        print kwargs
-
-    youporn_video = YouPornVideo(url='http://www.youporn.com/watch/4543/sexy-black-slut-squirting/?from=search_full&pos=11',
-                                iter_size=1048576,
-                                hooks={'downloading':downloading})
-    #youporn_video.get_video_info()
-    #info = youporn_video.get_video_info()
-    #print info
-    #youporn_video._verify_download_dir('shower.mp4')
-    print youporn_video._hooks
-    youporn_video.download(name_to_save_as='/root/Dropbox/interracial_pov.mp4')
-
-    #print youporn_video.get_comments()
-
 

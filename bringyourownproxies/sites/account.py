@@ -326,10 +326,3 @@ class _Account(OnlineAccount):
         return False
 
 
-if __name__ == '__main__':
-    captcha_solver = DeathByCaptcha('tedwantsmore', 'money1003')
-    response = _Account.submit_captcha_and_wait(
-        '/root/Dropbox/recaptcha.png',
-        captcha_solver,
-        180)
-    print response

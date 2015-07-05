@@ -64,10 +64,3 @@ class SexBoard(object):
 def create_board():
     pass
 
-if __name__ == '__main__':
-    from bringyourownproxies.sites import *
-    account = SexAccount(username='tedwantsmore',password='money1003',email='tedwantsmore@gmx.com')
-    account.login()
-    board = SexBoard.create(name='test board',description='test board description',account=account)
-    print board
-

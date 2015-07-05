@@ -41,6 +41,3 @@ class NuvidAccount(_Account):
         return self._is_logined(sign_out_xpath='//a[@class="l1" and @href="/logout"]')
 
 
-if __name__ == '__main__':
-    account = NuvidAccount('tedwantsmore','money1003','tedwantsmore@gmx.com')
-    account.login()

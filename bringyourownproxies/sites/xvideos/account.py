@@ -202,35 +202,3 @@ class XvideosAccount(_Account):
         else:
             return True
 
-if __name__ == '__main__':
-    username = 'timisthebestdude'
-    password = 'wegohardallday'
-    email = 'timisthebestdude@gmail.com'
-    gender = 'm'
-    first_name = 'Derek'
-    name = 'Derek'
-    birthdate = '01/03/1989'
-    country = 'US'
-    region = 'CA'
-    city = 'West Sacramento'
-    http_settings = HttpSettings()
-    http_settings.set_proxy(ip='127.0.0.1',port=3003)
-    '''
-    create_account = XvideosAccount.create(username,
-                                        password,
-                                        email,
-                                        gender,
-                                        name,
-                                        first_name,
-                                        birthdate,
-                                        country,
-                                        region,
-                                        city,
-                                        http_settings=http_settings)
-    '''
-    #create_account = YouPornAccount.create('timisthebest','wegohardallday','timisthebestdude@gmail.com','m',http_settings=http_settings)
-    account = XvideosAccount(username,password,email,http_settings=http_settings)
-    account.login()
-
-    verify_account = XvideosAccount.verify_account(account.http_settings,'imap.gmail.com','timisthebestdude@gmail.com','wegohardallday')
-

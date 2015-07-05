@@ -38,7 +38,3 @@ class TnaflixVideoUploadRequest(VideoUploadRequest):
 class TnaflixVideoUploaded(VideoUploaded):
     pass
 
-
-    #print tnaflix_video.get_comments()
-
-

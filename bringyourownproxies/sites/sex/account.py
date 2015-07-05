@@ -32,5 +32,3 @@ class SexAccount(_Account):
     def is_logined(self):
         return self._is_logined(sign_out_xpath='//a[@href="/user/signout"]')
 
-if __name__ == '__main__':
-    from bringyourownproxies.sites import SexAccount

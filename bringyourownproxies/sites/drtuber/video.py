@@ -39,8 +39,3 @@ class DrTuberVideoUploadRequest(VideoUploadRequest):
 
 class DrTuberVideoUploaded(VideoUploaded):
     pass
-
-
-    #print tnaflix_video.get_comments()
-
-

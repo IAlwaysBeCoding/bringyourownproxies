@@ -72,9 +72,9 @@ class SexVideoPin(OnlineVideo):
 
             #create a new file path to where we will save the downloaded movie
             save_at = path.Path.joinpath(saving_path,filename)
-
-            with open(save_at.abspath(),'w+') as f:
+            with open(save_at,'w+') as f:
                 f.write(download_video.content)
+
         except Exception as exc:
             self.on_failed_download(exception=exc)
             raise exc
@@ -87,7 +87,3 @@ class SexVideoPin(OnlineVideo):
         stats = self.sex_parser.get_video_stats(go_to_video)
         return stats
 
-if __name__ ==  '__main__':
-    video = SexVideoPin(url='http://www.sex.com/video/12810676-petplay-video/')
-    print video.get_video_info()
-    #video.download()

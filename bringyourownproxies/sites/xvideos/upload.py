@@ -42,8 +42,6 @@ class XvideosUpload(_Upload):
 
             doc = etree.fromstring(go_to_upload.content,HTMLParser())
 
-            with open('/root/Dropbox/xvideos_get_apc_upload_progress.html','w+') as f:
-                f.write(go_to_upload.content)
             get_apc_upload_progress = doc.xpath('//input[@name="APC_UPLOAD_PROGRESS"]/@value')
 
             if len(get_apc_upload_progress) == 0:
