@@ -5,7 +5,6 @@ import path
 
 from lxml import etree
 from lxml.etree import HTMLParser,tostring
-from requests.cookies import create_cookie
 
 from bringyourownproxies.httpclient import HttpSettings
 from bringyourownproxies.errors import CookiesFileDoesNotExist

@@ -2,14 +2,10 @@
 #!/usr/bin/python
 
 from lxml import etree
-from lxml.etree import HTMLParser, tostring
+from lxml.etree import HTMLParser
+from imbox import Imbox
 
-from bringyourownproxies.captcha import (
-    DEFAULT_CAPTCHA_SOLVER,
-    DEFAULT_CAPTCHA_MAXIMUM_WAITING,
-    DeathByCaptcha,
-    DeathByCaptchaProblem,
-    CaptchaProblem)
+from bringyourownproxies.captcha import DEFAULT_CAPTCHA_SOLVER,DEFAULT_CAPTCHA_MAXIMUM_WAITING
 from bringyourownproxies.errors import InvalidLogin, AccountProblem
 from bringyourownproxies.account import OnlineAccount
 
@@ -31,13 +27,11 @@ class _Account(OnlineAccount):
 
         username = kwargs.get('username', 'username')
         password = kwargs.get('password', 'password')
-        email = kwargs.get('email', self.email)
         ajax = kwargs.get('ajax', False)
         extra_headers = kwargs.get('extra_headers', {})
         before_post_url = kwargs.get('before_post_url', None)
         before_post_url_vars = kwargs.get('before_post_url_vars', {})
         post_url = kwargs.get('post_url', None)
-        post_url_vars = kwargs.get('post_url_vars', {})
         extra_post_vars = kwargs.get('extra_post_vars', {})
         post_vars = kwargs.get(
             'post_vars', {
@@ -50,7 +44,7 @@ class _Account(OnlineAccount):
                 not self.SITE_URL.startswith('https://'):
             domain_url = 'http://{url}'.format(url=self.SITE_URL)
 
-        go_to_site = session.get(domain_url, proxies=proxy)
+        session.get(domain_url, proxies=proxy)
 
         if before_post_url:
 
@@ -94,10 +88,6 @@ class _Account(OnlineAccount):
             match_substring=False,
             ssl=True):
 
-        from lxml import etree
-        from lxml.etree import HTMLParser
-        from imbox import Imbox
-
         from bringyourownproxies.errors import VerificationLinkNotFound, AccountProblem
 
         email_box = Imbox(imap_server, username, password, ssl)
@@ -129,7 +119,6 @@ class _Account(OnlineAccount):
             doc = etree.fromstring(email.body['html'][0], HTMLParser())
             for a in doc.xpath('//a'):
 
-                found_verification_link = False
                 for clue in clues:
                     clue_attrib, clue_value = clue
 
@@ -141,12 +130,10 @@ class _Account(OnlineAccount):
                         if value_found:
                             if clue_value in value_found:
                                 verification_link = a.attrib['href']
-                                found_verification_link = True
                                 break
 
                     if clue_value == value_found:
                         verification_link = a.attrib['href']
-                        found_verification_link = True
                         break
 
         if not verification_link:
@@ -271,8 +258,6 @@ class _Account(OnlineAccount):
     def _find_login_errors(self, response, **kwargs):
         error_msg_xpath = kwargs.get('error_msg_xpath', ERROR_MESSAGES_XPATH)
         wrong_pass_msg = kwargs.get('wrong_pass_msg', WRONG_PASSWORD_MESSAGES)
-        use_username = kwargs.get('use_username', True)
-        use_password = kwargs.get('use_password', True)
 
         doc = self.etree.fromstring(response.content, self.parser)
 

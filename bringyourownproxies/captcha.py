@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
+import time
+import json
 import requests
-import path
 
-from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
-
-from bringyourownproxies.recaptcha import get_new_challenge as get_new_recaptcha_challenge
-from bringyourownproxies.recaptcha import get_image as get_recaptcha_image
 from bringyourownproxies.deathbycaptcha import SocketClient as DeathByCaptcha
-from bringyourownproxies.errors import CaptchaProblem,DeathByCaptchaProblem,RecaptchaProblem
+from bringyourownproxies.errors import CaptchaProblem,DeathByCaptchaProblem
 
 CAPTCHA_SOLVERS = [DeathByCaptcha]
 DEFAULT_CAPTCHA_MAXIMUM_WAITING = 180
@@ -22,11 +19,9 @@ def submit_captcha_and_wait(
         captcha_solver=DEFAULT_CAPTCHA_SOLVER,
         return_captcha_id=False):
 
-    import time
 
     def poll_death_by_captcha(captcha_id):
-        import json
-        import requests
+
         url = 'http://api.dbcapi.me/api/captcha/' \
             '{captcha_id}'.format(captcha_id=captcha_id)
 
