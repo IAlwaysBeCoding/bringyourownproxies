@@ -135,15 +135,3 @@ class PornhubAccount(_Account):
     def is_logined(self):
         return self._is_logined(sign_out_xpath='//li[@class="signOut"]')
 
-if __name__ == '__main__':
-    from bringyourownproxies.httpclient import HttpSettings
-    username = 'timisthebest'
-    password = 'wegohardallday'
-    email = 'timisthebestdude@gmail.com'
-    http_settings = HttpSettings()
-    http_settings.set_proxy('localhost',3003)
-    #create_account = PornhubAccount.create(username,password,email)
-    account = PornhubAccount(username,password,email,http_settins=http_settings)
-    #account.login()
-    verify_account = PornhubAccount.verify_account(account.http_settings,'imap.gmail.com',email,password)
-    #account = PornhubAccount(username,password,email)

@@ -22,23 +22,23 @@ class VideoRequestBuilder(BaseBuilder):
 
     SITES = {'youporn':{
                         'video_upload_request':YouPornVideoUploadRequest,
-                        'multiple':{'tags':True,'categories':False}
+                        'multiple':{'tag':True,'category':False}
                         },
              'drtuber':{
                         'video_upload_request':DrTuberVideoUploadRequest,
-                        'multiple':{'tags':True,'categories':False}
+                        'multiple':{'tag':True,'category':False}
                         },
              'hardsextube':{
                             'video_upload_request':HardSexTubeVideoUploadRequest,
-                            'multiple':{'tags':True,'categories':False}
+                            'multiple':{'tag':True,'category':False}
                         },
              'pornhub':{
                         'video_upload_request':PornhubVideoUploadRequest,
-                        'multiple':{'tags':True,'categories':True}
+                        'multiple':{'tag':True,'category':True}
                         },
              'redtube':{
                         'video_upload_request':RedTubeVideoUploadRequest,
-                        'multiple':{'tags':True,'categories':True}
+                        'multiple':{'tag':True,'category':True}
                         },
              'sex':{
                     'board':SexBoard,
@@ -99,20 +99,22 @@ class VideoRequestBuilder(BaseBuilder):
 
             raw_value = properties[property_type]
             if isinstance(raw_value,(tuple,list)):
-                if not property_type in self.SITES[self.site]['multiple']:
-                    raise VideoRequestBuilderException('Video Request does not support ' \
-                                                        'multiple {k} properties , '
-                                                        'a list or tuple was given ' \
-                                                        'instead of one item'.format(k=property_type))
+                if len(raw_value) == 1:
+                    processed[property_type] = self._create_property(property_type=property_type,
+                                                                     property_values=raw_value[0])
+                else:
+                    if self.SITES[self.site]['multiple'][property_type] == False:
+                        raise VideoRequestBuilderException('Video Request does not support ' \
+                                                            'multiple {k} properties , ' \
+                                                            'a list or tuple was given ' \
+                                                            'instead of one item'.format(k=property_type))
 
-                processed[property_type] = [self._create_property(property_type,item) for item in raw_value]
+                    processed[property_type] = [self._create_property(property_type=property_type,
+                                                                      property_values=item) for item in raw_value]
 
             else:
-                if isinstance(raw_value,dict):
-                    built = builder(**raw_value)
-                else:
-                    built = builder(raw_value)
-
+                built = self._create_property(property_type=property_type,
+                                              property_values=raw_value)
                 if built is not None:
                     processed[property_type] = built
         return processed

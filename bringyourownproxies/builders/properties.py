@@ -90,6 +90,7 @@ class CategoryBuilder(BaseBuilder):
             klazz = self.get_category_class(category_type)
             return klazz(name)
 
+        print 'passing to create category:{s}'.format(s=name)
         return self.klazz_category(name)
 
 
@@ -140,7 +141,7 @@ class DescriptionBuilder(BaseBuilder):
         self.klazz_description = self.SITES[site]
 
     def __call__(self,name,**kwargs):
-        return self.create_description(name,**kwargs)
+        return self.create_description(name=name,**kwargs)
 
     def create_description(self,name,**kwargs):
         return self.klazz_description(name=name,**kwargs) if self.klazz_description else None
@@ -166,7 +167,7 @@ class TitleBuilder(BaseBuilder):
         self.klazz_title = self.SITES[site]
 
     def __call__(self,name,**kwargs):
-        return self.create_title(name,**kwargs)
+        return self.create_title(name=name,**kwargs)
 
     def create_title(self,name,**kwargs):
         return self.klazz_title(name=name,**kwargs) if self.klazz_title else None

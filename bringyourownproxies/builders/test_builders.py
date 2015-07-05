@@ -6,8 +6,8 @@ if __name__ == '__main__':
     from bringyourownproxies.builders.video import VideoRequestBuilder
     from bringyourownproxies.builders.properties import CategoryBuilder
     import path
-    site = 'xhamster'
-    f = {'account':AccountBuilder(site),
+    site = 'pornhub'
+    f = {'account':AccountBuilder('spankwire'),
          'upload':UploadBuilder(site),
          'video':VideoRequestBuilder(site)
         }
@@ -16,8 +16,8 @@ if __name__ == '__main__':
     email = 'tedwantsmore@gmx.com'
     description = 'Milf loves this anal'
     title = 'Big Boob Milf Loves Anal'
-    categories = [{'name':'amateurd','category_type':'transsexual'}]
-    tags  = ('anal','amateurd','milf')
+    categories = [{'name':'amateur','category_type':'transsexual'}]
+    tags  = ('anal','amateur','milf')
     video_file = '/home/testfiles/milf_loves_anal.mp4'
     allow_comments = False
     category_type = 'transsexual'

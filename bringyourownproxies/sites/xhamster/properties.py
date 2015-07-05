@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 from bringyourownproxies.video import Category,Description,Title
-
+from bringyourownproxies.errors import InvalidCategory
 __all__ = ['XhamsterTitle','XhamsterDescription','XhamsterCategory',
            'XhamsterCategoryStraight','XhamsterCategoryGay',
            'XhamsterCategoryTranssexual']

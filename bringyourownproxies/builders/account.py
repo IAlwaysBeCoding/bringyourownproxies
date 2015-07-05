@@ -1,8 +1,8 @@
 
 from bringyourownproxies.sites import (YouPornAccount,DrTuberAccount,HardSexTubeAccount,
                                        PornhubAccount,RedTubeAccount,SexAccount,
-                                       TnaflixAccount,XhamsterAccount,XvideosAccount)
-
+                                       TnaflixAccount,XhamsterAccount,XvideosAccount,
+                                       SpankwireAccount)
 from bringyourownproxies.sites.account import _Account
 from bringyourownproxies.builders.base import BaseBuilder
 from bringyourownproxies.builders.errors import AccountBuilderException
@@ -20,7 +20,8 @@ class AccountBuilder(BaseBuilder):
              'sex':SexAccount,
              'tnaflix':TnaflixAccount,
              'xhamster':XhamsterAccount,
-             'xvideos':XvideosAccount}
+             'xvideos':XvideosAccount,
+             'spankwire':SpankwireAccount}
 
     def __init__(self,site):
         super(AccountBuilder,self).__init__(site)
