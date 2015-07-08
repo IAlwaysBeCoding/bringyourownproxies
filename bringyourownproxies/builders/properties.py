@@ -28,6 +28,9 @@ from bringyourownproxies.builders.base import BaseBuilder
 from bringyourownproxies.builders.errors import (CategoryBuilderException,TagBuilderException,
                                                  TitleBuilderException,DescriptionBuilderException)
 
+
+__all__ = ['CategoryBuilder','TitleBuilder','DescriptionBuilder','TagBuilder']
+
 class CategoryBuilder(BaseBuilder):
 
     klazz_category_exception = CategoryBuilderException
@@ -92,7 +95,6 @@ class CategoryBuilder(BaseBuilder):
 
         print 'passing to create category:{s}'.format(s=name)
         return self.klazz_category(name)
-
 
 class TagBuilder(BaseBuilder):
 

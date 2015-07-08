@@ -113,14 +113,3 @@ class YouPornAccount(_Account):
         else:
             return True
 
-if __name__ == '__main__':
-    from bringyourownproxies.sites import YouPornAccount
-    #account = YouPornAccount('emoneybizzy','money1003','emoneybizzy@gmail.com')
-    http_settings = HttpSettings()
-    http_settings.set_proxy(ip='127.0.0.1',port=3003)
-    #create_account = YouPornAccount.create('timisthebest','wegohardallday','timisthebestdude@gmail.com','m',http_settings=http_settings)
-    verify_account = YouPornAccount.verify_account(http_settings,'imap.gmail.com','timisthebestdude@gmail.com','wegohardallday')
-    #verify_account = YouPornAccount.verify_account(account.http_settings,'imap.gmail.com','emoneybizzy@gmail.com','money1003')
-    #account.login()
-
-

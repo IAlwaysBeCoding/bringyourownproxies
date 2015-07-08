@@ -1,5 +1,6 @@
-
 from bringyourownproxies.builders.errors import BuilderException
+
+__all__ = ['BaseBuilder']
 
 class BaseBuilder(object):
 

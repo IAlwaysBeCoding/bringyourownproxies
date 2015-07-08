@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 utf-*-
 #!/usr/bin/python
 import random
 
@@ -76,4 +76,5 @@ class XhamsterAccount(_Account):
             return True
         else:
             return False
+
 

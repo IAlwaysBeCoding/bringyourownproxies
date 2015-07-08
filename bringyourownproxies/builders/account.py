@@ -7,6 +7,8 @@ from bringyourownproxies.sites.account import _Account
 from bringyourownproxies.builders.base import BaseBuilder
 from bringyourownproxies.builders.errors import AccountBuilderException
 
+__all__ = ['AccountBuilder']
+
 class AccountBuilder(BaseBuilder):
 
     klazz_builder_exception = AccountBuilderException

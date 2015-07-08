@@ -11,6 +11,8 @@ from bringyourownproxies.builders.errors import VideoRequestBuilderException
 from bringyourownproxies.builders.properties import (TagBuilder,CategoryBuilder,
                                                     DescriptionBuilder,TitleBuilder)
 
+__all__ = ['VideoRequestBuilder']
+
 class VideoRequestBuilder(BaseBuilder):
 
     klazz_builder_exception = VideoRequestBuilderException

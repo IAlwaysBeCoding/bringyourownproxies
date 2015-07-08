@@ -7,6 +7,8 @@ from bringyourownproxies.sites.upload import _Upload
 from bringyourownproxies.builders.base import BaseBuilder
 from bringyourownproxies.builders.errors import UploadBuilderException
 
+__all__ = ['UploadBuilder']
+
 class UploadBuilder(BaseBuilder):
 
     klazz_builder_exception = UploadBuilderException
@@ -25,8 +27,6 @@ class UploadBuilder(BaseBuilder):
     def __init__(self,site):
         super(UploadBuilder,self).__init__(site)
         self.klazz_upload = self.SITES[site]
-
-
     def __call__(self,account,video_upload_request,hooks=None,bubble_up_exception=True):
         return self.create_upload(account=account,
                                   video_upload_request=video_upload_request,

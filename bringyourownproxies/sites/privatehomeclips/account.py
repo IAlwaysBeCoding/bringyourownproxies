@@ -4,18 +4,18 @@
 from bringyourownproxies.errors import AccountProblem,InvalidLogin
 from bringyourownproxies.httpclient import HttpSettings
 
-from bringyourownproxies.sites.account import _Account 
+from bringyourownproxies.sites.account import _Account
 
 __all__ = ['PrivateHomeClipsAccount']
 
 class PrivateHomeClipsAccount(_Account):
-    
+
     SITE = 'PrivateHomeClips'
     SITE_URL = 'www.PrivateHomeClips.com'
-    
+
     def __init__(self,username,password,email,**kwargs):
         super(PrivateHomeClipsAccount,self).__init__(username=username,password=password,email=email,**kwargs)
-    
+
     def login(self):
 
         attempt_login  = self._login(password='pass',
@@ -24,7 +24,7 @@ class PrivateHomeClipsAccount(_Account):
                                                     },
                                     post_url='http://www.privatehomeclips.com/login.php')
 
-        
+
         self._find_login_errors(response=attempt_login,
                                 error_msg_xpath='//div[@class="message_error"]/text()',
                                 wrong_pass_msg='Invalid Username or Password. Username and Password are case-sensitive.')

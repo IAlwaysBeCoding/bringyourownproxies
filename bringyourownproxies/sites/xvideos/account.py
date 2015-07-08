@@ -171,7 +171,7 @@ class XvideosAccount(_Account):
             if p == 'Your email is now validated.':
                 return True
         else:
-            raise AccountProblem('Failed verifying youporn account due to unknown error')
+            raise AccountProblem('Failed xvideos account due to unknown error')
 
     def login(self):
         attempt_login = self._login(
