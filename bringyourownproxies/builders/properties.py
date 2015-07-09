@@ -165,7 +165,7 @@ class TitleBuilder(BaseBuilder):
 
     def __init__(self,site):
         super(TitleBuilder,self).__init__(site)
-        self.factory = self.SITES[SITE]
+        self.factory = self.SITES[site]
 
     def __call__(self,name,**kwargs):
         return self.create_title(name=name,**kwargs)
