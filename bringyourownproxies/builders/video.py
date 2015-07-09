@@ -64,18 +64,18 @@ class VideoRequestBuilder(BaseBuilder):
     def __init__(self,site):
 
         super(VideoRequestBuilder,self).__init__(site)
+        self.factories = {}
         for builder in self.BUILDERS:
-            self.BUILDERS[builder] = self.BUILDERS[builder](site)
-
+            self.factories[builder] = self.BUILDERS[builder](site)
         if site == 'sex':
-            self.BUILDERS['sex'] = SexBoard
+            self.factories['sex'] = SexBoard
 
     def __call__(self,video_file,**kwargs):
         return self.create_upload_request(video_file=video_file,
                                           **kwargs)
 
     def _get_builder(self,property_type):
-        return self.BUILDERS.get(property_type,False)
+        return self.factories.get(property_type,False)
 
     def _create_property(self,property_type,property_values):
 

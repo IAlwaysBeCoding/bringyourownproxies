@@ -27,7 +27,7 @@ class AccountBuilder(BaseBuilder):
 
     def __init__(self,site):
         super(AccountBuilder,self).__init__(site)
-        self.klazz_account = self.SITES[site]
+        self.factory = self.SITES[site]
 
     def __call__(self,username,password,email,**kwargs):
         return self.create_account(username=username,
@@ -36,8 +36,8 @@ class AccountBuilder(BaseBuilder):
                                    **kwargs)
 
     def create_account(self,username,password,email,**kwargs):
-        return self.klazz_account(username=username,
-                                  password=password,
-                                  email=email,
-                                  **kwargs)
+        return self.factory(username=username,
+                            password=password,
+                            email=email,
+                            **kwargs)
 

@@ -26,7 +26,8 @@ class UploadBuilder(BaseBuilder):
 
     def __init__(self,site):
         super(UploadBuilder,self).__init__(site)
-        self.klazz_upload = self.SITES[site]
+        self.factory = self.SITES[site]
+
     def __call__(self,account,video_upload_request,hooks=None,bubble_up_exception=True):
         return self.create_upload(account=account,
                                   video_upload_request=video_upload_request,
@@ -34,8 +35,8 @@ class UploadBuilder(BaseBuilder):
                                   bubble_up_exception=True)
 
     def create_upload(self,account,video_upload_request,hooks=None,bubble_up_exception=True):
-        return self.klazz_upload(account=account,
-                                video_upload_request=video_upload_request,
-                                hooks=hooks,
-                                bubble_up_exception=True)
+        return self.factory(account=account,
+                            video_upload_request=video_upload_request,
+                            hooks=hooks,
+                            bubble_up_exception=True)
 

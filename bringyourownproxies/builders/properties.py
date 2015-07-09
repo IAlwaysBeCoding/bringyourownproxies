@@ -58,13 +58,13 @@ class CategoryBuilder(BaseBuilder):
 
     def __init__(self,site):
         super(CategoryBuilder,self).__init__(site)
-        self.klazz_category = self.SITES[site]
+        self.factory = self.SITES[site]
 
     def __call__(self,name,**kwargs):
         return self.create_category(name,**kwargs)
 
     def get_supported_categories(self,category_type=None):
-        if isinstance(self.klazz_category,dict) and category_type is None:
+        if isinstance(self.factory,dict) and category_type is None:
             raise CategoryBuilderException('Category type needs to be passed.It needs '\
                                            'to be straight,gay, or transsexual ')
 
@@ -73,10 +73,10 @@ class CategoryBuilder(BaseBuilder):
         return [key for key in category_class.CATEGORIES.keys()]
 
     def get_category_class(self,category):
-        if not isinstance(self.klazz_category,dict):
+        if not isinstance(self.factory,dict):
             raise CategoryBuilderException('There is no {c} class'.format(c=category))
 
-        category_type = self.klazz_category.get(category,None)
+        category_type = self.factory.get(category,None)
 
         if not category_type:
             raise CategoryBuilderException('Missing category:{c}'.format(c=category))
@@ -84,7 +84,7 @@ class CategoryBuilder(BaseBuilder):
         return category_type
 
     def create_category(self,name,**kwargs):
-        if isinstance(self.klazz_category,dict):
+        if isinstance(self.factory,dict):
             category_type = kwargs.get('category_type',None)
 
             if not category_type:
@@ -93,7 +93,7 @@ class CategoryBuilder(BaseBuilder):
             klazz = self.get_category_class(category_type)
             return klazz(name)
 
-        return self.klazz_category(name)
+        return self.factory(name)
 
 class TagBuilder(BaseBuilder):
 
@@ -113,13 +113,13 @@ class TagBuilder(BaseBuilder):
 
     def __init__(self,site):
         super(TagBuilder,self).__init__(site)
-        self.klazz_tag = self.SITES[site]
+        self.factory = self.SITES[site]
 
     def __call__(self,name,**kwargs):
         return self.create_tag(name,**kwargs)
 
     def create_tag(self,name,**kwargs):
-        return self.klazz_tag(name=name,**kwargs) if self.klazz_tag else None
+        return self.factory(name=name,**kwargs) if self.factory else None
 
 class DescriptionBuilder(BaseBuilder):
 
@@ -139,13 +139,13 @@ class DescriptionBuilder(BaseBuilder):
 
     def __init__(self,site):
         super(DescriptionBuilder,self).__init__(site)
-        self.klazz_description = self.SITES[site]
+        self.factory = self.SITES[site]
 
     def __call__(self,name,**kwargs):
         return self.create_description(name=name,**kwargs)
 
     def create_description(self,name,**kwargs):
-        return self.klazz_description(name=name,**kwargs) if self.klazz_description else None
+        return self.factory(name=name,**kwargs) if self.factory else None
 
 class TitleBuilder(BaseBuilder):
 
@@ -165,12 +165,12 @@ class TitleBuilder(BaseBuilder):
 
     def __init__(self,site):
         super(TitleBuilder,self).__init__(site)
-        self.klazz_title = self.SITES[site]
+        self.factory = self.SITES[SITE]
 
     def __call__(self,name,**kwargs):
         return self.create_title(name=name,**kwargs)
 
     def create_title(self,name,**kwargs):
-        return self.klazz_title(name=name,**kwargs) if self.klazz_title else None
+        return self.factory(name=name,**kwargs) if self.factory else None
 
 
