@@ -61,10 +61,7 @@ class CategoryBuilder(BaseBuilder):
         self.klazz_category = self.SITES[site]
 
     def __call__(self,name,**kwargs):
-        if type(self.klazz_category) == Category:
-            return Category(name=name)
-        else:
-            return self.create_category(name,**kwargs)
+        return self.create_category(name,**kwargs)
 
     def get_supported_categories(self,category_type=None):
         if isinstance(self.klazz_category,dict) and category_type is None:
