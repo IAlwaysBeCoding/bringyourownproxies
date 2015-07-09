@@ -93,7 +93,6 @@ class CategoryBuilder(BaseBuilder):
             klazz = self.get_category_class(category_type)
             return klazz(name)
 
-        print 'passing to create category:{s}'.format(s=name)
         return self.klazz_category(name)
 
 class TagBuilder(BaseBuilder):

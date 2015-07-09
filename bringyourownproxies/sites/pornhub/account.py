@@ -108,7 +108,6 @@ class PornhubAccount(_Account):
 
             raise AccountProblem('Failed verifying pornhub account due to unknown error')
 
-
     def login(self):
 
         attempt_login  = self._login(extra_post_vars = {"loginPage":1,

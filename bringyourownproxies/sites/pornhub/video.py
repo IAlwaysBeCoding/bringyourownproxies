@@ -8,8 +8,6 @@ from bringyourownproxies.sites.pornhub.properties import PornhubTitle,PornhubTag
 __all__ = ['PornhubVideoUploadRequest','PornhubVideoUploaded']
 
 class PornhubVideoUploadRequest(VideoUploadRequest):
-
-
     def __init__(self,video_file,title,tags,category,**kwargs):
 
         self.porn_stars = kwargs.get('porn_stars',None)

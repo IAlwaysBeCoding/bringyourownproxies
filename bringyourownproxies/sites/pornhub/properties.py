@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 from bringyourownproxies.video import Tag,Category,Title
-
+from bringyourownproxies.errors import InvalidCategory
 __all__ = ['PornhubTitle','PornhubTag','PornhubCategory']
 
 class PornhubTitle(Title):
