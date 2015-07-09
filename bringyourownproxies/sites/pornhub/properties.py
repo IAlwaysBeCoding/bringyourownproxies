@@ -123,7 +123,7 @@ class PornhubCategory(Category):
     def _find_category_id(self,category):
 
         if not category.lower() in self.CATEGORIES:
-            raise InvalidCategory('Invalid category. Orientation can only be straight,gay or transsexual')
+            raise InvalidCategory('Invalid category id ')
         else:
             return self.CATEGORIES[category.lower()]
 
