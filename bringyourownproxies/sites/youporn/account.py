@@ -92,6 +92,9 @@ class YouPornAccount(_Account):
                                     ajax=True,
                                     post_url='http://www.youporn.com/login/')
 
+        with open('/root/youporn_login.html','w+') as f:
+            f.write(login.content)
+
         r = login.json()
 
         if not r['success'] :
