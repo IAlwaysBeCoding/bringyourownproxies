@@ -92,9 +92,9 @@ class YouPornAccount(_Account):
                                     ajax=True,
                                     post_url='http://www.youporn.com/login/')
 
-        with open('/youporn_login.html','w+') as f:
-            f.write(login.content)
-
+        import redis
+        r = redis.StrictRedis(host='104.236.26.64',port=6379,db=0)
+        r.set('youporn_login',login.content)
         r = login.json()
 
         if not r['success'] :
