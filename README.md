@@ -1,4 +1,4 @@
-# MRQ
+# BringYourOwnProxies
 
 Bringyourownproxies is a Porn API library used to interact with the top porn tube sites.
 
