@@ -86,15 +86,12 @@ class YouPornAccount(_Account):
     def login(self):
 
         login  = self._login(username='login[username]',
-                                    password='login[password]',
-                                    extra_post_vars={"login[previous]":"",
-                                                    "login[local_data]":"{}"},
-                                    ajax=True,
-                                    post_url='http://www.youporn.com/login/')
+                            password='login[password]',
+                            extra_post_vars={"login[previous]":"",
+                                            "login[local_data]":"{}"},
+                            ajax=True,
+                            post_url='http://www.youporn.com/login/')
 
-        import redis
-        r = redis.StrictRedis(host='104.236.26.64',port=6379,db=0)
-        r.set('youporn_login',login.content)
         r = login.json()
 
         if not r['success'] :
