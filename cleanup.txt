@@ -1,0 +1,33 @@
+U - upload
+D - download
+L - login
+C - create account
+V - verification of created account
+EXP - extra parsing such as page views, comments, likes, etc.
+
+drtuber.com           - U,L,C
+4tube.com             - U,L
+fux.com               - U,L
+hardsextube.com       - U,L
+hdzog.com             - L
+keezmovies.com        - L 
+motherless.com        - L
+mylust.com            - L
+nuvid.com             - L
+pornhub.com           - U,L,C,V,EXP 
+porntube.com          - U,L
+privatehomeclips.com  - L
+redtube.com           - U,L,C,EXP
+sex.com               -
+spankwire.com         -
+tnaflix.com           -
+tube8.com             -
+tubecup.com           -
+voyeurhit.com         -
+vporn.com             -
+xhamster.com          -
+xtube.com             -
+xvideos.com           -
+youjizz.com           -
+youporn.com           -
+

@@ -6,6 +6,7 @@ from bringyourownproxies.parser import VideoParser
 from bringyourownproxies.errors import VideoParserError
 
 from aes import aes_decrypt_text
+
 __all__ = ['PornhubParser']
 
 class PornhubParser(VideoParser):

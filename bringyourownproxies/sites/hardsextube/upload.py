@@ -127,7 +127,6 @@ class HardSexTubeUpload(_Upload):
 
             return {'status': True}
 
-
     def _upload(self,video_file,upload_id):
 
         session = self.account.http_settings.session

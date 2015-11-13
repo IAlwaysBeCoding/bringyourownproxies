@@ -72,7 +72,6 @@ class RedTubeUpload(_Upload):
 
             return {'status': True}
 
-
     def _upload(self):
 
         video_file = self.video_upload_request.video_file
